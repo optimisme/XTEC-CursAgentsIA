@@ -1,6 +1,11 @@
 # macOS metadata
 .DS_Store
-.keys
+
+# Environment variables
+keys.env
+!keys.env.example
+.env
+*.env
 
 # Python cache
 __pycache__/
@@ -19,3 +24,7 @@ package.json
 package-lock.json
 bun.lock
 .gitignore
+
+!.opencode/.gitignore
+!.opencode/mcp/github/package.json
+!.opencode/mcp/github/package-lock.json

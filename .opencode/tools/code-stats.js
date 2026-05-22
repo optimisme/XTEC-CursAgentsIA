@@ -1,12 +1,12 @@
 import { tool } from "@opencode-ai/plugin"
 import { readdir, readFile } from "node:fs/promises"
-import { extname, join, relative } from "node:path"
+import { extname, join } from "node:path"
 
 const ignoredDirs = new Set([".git", "node_modules", ".opencode", "dist", "build"])
 
-async function scan(dir: string, root: string) {
+async function scan(dir) {
   const entries = await readdir(dir, { withFileTypes: true })
-  const result: Record<string, { files: number; lines: number }> = {}
+  const result = {}
 
   for (const entry of entries) {
     const fullPath = join(dir, entry.name)
@@ -14,7 +14,7 @@ async function scan(dir: string, root: string) {
     if (entry.isDirectory()) {
       if (ignoredDirs.has(entry.name)) continue
 
-      const child = await scan(fullPath, root)
+      const child = await scan(fullPath)
       for (const [ext, stats] of Object.entries(child)) {
         result[ext] ??= { files: 0, lines: 0 }
         result[ext].files += stats.files
@@ -47,7 +47,7 @@ export default tool({
 
   async execute() {
     const root = process.cwd()
-    const stats = await scan(root, root)
+    const stats = await scan(root)
 
     const rows = Object.entries(stats)
       .sort((a, b) => b[1].lines - a[1].lines)

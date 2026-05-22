@@ -387,20 +387,20 @@ Estructura típica:
 projecte/
 └── .opencode/
     └── tools/
-        └── code-stats.ts
+        └── code-stats.js
 ```
 
 
 Per fer-la servir des de dins de OpenCode:
 
 ```text
-User tool code-stats and give me the answer
+Use code-stats tool and give me the answer
 ```
 
 O bé des de fora d'OpenCode:
 
 ```bash
-opencode run "User tool code-stats and give me the answer"
+opencode run "Use code-stats tool and give me the answer"
 ```
 
 ---

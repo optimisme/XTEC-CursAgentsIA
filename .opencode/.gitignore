@@ -1,0 +1,10 @@
+node_modules
+package.json
+package-lock.json
+bun.lock
+
+!mcp/
+!mcp/github/
+!mcp/github/package.json
+!mcp/github/package-lock.json
+mcp/github/node_modules/
