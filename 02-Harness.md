@@ -1,4 +1,4 @@
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 2px; } </style>
+<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # Harness engineering
 
@@ -73,7 +73,7 @@ Use the matching skill for each agent: `code-review`, `frontend-design`, `access
 
 Available command: `supercommit`.
 
-Available tool: `search-students`.
+Available tool: `code-statss`.
 
 ## Rules
 
@@ -220,7 +220,7 @@ Read and apply the security skill located at @.opencode/skills/security/SKILL.md
 
 ```bash
 .opencode/agents/frontend-designer.md
-.opencode/skills/frontend-design/skill.md 
+.opencode/skills/frontend-design/SKILL.md 
 ```
 
 # Comandes
@@ -318,7 +318,7 @@ L'ús de comandes personalitzades permet automatizar OpenCode per fer tasques re
 **run** és útil quan vols fer servir OpenCode com una eina de línia de comandes, no com un xat interactiu.
 
 ```bash
-opencode run /supercommit
+opencode run --command listpng
 ```
 
 Executaria el supercommit com una instrucció intel·ligent.
@@ -387,51 +387,28 @@ Estructura típica:
 projecte/
 └── .opencode/
     └── tools/
-        └── search-student.ts
+        └── code-stats.ts
 ```
 
-Exemple senzill:
 
-```ts
-import { tool } from "@opencode-ai/plugin"
-import Database from "better-sqlite3"
-
-export default tool({
-  description: "Search students in the local SQLite database",
-  args: {
-    name: tool.schema.string().describe("Student name to search"),
-  },
-
-  async execute(args) {
-    const db = new Database("data/school.db", { readonly: true })
-
-    const rows = db
-      .prepare(`
-        SELECT id, name, email, group_name
-        FROM students
-        WHERE name LIKE ?
-        LIMIT 10
-      `)
-      .all(`%${args.name}%`)
-
-    db.close()
-
-    return JSON.stringify(rows, null, 2)
-  },
-})
-```
-
-Per fer-la servir:
+Per fer-la servir des de dins de OpenCode:
 
 ```text
-Busca a la base de dades els alumnes que es diuen Marc.
+User tool code-stats and give me the answer
 ```
 
-O també:
+O bé des de fora d'OpenCode:
 
-```text
-Fes servir la tool search-student per buscar alumnes amb el nom "Marc".
+```bash
+opencode run "User tool code-stats and give me the answer"
 ```
+
+---
+> **Important:** Les eines són arxius *".ts"* que poden trencar el funcionament de OpenCode si tenen errors de programació! OpenCode els carrega automàticament, i si tenen errors obtindrem "UnknownError"
+
+<center>
+<img src="./assets/02-ts-error.png" class="images">
+</center>
 
 ## Quan té sentit crear una tool pròpia?
 

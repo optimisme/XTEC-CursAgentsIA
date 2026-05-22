@@ -1,2 +1,21 @@
+# macOS metadata
+.DS_Store
+.keys
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 vids
 *vids/*
+
+# NodeJS
+node_modules
+node_modules/*
+node_modules
+package.json
+package-lock.json
+bun.lock
+.gitignore

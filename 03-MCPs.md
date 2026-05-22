@@ -1,4 +1,4 @@
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; } </style>
+<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # MCPs
 
@@ -48,7 +48,7 @@ opencode mcp add
 ```
 
 <center>
-<img src="./assets/03-mcp-github.png" class="images"><br/><br/>
+<img src="./assets/03-mcp-github.png" class="images">
 </center>
 
 Veurem com a l'arxiu *opencode.json* apareix:

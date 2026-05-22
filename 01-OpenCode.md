@@ -1,4 +1,4 @@
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; } </style>
+<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # OpenCode
 
@@ -31,7 +31,7 @@ També té una [extensió](https://marketplace.visualstudio.com/items?itemName=s
 És una eina basada en linia de comandes, i és indiferent si s'obre al terminal o com a extensió:
 
 <center>
-<img src="./assets/01-opencode-welcome.png" class="images"><br/><br/>
+<img src="./assets/01-opencode-welcome.png" class="images">
 </center>
 
 No és una eina de comandes tradicional, és una *Terminal User Interface* amb botons i menús emulant una aplicació d'escriptori que **interacciona amb el mouse**.
@@ -59,7 +59,7 @@ La interacció amb OpenCode es fa de tres maneres:
 Quan s'escriu el caràcter "/" apareix el menú de comandes:
 
 <center>
-<img src="./assets/01-commands.png" class="images"><br/><br/>
+<img src="./assets/01-commands.png" class="images">
 </center>
 
 * **/agents**: mostra els agents disponibles i permet canviar entre agents com **Build** i **Plan**.
@@ -105,7 +105,7 @@ Quan s'escriu el caràcter "/" apareix el menú de comandes:
 Menú intern de la interfície, fora de la conversa amb l'agent.
 
 <center>
-<img src="./assets/01-ctrlp.png" class="images"><br/><br/>
+<img src="./assets/01-ctrlp.png" class="images">
 </center>
 
 * **Switch session**: permet recuperar converses antigues o canviar a una altra sessió de treball.
@@ -161,7 +161,7 @@ Plan how to add an index.html that shows a canvas based circular clock with upda
 ```
 
 <center>
-<img src="./assets/01-plan-questions.png" class="images"><br/><br/>
+<img src="./assets/01-plan-questions.png" class="images">
 </center>
 
 > **Nota:** El mode de planificació et pot fer preguntes sobre com resoldre el problema, i permet acceptar la planificació per implementar-la
@@ -185,7 +185,7 @@ Crea un script que posi la següent capçalera a tots els arxius de codi ".java"
 ```
 
 <center>
-<img src="./assets/01-shell.png" class="images"><br/><br/>
+<img src="./assets/01-shell.png" class="images">
 </center>
 
 
@@ -203,18 +203,16 @@ El servei gratuït que ofereix Open Code s'anomena **Zen**:
 
 [OpenCode Zen](https://opencode.ai/zen)
 
-> **Nota:** Altres proveïdors gratuïts [NVidia build](https://build.nvidia.com), [OpenRouter Free](https://openrouter.ai/openrouter/free)
-
 Un cop donats d'alta, pots generar una clau d'accés *"API key"* a la pàgina web.
 
 <center>
-<img src="./assets/01-zen-apikey.png" class="images"><br/><br/>
+<img src="./assets/01-zen-apikey.png" class="images">
 </center>
 
 Es recomana esborrar les claus generades i no publicar-les enlloc:
 
 <center>
-<img src="./assets/01-zen-keymanagement.png" class="images"><br/><br/>
+<img src="./assets/01-zen-keymanagement.png" class="images">
 </center>
 
 Amb la clau, es pot fer:
@@ -226,7 +224,7 @@ Amb la clau, es pot fer:
 Escollir la opció **'OpenCode Zen'**, enganxar la clau:
 
 <center>
-<img src="./assets/01-zen-introkey.png" class="images"><br/><br/>
+<img src="./assets/01-zen-introkey.png" class="images">
 </center>
 
 Segons el proveïdor, hi haurà uns models disponibles. Per canviar de model:
@@ -236,7 +234,41 @@ Segons el proveïdor, hi haurà uns models disponibles. Per canviar de model:
 ```
 
 <center>
-<img src="./assets/01-zen-models.png" class="images"><br/><br/>
+<img src="./assets/01-zen-models.png" class="images">
+</center>
+
+També es pot fer la connexió per linia de comandes:
+
+```bash
+opencode auth list
+opencode auth login
+```
+
+Un cop feta la connexió es pot cridar opencode fora de l'entorn visual:
+
+```bash
+opencode run "say hello"
+```
+
+Com que els comptes gratuïts tenen limitacions d'ús, cal combinar els proveïdors. Per exemple amb NVIDIA:
+
+[NVIDIA build](https://build.nvidia.com)
+
+<center>
+<img src="./assets/01-nvidia-settings.png" class="images">
+</center>
+
+Podem gestionar les claus a "API Keys"
+
+<center>
+<img src="./assets/01-nvidia-keys.png" class="images">
+</center>
+
+---
+> **NOTA:** Tot i que molts models de NVIDIA digui *"Free Endpoint"*, hi ha un límit de 40 peticions cada hora.
+
+<center>
+<img src="./assets/01-nvidia-free.png" class="images">
 </center>
 
 ## Context, tokens i cost
