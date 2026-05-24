@@ -30,21 +30,13 @@
     }
   },
   "mcp": {
-    "project_github": {
+    "safe-edit": {
       "type": "local",
       "command": [
-        "npm",
-        "--prefix",
-        ".opencode/mcp/github",
-        "start"
+        "node",
+        ".opencode/mcp/safe-edit/server.js"
       ],
-      "environment": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_PERSONAL_ACCESS_TOKEN}",
-        "GITHUB_CLIENT_ID": "{env:GITHUB_CLIENT_ID}",
-        "GITHUB_BEARER_TOKEN": "{env:GITHUB_BEARER_TOKEN}"
-      },
-      "enabled": true,
-      "timeout": 30000
+      "enabled": true
     }
   }
 }

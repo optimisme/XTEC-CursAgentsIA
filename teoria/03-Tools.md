@@ -1,3 +1,5 @@
+<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
+
 # Custom tools
 
 OpenCode permet crear **custom tools**: funcions pròpies que l’agent pot cridar durant una conversa, igual que pot cridar eines internes com `read`, `write` o `bash`.
@@ -381,10 +383,10 @@ Una bona custom tool hauria de fer una cosa clara i retornar un resultat fàcil 
 
 És fàcil confondre **custom commands** i **custom tools**.
 
-| Element            | Serveix per                                 | Exemple            |
-| ------------------ | ------------------------------------------- | ------------------ |
-| **Custom command** | Donar instruccions reutilitzables a l’agent | `/supercommit`     |
-| **Custom tool**    | Afegir una acció nova executable            | `query_database()` |
+| Element        | Serveix per                                          |
+| -------------- | ---------------------------------------------------- |
+| Custom command | Instruccions reutilitzables a l’agent `/supercommit` |
+| Custom tool    | Afegir una acció nova executable `query_database`    |
 
 Una **command** és com una plantilla de prompt.
 

@@ -8,3 +8,7 @@ bun.lock
 !mcp/github/package.json
 !mcp/github/package-lock.json
 mcp/github/node_modules/
+!mcp/safe-edit/
+!mcp/safe-edit/package.json
+!mcp/safe-edit/package-lock.json
+mcp/safe-edit/node_modules/

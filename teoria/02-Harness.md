@@ -106,7 +106,7 @@ projecte/
             └── SKILL.md
 ```
 
-Teniu divversos exemples de skills en aquest mateix projecte.
+Teniu diversos exemples de skills en aquest mateix projecte.
 
 ## autoskills
 

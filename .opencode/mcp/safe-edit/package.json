@@ -1,0 +1,14 @@
+{
+  "name": "safe-edit-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node server.js --self-test"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  }
+}
