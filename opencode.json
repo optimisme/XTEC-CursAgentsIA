@@ -19,7 +19,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "Spark vLLM",
       "options": {
-        "baseURL": "http://127.0.0.1:8002/v1",
+        "baseURL": "http://127.0.0.1:8001/v1",
         "apiKey": "local",
         "timeout": 600000,
         "chunkTimeout": 120000
@@ -35,7 +35,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "name": "Local vLLM",
       "options": {
-        "baseURL": "http://127.0.0.1:8001/v1",
+        "baseURL": "http://127.0.0.1:8002/v1",
         "apiKey": "local",
         "timeout": 600000,
         "chunkTimeout": 120000
