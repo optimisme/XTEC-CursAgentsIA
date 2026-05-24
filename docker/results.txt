@@ -1,7 +1,0 @@
-Spark:
-    - qwen3.6 27b mtp: resol el problema al segon intent, però triga molta estona
-
-Local: 16GB VRAM:
-    - qwen3.6 14b awq: resol el problema a la primera
-    - gemma4 8b:       resol el problema a la primera, el més ràpid 
-    - qwen3 8b:        resol el problema a la tercera, proactiu amb preguntes
