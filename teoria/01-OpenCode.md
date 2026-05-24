@@ -374,9 +374,20 @@ Exemple de configuració **'opencode.json'**:
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-
   "model": "deepseek/deepseek-chat",
-
+  "permission": {
+    "read": "allow",
+    "grep": "allow",
+    "glob": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "bash": "allow",
+    "edit": "allow",
+    "task": "allow",
+    "todowrite": "allow",
+    "lsp": "allow",
+    "skill": "allow"
+  },
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
