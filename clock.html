@@ -3,40 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clock</title>
+  <title>Circular Clock</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
     body {
+      background: black;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: #1a1a2e;
-      font-family: monospace;
+      margin: 0;
+      overflow: hidden;
     }
-    #clock {
-      font-size: 15vw;
-      color: #e94560;
-      font-weight: bold;
+    canvas {
+      /* Visual aid for canvas boundary */
     }
   </style>
 </head>
-<body>
-  <div id="clock"></div>
+<body class="clock-body">
+  <canvas id="clockCanvas" width="600" height="600"></canvas>
   <script>
-    function updateClock() {
+    const canvas = document.getElementById('clockCanvas');
+    const ctx = canvas.getContext('2d');
+    const size = 600;
+    const radius = size / 2 - 10; // Slightly smaller than half size
+
+    // Matrix Green Palette: Different shades of green
+    const GREEN_SHADES = [
+      '#00ff00', // Brightest
+      '#00aa00', // Medium
+      '#005500', // Darkest
+      '#00cc33'  // Another variation
+    ];
+
+    function drawClock() {
+      // Clear canvas with black background
+      ctx.fillStyle = 'black';
+      ctx.fillRect(0, 0, size, size);
+
+      const centerX = size / 2;
+      const centerY = size / 2;
       const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+      const hours = now.getHours() % 12;
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+
+      // Helper function to convert degrees to radians
+      const toRadians = (degrees) => degrees * (Math.PI / 180);
+
+      // --- Draw Clock Face & Numbers ---
+      ctx.strokeStyle = GREEN_SHADES[1];
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      ctx.fillStyle = GREEN_SHADES[2];
+      ctx.font = '30px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Draw 12 major hour markers
+      for (let i = 1; i <= 12; i++) {
+        const angle = toRadians(i * 30 - 90); // Start at 12 o'clock (-90 deg)
+        const x = centerX + radius * 0.9 * Math.cos(angle);
+        const y = centerY + radius * 0.9 * Math.sin(angle);
+        ctx.fillText(i.toString(), centerX + radius * 0.7 * Math.cos(angle), centerY + radius * 0.7 * Math.sin(angle));
+      }
+
+      // --- Draw Hands ---
+
+      // Second Hand (Thinnest, fastest)
+      ctx.strokeStyle = GREEN_SHADES[0]; // Brightest
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + radius * 0.9 * Math.cos(toRadians(seconds * 6)), centerY + radius * 0.9 * Math.sin(toRadians(seconds * 6)));
+      ctx.stroke();
+
+      // Minute Hand
+      ctx.strokeStyle = GREEN_SHADES[1];
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + radius * 0.9 * Math.cos(toRadians(minutes * 6)), centerY + radius * 0.9 * Math.sin(toRadians(minutes * 6)));
+      ctx.stroke();
+
+      // Hour Hand (Thickest, slowest)
+      ctx.strokeStyle = GREEN_SHADES[2];
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + radius * 0.9 * Math.cos(toRadians(hours * 30 - 90)), centerY + radius * 0.9 * Math.sin(toRadians(hours * 30 - 90)));
+      ctx.stroke();
+
+      // Center Dot
+      ctx.fillStyle = GREEN_SHADES[0];
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 8, 0, 2 * Math.PI);
+      ctx.fill();
     }
-    updateClock();
-    setInterval(updateClock, 1000);
+
+    // Initial draw and set interval to redraw every second
+    drawClock();
+    setInterval(drawClock, 1000);
   </script>
 </body>
 </html>

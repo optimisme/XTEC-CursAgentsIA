@@ -15,12 +15,26 @@
 - Do not use OpenCode edit/write tools for file modifications unless safe-edit is unavailable or explicitly requested.
 - Never replace code using exact old_text/new_text matching.
 - Before editing, read the target lines with safe_read_lines.
+- Pass safe-edit tool parameters as JSON arguments, for example `{"file":"app.js","start":1,"end":20}`.
+- Use project-relative paths in the `file` argument whenever possible.
+- Absolute paths are allowed only if they are inside the project root.
+- Never use paths that escape the project root, such as `../other-project/file.js`.
+- Treat `start`, `end`, and `line` as 1-based line numbers, except `safe_insert_after` may use `line: 0` to insert at the top.
 - Edit only by line range or unified diff.
 - After editing, verify the modified section with safe_verify_file.
 - If line numbers are unclear, inspect the file again before editing.
 - Keep edits small and verifiable.
 - Do not rewrite whole files unless the file is very small or explicitly requested.
 - Do not override or redefine OpenCode internal tools such as read, write, edit, bash, grep, or glob.
+
+## Tool call rules
+
+- Before calling any tool, check the required arguments.
+- If a tool call fails with a schema error, read the error and fix the exact missing field.
+- Do not repeat the same invalid tool call.
+- `task` requires `description`.
+- `webfetch` requires a URL.
+- `websearch` requires a search query.
 
 ## Stack
 
