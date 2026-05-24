@@ -14,6 +14,10 @@
     "lsp": "allow",
     "skill": "allow"
   },
+  "instructions": [
+    "AGENTS.md",
+    "docs/*.md"
+  ],
   "provider": {
     "spark-vllm": {
       "npm": "@ai-sdk/openai-compatible",

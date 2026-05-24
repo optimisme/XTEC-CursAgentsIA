@@ -388,6 +388,10 @@ Exemple de configuració **'opencode.json'**:
     "lsp": "allow",
     "skill": "allow"
   },
+  "instructions": [
+    "AGENTS.md",
+    "docs/*.md"
+  ],
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
