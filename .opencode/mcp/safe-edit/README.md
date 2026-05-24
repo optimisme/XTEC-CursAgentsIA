@@ -11,6 +11,8 @@ The server rejects paths outside the project root, creates backups before every 
 ## Tools
 
 - `safe_read_lines`: read a 1-based inclusive line range.
+- `safe_create_file_from_lines`: create a new UTF-8 text file from a JSON array of lines.
+- `safe_append_lines`: append a JSON array of lines to an existing file.
 - `safe_replace_lines`: replace a 1-based inclusive line range.
 - `safe_insert_after`: insert content after a line. Use line `0` to insert at the top.
 - `safe_delete_lines`: delete a 1-based inclusive line range.
@@ -20,6 +22,28 @@ The server rejects paths outside the project root, creates backups before every 
 ## Arguments and paths
 
 OpenCode passes MCP tool arguments as a JSON object. Use project-relative file paths whenever possible:
+
+```json
+{
+  "file": "snake.html",
+  "lines": [
+    "<!DOCTYPE html>",
+    "<html lang=\"en\">",
+    "</html>"
+  ]
+}
+```
+
+```json
+{
+  "file": "snake.html",
+  "lines": [
+    "<head>",
+    "  <title>Snake</title>",
+    "</head>"
+  ]
+}
+```
 
 ```json
 {
@@ -116,3 +140,5 @@ npm --prefix .opencode/mcp/safe-edit test
 ```text
 Use the safe-edit MCP to update app.js. First read the target lines with safe_read_lines, replace only the needed line range, then verify the changed section with safe_verify_file.
 ```
+
+For a new file, use `safe_create_file_from_lines`, then verify it with `safe_verify_file`. For large HTML/JavaScript files, create an empty file and append in small chunks with `safe_append_lines`.

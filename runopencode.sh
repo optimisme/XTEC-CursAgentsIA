@@ -20,18 +20,25 @@ source "$KEYS_FILE"
 set +a
 
 if [ "${1:-}" = "run" ]; then
-  for arg in "$@"; do
+  args=("${@:2}")
+  has_agent=0
+
+  for arg in "${args[@]}"; do
     if [ "$arg" = "--agent" ]; then
-      exec opencode "$@"
+      has_agent=1
     fi
     case "$arg" in
-      --agent=*)
-        exec opencode "$@"
-        ;;
+      --agent=*) has_agent=1 ;;
     esac
   done
 
-  exec opencode run --agent goal "${@:2}"
+  final_args=(run)
+  if [ "$has_agent" -eq 0 ]; then
+    final_args+=(--agent goal)
+  fi
+  final_args+=("${args[@]}")
+
+  exec opencode "${final_args[@]}"
 fi
 
 exec opencode "$@"

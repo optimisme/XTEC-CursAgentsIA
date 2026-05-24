@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -115,6 +115,47 @@ function createBackup(filePath) {
 
 function writeEditedFile(filePath, lines, newline, hasFinalNewline) {
   writeFileSync(filePath, joinLines(lines, newline, hasFinalNewline), "utf8");
+}
+
+function createFile({ file, content }) {
+  const filePath = resolveProjectPath(file);
+
+  if (existsSync(filePath)) {
+    throw new Error(`File already exists: ${relativeProjectPath(filePath)}. Use safe_replace_lines or safe_apply_patch for existing files.`);
+  }
+
+  mkdirSync(path.dirname(filePath), { recursive: true });
+  writeFileSync(filePath, content, "utf8");
+
+  return [
+    `Created ${relativeProjectPath(filePath)}.`,
+    "Backup: none needed for new file"
+  ].join("\n");
+}
+
+function createFileFromLines({ file, lines }) {
+  return createFile({ file, content: `${lines.join("\n")}\n` });
+}
+
+function appendLines({ file, lines }) {
+  const filePath = resolveProjectPath(file);
+
+  if (!existsSync(filePath)) {
+    throw new Error(`File does not exist: ${relativeProjectPath(filePath)}. Create it first with safe_create_file or safe_create_file_from_lines.`);
+  }
+
+  const original = readTextFile(filePath);
+  const { lines: existing, newline, hasFinalNewline } = splitLines(original);
+  const backupPath = createBackup(filePath);
+  existing.push(...lines);
+  writeEditedFile(filePath, existing, newline, hasFinalNewline || lines.length > 0);
+
+  const start = existing.length - lines.length + 1;
+  return [
+    `Appended ${lines.length} line(s) to ${relativeProjectPath(filePath)}.`,
+    `Modified range: ${lines.length ? `${start}-${existing.length}` : "none"}.`,
+    `Backup: ${relativeProjectPath(backupPath)}`
+  ].join("\n");
 }
 
 function readRange({ file, start, end }) {
@@ -275,6 +316,26 @@ function registerTool(name, description, inputSchema, handler) {
 }
 
 registerTool(
+  "safe_create_file_from_lines",
+  "Create a new UTF-8 text file from an array of lines. Fails if the file already exists.",
+  {
+    file: z.string().min(1),
+    lines: z.array(z.string())
+  },
+  createFileFromLines
+);
+
+registerTool(
+  "safe_append_lines",
+  "Append an array of lines to an existing UTF-8 text file after creating a backup.",
+  {
+    file: z.string().min(1),
+    lines: z.array(z.string())
+  },
+  appendLines
+);
+
+registerTool(
   "safe_read_lines",
   "Read a file range using 1-based line numbers and return line-numbered text.",
   fileRangeSchema,
@@ -340,6 +401,21 @@ async function main() {
         throw error;
       }
     }
+    const selfTestFile = ".opencode/mcp/safe-edit/backups/self-test-create.txt";
+    const selfTestPath = resolveProjectPath(selfTestFile);
+    if (existsSync(selfTestPath)) {
+      rmSync(selfTestPath);
+    }
+    createFile({ file: selfTestFile, content: "safe-edit create self-test\n" });
+    if (!existsSync(selfTestPath)) {
+      throw new Error("safe_create_file self-test failed.");
+    }
+    appendLines({ file: selfTestFile, lines: ["append"] });
+    const selfTestContent = readTextFile(selfTestPath);
+    if (!selfTestContent.includes("append")) {
+      throw new Error("safe_append_lines self-test failed.");
+    }
+    rmSync(selfTestPath);
     console.log("safe-edit self-test passed");
     return;
   }

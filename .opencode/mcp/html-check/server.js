@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, realpathSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
@@ -94,6 +94,10 @@ function checkInlineScripts(html) {
 
 function checkHtmlJs({ file }) {
   const filePath = resolveProjectPath(file);
+  if (!existsSync(filePath)) {
+    return `${file}: file does not exist. Create it first with safe-edit_safe_create_file_from_lines, then run html-check_check_html_js again.`;
+  }
+
   const html = readFileSync(filePath, "utf8");
   const errors = [...checkTags(html), ...checkInlineScripts(html)];
 
@@ -124,7 +128,11 @@ server.registerTool(
 
 async function main() {
   if (process.argv.includes("--self-test")) {
-    const output = checkHtmlJs({ file: "clock_save.html" });
+    const selfTestFile = ".opencode/mcp/html-check/self-test.html";
+    const selfTestPath = resolveProjectPath(selfTestFile);
+    writeFileSync(selfTestPath, "<!DOCTYPE html><html><body><script>const ok = true;</script></body></html>\n", "utf8");
+    const output = checkHtmlJs({ file: selfTestFile });
+    rmSync(selfTestPath);
     if (!output.includes("look OK")) {
       throw new Error(output);
     }

@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_PROJECT="vllm"
-DEFAULT_MODEL="qwen3-8b"
+DEFAULT_MODEL="gemma4-8b"
 MODEL="${1:-$DEFAULT_MODEL}"
 ACTION="${2:-restart}"
 
@@ -14,9 +14,9 @@ Usage:
 
 Models:
   qwen35-9b
-  qwen3-8b    default
+  qwen3-8b
   qwen3-14b
-  gemma4-8b
+  gemma4-8b    default
   qwen3.6-27b   intended for larger GPU hosts
 
 Actions:
@@ -28,7 +28,7 @@ Actions:
 
 Examples:
   ./docker/run_docker.sh
-  ./docker/run_docker.sh qwen3-8b
+  ./docker/run_docker.sh gemma4-8b
   ./docker/run_docker.sh qwen3-14b logs
   ./docker/run_docker.sh qwen3-8b stop
 EOF

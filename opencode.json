@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "local-vllm/qwen3-8b-local",
+  "model": "local-vllm/gemma4-8b-local",
   "permission": {
     "read": "allow",
     "grep": "allow",
