@@ -20,10 +20,11 @@ OpenCode decideix quan la pot fer servir segons el nom, la descripció i els arg
 Les custom tools es poden definir dins del projecte:
 
 ```bash
+# .opencode/tools/<nom-eina>.js/
 projecte/
 └── .opencode/
     └── tools/
-        └── code-stats.ts
+        └── code-stats.js
 ````
 
 O bé globalment per a tots els projectes:

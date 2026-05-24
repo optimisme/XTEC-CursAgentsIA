@@ -139,7 +139,7 @@ Es poden definir més agents principals a la carpeta *"./opencode/agents"* amb l
 Per exemple un agent educatiu:
 
 ```bash
-# .opencode/skills/<nom-skill>/SKILL.md
+# .opencode/agents/<nom-agent>.md
 projecte/
 └── .opencode/
     └── agents/
@@ -194,7 +194,7 @@ Per exemple, `Explore` pot buscar quines custom properties de CSS hi ha al proje
 Els subagents també es defineixen a la carpeta *"./opencode/agents"*, però amb la capçalera **"mode: subagent"**
 
 ```bash
-# .opencode/skills/<nom-skill>/SKILL.md
+# .opencode/agents/<nom-agent>.md
 projecte/
 └── .opencode/
     └── agents/
@@ -292,7 +292,7 @@ review changes, group them into commits and then push
 Millor definir una comanda:
 
 ```bash
-# .opencode/skills/<nom-skill>/SKILL.md
+# .opencode/commands/<nom-comanda>.md
 projecte/
 └── .opencode/
     └── commands/

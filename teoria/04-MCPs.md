@@ -45,6 +45,7 @@ Els MCPs es configuren dins l’arxiu *"opencode.json"* dins l'atribut *"mcp"*:
 Els MCPs locals s'executen dins la pròpia màquina, si formen part del projecte i s'han d'arrencar amb OpenCode, cal definir-los:
 
 ```bash
+# .opencode/mcp/<nom-mcp-local>/
 projecte/
 └── .opencode/
     └── mcp/
@@ -219,7 +220,9 @@ OpenCode inclou comandes CLI per gestionar MCPs. ([opencode.ai][3])
 
 Les MCPs actives i/o configurades surten a la barra d'estat de OpenCode:
 
-
+<center>
+<img src="./assets/04-mcp-status.png" class="images">
+</center>
 
 No hi ha un símbol especial per cridar un MCP.
 
@@ -229,6 +232,14 @@ Es fa amb llenguatge natural, igual que amb les tools:
 Use the github MCP to list open issues.
 ```
 
-<center>
-<img src="./assets/04-mcp-status.png" class="images">
-</center>
+En aquest projecte hi ha un servidor per modificar arxius de manera segura quan es fan servir models petits:
+
+```bash
+# .opencode/mcp/<nom-mcp-local>/
+projecte/
+└── .opencode/
+    └── mcp/
+        └── safe-edit
+```
+
+A més, l'arxiu *"agents.md"* conté la secció específica **"Safe editing"** per informar de com ha de fer servir l'MCP *"safe-edit"*.
