@@ -134,6 +134,50 @@ OpenCode té dos agents principals visibles:
 
 > **Nota:** Hi ha altres agents interns, com `compact`, `title` i `resume`, però no són agents que l’usuari utilitzi directament. 
 
+Es poden definir més agents principals a la carpeta *"./opencode/agents"* amb la capçalera **"mode: primary"**. 
+
+Per exemple un agent educatiu:
+
+```bash
+# .opencode/skills/<nom-skill>/SKILL.md
+projecte/
+└── .opencode/
+    └── agents/
+        └── teacher.md
+```
+
+```text
+---
+description: Prepare teaching material and explanations
+mode: primary
+tools:
+  write: true
+  bash: false
+---
+```
+
+Aleshores podrem escollir el nou agent amb la tecla **TAB**:
+
+<center>
+<img src="./assets/01-agent-teacher.png" class="images">
+</center>
+
+Se li pot preguntar al *teacher*:
+
+```text
+Crea un document Markdown anomenat docs/explicacio-projecte.md explicant aquest projecte per a alumnes.
+
+Inclou:
+- què fa el projecte
+- estructura de carpetes
+- fitxers principals
+- com s’executa
+- com circulen les dades
+- exercicis senzills per practicar
+
+No canviïs codi font.
+```
+
 ## Subagents
 
 Els **subagents** són agents secundaris especialitzats que poden treballar en una tasca concreta sense bloquejar necessàriament el fil principal.
@@ -147,7 +191,32 @@ Els **subagents** són agents secundaris especialitzats que poden treballar en u
 
 Per exemple, `Explore` pot buscar quines custom properties de CSS hi ha al projecte, mentre que `General` pot investigar com afegir tests d’integració sense trencar res. 
 
-Es pot demanar a OpenCode que activi els subagents a través del prompt:
+Els subagents també es defineixen a la carpeta *"./opencode/agents"*, però amb la capçalera **"mode: subagent"**
+
+```bash
+# .opencode/skills/<nom-skill>/SKILL.md
+projecte/
+└── .opencode/
+    └── agents/
+        └── reviewer.md
+```
+
+```text
+---
+description: Review code quality, maintainability, bugs and pending changes without modifying files.
+mode: subagent
+permission:
+  edit: deny
+  bash:
+    "git status*": allow
+    "git diff*": allow
+    "git log*": allow
+    "grep*": allow
+    "rg*": allow
+    "*": ask
+---
+
+Els subagents no s'activen amb *TAB*, els ha de fer servir un agent principal, bé proactivament o bé a través de la conversa:
 
 ```text
 Use the Security subagent to review possible security issues.
@@ -157,44 +226,15 @@ Use the Security subagent to review possible security issues.
 Use the Explore subagent to find the project’s CSS variables.
 ```
 
-## Agents propis
-
-Podem crear agents propis dins del projecte. Per exemple, un agent de seguretat o un agent revisor de codi. Aquests agents poden tenir una descripció, un mode, un model concret, temperatura i permisos específics. 
-
-Exemple:
-
-```txt
-.opencode/
-└── agents/
-    ├── reviewer.md
-    └── security.md
-```
-
-La idea principal és **dividir el treball**. En comptes de tenir un únic agent fent-ho tot, pots encarregar tasques diferents a subagents diferents:
-
-* un busca CSS
-* un revisa rendiment
-* un revisa seguretat
-* un revisa canvis pendents
-* l’agent principal espera els resultats i prepara un pla consolidat
-
-Això permet executar investigacions en paral·lel i després fer que l’agent principal actuï com a orquestrador. 
-
-La capçalera dels agents pròpis, pot incloure els permisos que té l'agent sobre l'eina de comandes *'bash'*:
+Una estructura normal d'agent amb subagents pot ser:
 
 ```text
----
-description: Review frontend and backend code for basic security issues.
-mode: subagent
-permission:
-  edit: deny
-  bash:
-    "git status*": allow
-    "git diff*": allow
-    "grep*": allow
-    "rg*": allow
-    "*": ask
----
+.opencode/
+└── agent/
+    ├── master.md
+    ├── analyst.md
+    ├── coder.md
+    └── reviewer.md
 ```
 
 ## Agents vs Skills
@@ -381,70 +421,33 @@ edit       -> modificar el codi
 
 OpenCode permet crear **custom tools**. Són funcions pròpies que l’agent pot cridar durant una conversa. Es defineixen amb TypeScript o JavaScript, però poden executar scripts escrits en altres llenguatges.
 
-Estructura típica:
+## MCPs
 
-```bash
-projecte/
-└── .opencode/
-    └── tools/
-        └── code-stats.js
-```
+Els **MCPs** (*Model Context Protocol*) són una manera estàndard de connectar un agent d’IA amb eines externes.
 
+Sense MCP, l’agent normalment només pot respondre amb text.
 
-Per fer-la servir des de dins de OpenCode:
+Amb MCP, pot accedir a serveis o eines com:
 
-```text
-Use code-stats tool and give me the answer
-```
-
-O bé des de fora d'OpenCode:
-
-```bash
-opencode run "Use code-stats tool and give me the answer"
-```
+* Arxius del projecte
+* GitHub
+* Bases de dades
+* APIs externes
+* Navegadors
+* Eines pròpies creades pel programador
 
 ---
-> **Important:** Les eines són arxius *".ts"* que poden trencar el funcionament de OpenCode si tenen errors de programació! OpenCode els carrega automàticament, i si tenen errors obtindrem "UnknownError"
 
-<center>
-<img src="./assets/02-ts-error.png" class="images">
-</center>
+## Custom tool o MCP?
 
-## Quan té sentit crear una tool pròpia?
+Una custom tool d’OpenCode és bona per a ús ràpid dins d’un projecte OpenCode.
 
-No cal crear una tool per a qualsevol cosa. Té sentit quan l’agent ha de fer una acció molt concreta i repetitiva que no queda ben resolta amb `bash` o amb una comanda personalitzada.
+Un MCP és millor quan vols que la mateixa eina sigui reutilitzable per diferents agents.
 
-Exemples útils:
-
-| Tool pròpia        | Ús                                             |
-| ------------------ | ---------------------------------------------- |
-| `database`         | Consultar una base de dades local del projecte |
-| `validate_schema`  | Validar JSON, YAML o configuracions pròpies    |
-| `deploy_preview`   | Crear un desplegament de prova                 |
-| `issue_tracker`    | Consultar tasques d’un sistema extern          |
-
-## Custom command vs custom tool
-
-És fàcil confondre **custom commands** i **custom tools**.
-
-| Element            | Serveix per                                 | Exemple            |
-| ------------------ | ------------------------------------------- | ------------------ |
-| **Custom command** | Donar instruccions reutilitzables a l’agent | `/supercommit`     |
-| **Custom tool**    | Afegir una acció nova executable            | `query_database()` |
-
-Una **command** és com una plantilla de prompt.
-
-Una **tool** és com una funció que l’agent pot cridar.
-
-Per exemple, `/supercommit` podria ser una command que diu:
-
-```text
-Analitza els canvis, agrupa'ls en commits i fes commit.
-```
-
-Però una tool podria ser:
-
-```text
-Consulta la base de dades del projecte i retorna els usuaris de prova.
-```
+| Cas                                            | Opció               |
+| ---------------------------------------------- | ------------------- |
+| Seqüència d’instruccions en llenguatge natural | Custom command      |
+| Només es fa servir amb OpenCode                | Custom tool         |
+| S'ha de compartir amb Codex, Claude o altres.  | MCP                 |
+| Accés estructurat a una API o base de dades    | Custom tool o MCP   |
 
