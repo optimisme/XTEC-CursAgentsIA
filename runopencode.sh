@@ -19,4 +19,19 @@ set -a
 source "$KEYS_FILE"
 set +a
 
+if [ "${1:-}" = "run" ]; then
+  for arg in "$@"; do
+    if [ "$arg" = "--agent" ]; then
+      exec opencode "$@"
+    fi
+    case "$arg" in
+      --agent=*)
+        exec opencode "$@"
+        ;;
+    esac
+  done
+
+  exec opencode run --agent goal "${@:2}"
+fi
+
 exec opencode "$@"

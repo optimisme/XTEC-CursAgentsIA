@@ -120,8 +120,10 @@ function writeEditedFile(filePath, lines, newline, hasFinalNewline) {
 function readRange({ file, start, end }) {
   const filePath = resolveProjectPath(file);
   const { lines } = splitLines(readTextFile(filePath));
-  assertRange(start, end, lines.length);
-  return numberLines(lines.slice(start - 1, end), start);
+  const adjustedEnd = Math.min(end, lines.length);
+  assertRange(start, adjustedEnd, lines.length);
+  const prefix = adjustedEnd === end ? "" : `Requested end ${end} adjusted to file end ${lines.length}.\n`;
+  return `${prefix}${numberLines(lines.slice(start - 1, adjustedEnd), start)}`;
 }
 
 function replaceLines({ file, start, end, content }) {

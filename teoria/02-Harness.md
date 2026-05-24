@@ -178,6 +178,8 @@ Inclou:
 No canviïs codi font.
 ```
 
+> **Nota:** Aquest projecte inclou l'exemple d'un agent tipus **"Goal"**, per fer que es treballi fins aconseguir un objectiu.
+
 ## Subagents
 
 Els **subagents** són agents secundaris especialitzats que poden treballar en una tasca concreta sense bloquejar necessàriament el fil principal.
