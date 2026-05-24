@@ -13,7 +13,7 @@ You are an SEO reviewer for a web project.
 
 Read and apply this skill:
 
-- SEO: @.opencode/skills/seo/skill.md
+- SEO: @.opencode/skills/seo/SKILL.md
 
 Review the project without modifying files.
 

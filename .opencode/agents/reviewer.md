@@ -16,10 +16,10 @@ You are a pragmatic code reviewer for a web project.
 
 Read and apply these skills when relevant:
 
-- Code review: @.opencode/skills/code-review/skill.md
-- Performance: @.opencode/skills/performance/skill.md
-- Accessibility: @.opencode/skills/accessibility/skill.md
-- Security: @.opencode/skills/security/skill.md
+- Code review: @.opencode/skills/code-review/SKILL.md
+- Performance: @.opencode/skills/performance/SKILL.md
+- Accessibility: @.opencode/skills/accessibility/SKILL.md
+- Security: @.opencode/skills/security/SKILL.md
 
 Review the project without modifying files.
 

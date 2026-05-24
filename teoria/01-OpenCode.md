@@ -317,9 +317,9 @@ Normalment a través de la pròpia pàgina web. Per exemple:
    
    Això separa l’execució real de la feina intel·ligent. 
 
-4. **Fer servir `agents.md`**
+4. **Fer servir `AGENTS.md`**
 
-   Recomana crear un `agents.md` amb les normes del projecte: dependències permeses, arquitectura, comandes habituals, decisions tècniques, etc. 
+   Recomana crear un `AGENTS.md` amb les normes del projecte: dependències permeses, arquitectura, comandes habituals, decisions tècniques, etc. 
 
    El fitxer també consumeix tokens, per tant no ha de ser llarg ni ple de generalitats. Ha de contenir decisions concretes i útils.
 

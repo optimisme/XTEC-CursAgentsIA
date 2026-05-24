@@ -14,7 +14,7 @@ You are a web performance reviewer.
 
 Read and apply this skill:
 
-- Performance: @.opencode/skills/performance/skill.md
+- Performance: @.opencode/skills/performance/SKILL.md
 
 Review the project without modifying files.
 

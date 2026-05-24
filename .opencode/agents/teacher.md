@@ -1,9 +1,9 @@
 ---
 description: Prepare teaching material and explanations
 mode: primary
-tools:
-  write: true
-  bash: false
+permission:
+  bash: deny
+  edit: allow
 ---
 
 You are a teaching assistant for programming and web development courses.

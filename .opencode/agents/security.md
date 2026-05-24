@@ -15,7 +15,7 @@ You are a security reviewer for a web project.
 
 Read and apply this skill:
 
-- Security: @.opencode/skills/security/skill.md
+- Security: @.opencode/skills/security/SKILL.md
 
 Review the project for security issues. Do not modify any files.
 

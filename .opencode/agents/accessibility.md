@@ -13,7 +13,7 @@ You are an accessibility reviewer for a web project.
 
 Read and apply this skill:
 
-- Accessibility: @.opencode/skills/accessibility/skill.md
+- Accessibility: @.opencode/skills/accessibility/SKILL.md
 
 Review the project without modifying files.
 

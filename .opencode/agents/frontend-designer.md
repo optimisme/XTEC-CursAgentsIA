@@ -13,9 +13,9 @@ You are a frontend design reviewer for a web project.
 
 Read and apply these skills when relevant:
 
-- Frontend design: @.opencode/skills/frontend-design/skill.md
-- Responsive design: @.opencode/skills/responsive/skill.md
-- Accessibility: @.opencode/skills/accessibility/skill.md
+- Frontend design: @.opencode/skills/frontend-design/SKILL.md
+- Responsive design: @.opencode/skills/responsive/SKILL.md
+- Accessibility: @.opencode/skills/accessibility/SKILL.md
 
 Review the project without modifying files.
 
