@@ -317,7 +317,7 @@ function registerTool(name, description, inputSchema, handler) {
 
 registerTool(
   "safe_create_file_from_lines",
-  "Create a new UTF-8 text file from an array of lines. Fails if the file already exists.",
+  "Create a new UTF-8 text file from an array of physical file lines. Use this for small files or scaffolds; for nontrivial HTML/JS/CSS apps, create a small scaffold first and add 25-50 line chunks with insert/replace tools. Fails if the file already exists.",
   {
     file: z.string().min(1),
     lines: z.array(z.string())
@@ -327,7 +327,7 @@ registerTool(
 
 registerTool(
   "safe_append_lines",
-  "Append an array of lines to an existing UTF-8 text file after creating a backup.",
+  "Append an array of physical file lines to the end of an existing UTF-8 text file after creating a backup. Use only when content belongs at physical EOF; prefer insert/replace for HTML/CSS/JS internals.",
   {
     file: z.string().min(1),
     lines: z.array(z.string())

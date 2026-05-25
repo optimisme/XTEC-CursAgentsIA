@@ -17,6 +17,7 @@ Models:
   qwen3-8b
   qwen3-14b
   gemma4-8b    default
+  gemma4-8b-spark
   qwen3.6-27b   intended for larger GPU hosts
 
 Actions:
@@ -47,6 +48,7 @@ compose_file_for() {
     qwen3-8b) printf '%s\n' "docker-compose-qwen3-8b.yml" ;;
     qwen3-14b) printf '%s\n' "docker-compose-qwen3-14b.yml" ;;
     gemma4-8b) printf '%s\n' "docker-compose-gemma4-8b.yml" ;;
+    gemma4-8b-spark) printf '%s\n' "docker-compose-gemma4-8b-spark.yml" ;;
     qwen3.6-27b) printf '%s\n' "docker-compose-qwen36-27b.yml" ;;
     *)
       echo "Unknown model: $model" >&2
@@ -65,6 +67,7 @@ container_for() {
     qwen3-8b) printf '%s\n' "qwen3_8b_awq_vllm" ;;
     qwen3-14b) printf '%s\n' "qwen3_14b_awq_vllm" ;;
     gemma4-8b) printf '%s\n' "gemma4_8b_vllm" ;;
+    gemma4-8b-spark) printf '%s\n' "gemma4_8b_spark_vllm" ;;
     qwen3.6-27b) printf '%s\n' "qwen36_27b_vllm" ;;
     *)
       echo "Unknown model: $model" >&2
@@ -82,9 +85,12 @@ stop_all() {
     docker-compose-qwen3-8b.yml \
     docker-compose-qwen3-14b.yml \
     docker-compose-gemma4-8b.yml \
+    docker-compose-gemma4-8b-spark.yml \
     docker-compose-qwen36-27b.yml
   do
-    docker compose -p "$COMPOSE_PROJECT" -f "$ROOT_DIR/$file" down --remove-orphans
+    if [[ -f "$ROOT_DIR/$file" ]]; then
+      docker compose -p "$COMPOSE_PROJECT" -f "$ROOT_DIR/$file" down --remove-orphans
+    fi
   done
 }
 

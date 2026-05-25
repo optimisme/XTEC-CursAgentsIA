@@ -141,4 +141,4 @@ npm --prefix .opencode/mcp/safe-edit test
 Use the safe-edit MCP to update app.js. First read the target lines with safe_read_lines, replace only the needed line range, then verify the changed section with safe_verify_file.
 ```
 
-For a new file, use `safe_create_file_from_lines`, then verify it with `safe_verify_file`. For large HTML/JavaScript files, create an empty file and append in small chunks with `safe_append_lines`.
+For a new file, use `safe_create_file_from_lines`, then verify it with `safe_verify_file`. For nontrivial HTML/JavaScript files, create only a small scaffold first and add content in 25-50 line chunks. Each `lines` array item should be one physical file line; do not put a whole file into one string with embedded newlines.

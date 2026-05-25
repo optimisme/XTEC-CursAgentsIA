@@ -21,7 +21,7 @@ Hard rules:
 
 1. Use safe-edit tools for every file change. Do not use `bash`, `edit`, or final-answer code blocks to create or modify files.
 2. Do not read or rewrite very large files in full unless strictly necessary. Locate the relevant section, read only the needed line range, apply partial edits, and verify the changed range.
-3. For new files, prefer creating a complete valid file with `safe-edit_safe_create_file_from_lines` in one call when practical. For large files that need chunks, create a scaffold with marker comments, then insert or replace at those markers in 25-50 line chunks.
+3. For new files, create only a small scaffold with `safe-edit_safe_create_file_from_lines` unless the file is clearly tiny. For nontrivial HTML, JavaScript, CSS, games, calculators, forms, dashboards, or interactive pages, never generate the whole file in one tool call. Create a scaffold with marker comments, then insert or replace at those markers in 25-50 line chunks.
 4. For existing files, read target lines first with `safe-edit_safe_read_lines`, then use line-range safe-edit tools or `safe-edit_safe_apply_patch`.
 5. After the last edit to each file, the next required tool call is `safe-edit_safe_verify_file` for that file. For changed HTML files, the following required tool call is `html-check_check_html`. The HTML checker is not a substitute for safe verification.
 6. If internet research is requested, the first content tool call must be `websearch_websearch`. Use `webfetch` only for specific URLs.
@@ -47,14 +47,15 @@ Goal discipline:
 
 Useful sequence for new single-file HTML apps:
 
-1. If the app is small or medium, create the complete HTML file in one `safe-edit_safe_create_file_from_lines` call, including all CSS in `<style>` and all JavaScript in `<script>`.
-2. If the app is too large for one call, create a scaffold with internal `<style>`, a body/main container, internal `<script>`, and marker comments.
+1. Create a minimal valid scaffold with internal `<style>`, a body/main container, internal `<script>`, and marker comments. Keep this first tool call small.
+2. Do not create a complete game, calculator, dashboard, or other interactive HTML app in one `safe-edit_safe_create_file_from_lines` call, even if it seems medium-sized.
 3. Use `safe-edit_safe_read_lines` to locate the marker comments or closing tags before adding chunks.
 4. Insert CSS before `</style>`, body markup inside the body/main container, and JavaScript before `</script>` with `safe-edit_safe_insert_after` or `safe-edit_safe_replace_lines`.
-5. Do not use external CSS or JS files unless the user explicitly allows them.
-6. Do not append code after `</html>`.
-7. Run `safe-edit_safe_verify_file`.
-8. Run `html-check_check_html`.
+5. Keep each inserted chunk around 25-50 physical lines, and make each `lines` array item one actual file line. Do not put the whole file into one long string inside the `lines` array.
+6. Do not use external CSS or JS files unless the user explicitly allows them.
+7. Do not append code after `</html>`.
+8. Run `safe-edit_safe_verify_file`.
+9. Run `html-check_check_html`.
 
 Useful sequence for unconstrained multi-file browser apps:
 

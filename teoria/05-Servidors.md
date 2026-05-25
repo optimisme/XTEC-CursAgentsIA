@@ -196,6 +196,7 @@ Els fitxers del projecte són:
 | Fitxer                                 | Model |
 | -------------------------------------- | --- |
 | `docker/docker-compose-gemma4-8b.yml`  | `google/gemma-4-E4B-it` |
+| `docker/docker-compose-gemma4-8b-spark.yml` | `google/gemma-4-E4B-it`, optimitzat per NVIDIA Spark / GB10 |
 | `docker/docker-compose-qwen3-8b.yml`   | `Qwen/Qwen3-8B-AWQ` |
 | `docker/docker-compose-qwen3-14b.yml`  | `Qwen/Qwen3-14B-AWQ` |
 | `docker/docker-compose-qwen35-9b.yml`  | `QuantTrio/Qwen3.5-9B-AWQ` |
@@ -346,6 +347,52 @@ Cal ajustar aquests paràmetres segons la GPU i el model. Si el servidor falla p
 * o usar un model més petit o més quantitzat.
 
 > **Nota:** En aquest projecte es prioritza estabilitat: 32K de context al servidor i 4096 tokens màxims de sortida al client.
+
+### Optimització per concurrència
+
+Les configuracions actuals del projecte activen dues opcions importants per millorar el comportament amb OpenCode i diversos usuaris o subagents:
+
+```bash
+--max-num-batched-tokens 2048
+--enable-prefix-caching
+```
+
+`--max-num-batched-tokens 2048` deixa que vLLM agrupi més tokens dins d'un mateix batch. Això ajuda quan hi ha més d'una petició en marxa, perquè el servidor pot aprofitar millor la GPU en lloc de processar les peticions de manera massa serialitzada.
+
+`--enable-prefix-caching` permet reutilitzar parts repetides del prompt. En agents com OpenCode això és útil perquè moltes peticions comparteixen context: instruccions del sistema, configuració del projecte, eines disponibles o fragments inicials de conversa. Si el prefix es pot reaprofitar, baixa el cost de processar peticions semblants.
+
+En una GPU de **16GB de VRAM**, el projecte fa servir una configuració conservadora:
+
+```bash
+--max-model-len 32768
+--max-num-seqs 2
+--max-num-batched-tokens 2048
+--enable-prefix-caching
+```
+
+Això busca un equilibri: prou context per treballar amb projectes reals, dues seqüències simultànies per suportar concurrència bàsica, i un batch prou gran per evitar que el servidor es quedi infrautilitzat. Pujar aquests valors pot millorar la concurrència, però també pot provocar errors de VRAM.
+
+### Variant NVIDIA Spark / GB10
+
+La màquina NVIDIA Spark té més marge que una GPU de 16GB, per això té una configuració separada:
+
+```bash
+--dtype bfloat16
+--gpu-memory-utilization 0.90
+--max-num-seqs 4
+--max-num-batched-tokens 4096
+--enable-prefix-caching
+```
+
+La diferència principal és que Spark pot acceptar més seqüències simultànies i un batch de tokens més gran. Això permet atendre millor diversos usuaris d'OpenCode alhora.
+
+També es manté una imatge Docker específica i una configuració pròpia:
+
+```text
+docker/docker-compose-gemma4-8b-spark.yml
+```
+
+No és només una còpia del compose de 16GB: està pensada per aprofitar millor el maquinari Spark, amb `bfloat16`, més utilització de GPU i més concurrència. Per això convé mantenir-la separada de `docker/docker-compose-gemma4-8b.yml`.
 
 ---
 

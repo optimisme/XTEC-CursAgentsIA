@@ -56,8 +56,8 @@ services:
           --quantization awq_marlin \
           --kv-cache-dtype fp8 \
           --max-num-seqs 2 \
-          --max-num-batched-tokens 1024 \
-          --no-enable-prefix-caching \
+          --max-num-batched-tokens 2048 \
+          --enable-prefix-caching \
           --enable-chunked-prefill \
           --enforce-eager \
           --trust-remote-code \

@@ -17,11 +17,12 @@
 - In OpenCode, safe-edit MCP tools appear as `safe-edit_safe_create_file_from_lines`, `safe-edit_safe_append_lines`, `safe-edit_safe_read_lines`, `safe-edit_safe_apply_patch`, `safe-edit_safe_replace_lines`, `safe-edit_safe_insert_after`, `safe-edit_safe_delete_lines`, and `safe-edit_safe_verify_file`.
 - Never replace code using exact old_text/new_text matching.
 - Before editing, read the target lines with `safe-edit_safe_read_lines`.
-- For new files, prefer creating the complete valid file with `safe-edit_safe_create_file_from_lines`, then verify with `safe-edit_safe_verify_file`.
-- For large new files that are too big for one tool call, create a small scaffold with clear marker comments, read the marker line numbers, then use `safe-edit_safe_insert_after` or `safe-edit_safe_replace_lines` in 25-50 line chunks.
+- For new files, create a small scaffold with `safe-edit_safe_create_file_from_lines` unless the file is clearly tiny, then verify with `safe-edit_safe_verify_file`.
+- For nontrivial new HTML/JavaScript/CSS files, games, calculators, forms, dashboards, or interactive pages, do not create the complete file in one tool call. Create a small scaffold with clear marker comments, read the marker line numbers, then use `safe-edit_safe_insert_after` or `safe-edit_safe_replace_lines` in 25-50 line chunks.
 - Use `safe-edit_safe_append_lines` only when the new content truly belongs at the end of the file. Do not use append to add CSS, HTML, or JavaScript into an existing HTML document.
 - For requested single-file HTML apps, keep CSS and JavaScript inside the HTML file with `<style>` and `<script>` blocks. Do not use external `styles.css`, `app.js`, `<link rel="stylesheet">`, or `<script src=...>`.
-- If a requested single-file HTML app is small or medium, create the whole HTML document in one `safe-edit_safe_create_file_from_lines` call. If it must be built in chunks, insert CSS before `</style>`, HTML inside the body/main container, and JavaScript before `</script>`. Do not append code after `</html>`.
+- For requested single-file HTML apps, do not create the whole document in one tool call unless it is genuinely tiny. Insert CSS before `</style>`, HTML inside the body/main container, and JavaScript before `</script>`. Do not append code after `</html>`.
+- In `safe-edit_safe_create_file_from_lines` and `safe-edit_safe_append_lines`, each `lines` array item should be one physical file line. Do not put a whole file into one string containing many newline characters.
 - For browser apps with no explicit file constraint, prefer separate `index.html`, `styles.css`, and `app.js` files so HTML, CSS, and JavaScript remain smaller and easier to verify.
 - If the user asks for a specific new `.html` file or says single-file, keep that file self-contained unless extra files are explicitly allowed.
 - Pass safe-edit tool parameters as JSON arguments, for example `{"file":"app.js","start":1,"end":20}`.
