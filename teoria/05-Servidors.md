@@ -87,8 +87,8 @@ Exemple mínim per connectar OpenCode a un servidor vLLM local:
       },
       "models": {
         "gemma4-8b-local": {
-          "name": "Gemma 4 8B Local",
-          "max_tokens": 8192,
+          "name": "Gemma 4 8B Local (32K)",
+          "max_tokens": 4096,
           "tool_call": true,
           "reasoning": true
         }
@@ -104,6 +104,20 @@ El nom `local-vllm/gemma4-8b-local` combina:
 * `gemma4-8b-local`: el nom del model dins d'aquest provider.
 
 Aquest nom ha de correspondre amb el model que el servidor publica.
+
+En aquest projecte, els models locals es configuren amb un context de **32K tokens** al servidor vLLM:
+
+```bash
+--max-model-len 32768
+```
+
+I OpenCode es limita a **4096 tokens de sortida** per evitar que el client demani respostes massa grans, per exemple `32000` tokens, i deixi massa poc marge per al prompt d'entrada.
+
+```json
+"max_tokens": 4096
+```
+
+Com que `max_tokens` pot no ser suficient en algunes versions d'OpenCode, el projecte també fa servir un plugin local a `.opencode/plugins/limit-local-vllm-output.js` que força `maxOutputTokens` a `4096` abans d'enviar la petició al servidor.
 
 ---
 
@@ -318,7 +332,7 @@ Cal ajustar aquests paràmetres segons la GPU i el model. Si el servidor falla p
 * `--max-num-batched-tokens`;
 * o usar un model més petit o més quantitzat.
 
-> **Nota:** OpenCode necessita un context mínim de 50k, però el mínim recomanat és de 64k.
+> **Nota:** En aquest projecte es prioritza estabilitat: 32K de context al servidor i 4096 tokens màxims de sortida al client.
 
 ---
 
