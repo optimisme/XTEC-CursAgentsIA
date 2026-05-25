@@ -3,6 +3,7 @@ import { existsSync, readFileSync, realpathSync, rmSync, writeFileSync } from "n
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import * as csstree from "css-tree";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -92,6 +93,29 @@ function checkInlineScripts(html) {
   return errors;
 }
 
+function checkCssSyntax(css, filename) {
+  try {
+    csstree.parse(css, { filename, positions: true });
+    return [];
+  } catch (error) {
+    const location = error?.line && error?.column ? ` at ${error.line}:${error.column}` : "";
+    return [`${filename} CSS syntax error${location}: ${error.message}`];
+  }
+}
+
+function checkInlineStyles(html) {
+  const errors = [];
+  const stylePattern = /<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/gi;
+  let index = 0;
+
+  for (const match of html.matchAll(stylePattern)) {
+    index += 1;
+    errors.push(...checkCssSyntax(match[1], `inline-style-${index}.css`));
+  }
+
+  return errors;
+}
+
 function localAssetPath(htmlFilePath, rawSrc) {
   if (!rawSrc || /^(?:https?:)?\/\//i.test(rawSrc) || rawSrc.startsWith("data:")) {
     return null;
@@ -147,9 +171,14 @@ function checkLocalStylesheets(html, htmlFilePath) {
     if (!hrefMatch) continue;
 
     const stylesheetPath = localAssetPath(htmlFilePath, hrefMatch[1]);
-    if (stylesheetPath && !existsSync(stylesheetPath)) {
+    if (!stylesheetPath) continue;
+
+    if (!existsSync(stylesheetPath)) {
       errors.push(`Stylesheet is missing: ${hrefMatch[1]}`);
+      continue;
     }
+
+    errors.push(...checkCssSyntax(readFileSync(stylesheetPath, "utf8"), relativeProjectPath(stylesheetPath)));
   }
 
   return errors;
@@ -159,31 +188,32 @@ function relativeProjectPath(filePath) {
   return path.relative(projectRoot, filePath) || ".";
 }
 
-function checkHtmlJs({ file }) {
+function checkHtml({ file }) {
   const filePath = resolveProjectPath(file);
   if (!existsSync(filePath)) {
-    return `${file}: file does not exist. Create it first with safe-edit_safe_create_file_from_lines, then run html-check_check_html_js again.`;
+    return `${file}: file does not exist. Create it first with safe-edit_safe_create_file_from_lines, then run html-check_check_html again.`;
   }
 
   const html = readFileSync(filePath, "utf8");
   const errors = [
     ...checkTags(html),
     ...checkInlineScripts(html),
+    ...checkInlineStyles(html),
     ...checkExternalScripts(html, filePath),
     ...checkLocalStylesheets(html, filePath)
   ];
 
   if (!errors.length) {
-    return `${file}: basic HTML structure, linked local assets, and JavaScript syntax look OK.`;
+    return `${file}: basic HTML structure, linked local assets, JavaScript syntax, and CSS syntax look OK.`;
   }
 
   return `${file}: found ${errors.length} issue(s):\n${errors.map((error) => `- ${error}`).join("\n")}`;
 }
 
 server.registerTool(
-  "check_html_js",
+  "check_html",
   {
-    description: "Check a project HTML file for basic tag balance, local linked asset existence, and inline/external JavaScript syntax errors.",
+    description: "Check a project HTML file for basic tag balance, local linked asset existence, inline/external JavaScript syntax errors, and inline/external CSS syntax errors.",
     inputSchema: {
       file: z.string().min(1)
     }
@@ -191,7 +221,7 @@ server.registerTool(
   async (input) => {
     try {
       const parsed = z.object({ file: z.string().min(1) }).parse(input || {});
-      return textResult(checkHtmlJs(parsed));
+      return textResult(checkHtml(parsed));
     } catch (error) {
       return textResult(formatError(error));
     }
@@ -202,13 +232,17 @@ async function main() {
   if (process.argv.includes("--self-test")) {
     const selfTestFile = ".opencode/mcp/html-check/self-test.html";
     const selfTestScriptFile = ".opencode/mcp/html-check/self-test.js";
+    const selfTestCssFile = ".opencode/mcp/html-check/self-test.css";
     const selfTestPath = resolveProjectPath(selfTestFile);
     const selfTestScriptPath = resolveProjectPath(selfTestScriptFile);
+    const selfTestCssPath = resolveProjectPath(selfTestCssFile);
     writeFileSync(selfTestScriptPath, "const externalOk = true;\n", "utf8");
-    writeFileSync(selfTestPath, "<!DOCTYPE html><html><body><script>const ok = true;</script><script src=\"self-test.js\"></script></body></html>\n", "utf8");
-    const output = checkHtmlJs({ file: selfTestFile });
+    writeFileSync(selfTestCssPath, ".external-ok { color: rebeccapurple; }\n", "utf8");
+    writeFileSync(selfTestPath, "<!DOCTYPE html><html><head><link rel=\"stylesheet\" href=\"self-test.css\"><style>.inline-ok { display: block; }</style></head><body><script>const ok = true;</script><script src=\"self-test.js\"></script></body></html>\n", "utf8");
+    const output = checkHtml({ file: selfTestFile });
     rmSync(selfTestPath);
     rmSync(selfTestScriptPath);
+    rmSync(selfTestCssPath);
     if (!output.includes("look OK")) {
       throw new Error(output);
     }

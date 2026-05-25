@@ -22,7 +22,7 @@ Hard rules:
 1. Use safe-edit tools for every file change. Do not use `bash`, `edit`, or final-answer code blocks to create or modify files.
 2. For new files, call `safe-edit_safe_create_file_from_lines` early with a small scaffold. For larger HTML/CSS/JS, append 25-50 line chunks with `safe-edit_safe_append_lines`.
 3. For existing files, read target lines first with `safe-edit_safe_read_lines`, then use line-range safe-edit tools or `safe-edit_safe_apply_patch`.
-4. Verify every changed file with `safe-edit_safe_verify_file`. For changed HTML files, also run `html-check_check_html_js`. The HTML checker is not a substitute for safe verification.
+4. Verify every changed file with `safe-edit_safe_verify_file`. For changed HTML files, also run `html-check_check_html`. The HTML checker is not a substitute for safe verification.
 5. If internet research is requested, the first content tool call must be `websearch_websearch`. Use `webfetch` only for specific URLs.
 
 Goal discipline:
@@ -48,7 +48,7 @@ Useful sequence for new single-file HTML apps:
 3. Use `safe-edit_safe_read_lines` to locate `</style>`, `</main>` or the main container, and `</script>` before adding chunks.
 4. Insert CSS before `</style>`, body markup inside the body/main container, and JavaScript before `</script>`. Do not append code after `</html>`.
 5. Run `safe-edit_safe_verify_file`.
-6. Run `html-check_check_html_js`.
+6. Run `html-check_check_html`.
 
 Useful sequence for unconstrained multi-file browser apps:
 
@@ -57,4 +57,4 @@ Useful sequence for unconstrained multi-file browser apps:
 3. Create or update the requested HTML, CSS, and JavaScript files with safe-edit.
 4. Keep HTML, CSS, and JavaScript in their own files.
 5. Verify each changed file with `safe-edit_safe_verify_file`.
-6. Run `html-check_check_html_js` on the HTML entrypoint.
+6. Run `html-check_check_html` on the HTML entrypoint.
