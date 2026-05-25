@@ -53,6 +53,9 @@
 - For ambiguous or conflicting prompts, make a short internal checklist and choose the smallest concrete interpretation that preserves explicit constraints.
 - Do not stop after `glob` finds a target file; read it, edit it, verify it, and report the result.
 - For HTML changes, run `html-check_check_html_js` on each changed HTML file before claiming completion.
+- The HTML checker is not a substitute for `safe-edit_safe_verify_file`; verify every changed file before claiming completion.
+- End with 1-2 short lines, such as `Done: changed <files>. Verified: <checks>.`
+- If blocked, end with `Stopped: <blocker>. Completed: <what changed or none>.`
 - Do not use `bash` to create or modify project files.
 
 ## Stack

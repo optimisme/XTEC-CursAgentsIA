@@ -1,10 +1,10 @@
 # html-check MCP
 
-Local MCP server for basic HTML and inline JavaScript validation.
+Local MCP server for basic HTML and JavaScript validation.
 
 ## Tools
 
-- `check_html_js`: checks one project-relative HTML file for basic tag balance and inline JavaScript syntax errors.
+- `check_html_js`: checks one project-relative HTML file for basic tag balance, linked local asset existence, inline JavaScript syntax errors, and linked local JavaScript syntax errors.
 
 Example:
 

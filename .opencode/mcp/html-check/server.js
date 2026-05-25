@@ -92,6 +92,73 @@ function checkInlineScripts(html) {
   return errors;
 }
 
+function localAssetPath(htmlFilePath, rawSrc) {
+  if (!rawSrc || /^(?:https?:)?\/\//i.test(rawSrc) || rawSrc.startsWith("data:")) {
+    return null;
+  }
+
+  const withoutHash = rawSrc.split("#", 1)[0];
+  const withoutQuery = withoutHash.split("?", 1)[0];
+  if (!withoutQuery) {
+    return null;
+  }
+
+  return resolveProjectPath(path.join(path.dirname(path.relative(projectRoot, htmlFilePath)), withoutQuery));
+}
+
+function checkExternalScripts(html, htmlFilePath) {
+  const errors = [];
+  const scriptPattern = /<script\b([^>]*)>\s*<\/script>/gi;
+  let index = 0;
+
+  for (const match of html.matchAll(scriptPattern)) {
+    const attrs = match[1] || "";
+    const srcMatch = /\bsrc\s*=\s*["']([^"']+)["']/i.exec(attrs);
+    if (!srcMatch) continue;
+
+    index += 1;
+    const scriptPath = localAssetPath(htmlFilePath, srcMatch[1]);
+    if (!scriptPath) continue;
+
+    if (!existsSync(scriptPath)) {
+      errors.push(`External script ${index} is missing: ${srcMatch[1]}`);
+      continue;
+    }
+
+    try {
+      new vm.Script(readFileSync(scriptPath, "utf8"), { filename: relativeProjectPath(scriptPath) });
+    } catch (error) {
+      errors.push(`External script ${srcMatch[1]} syntax error: ${error.message}`);
+    }
+  }
+
+  return errors;
+}
+
+function checkLocalStylesheets(html, htmlFilePath) {
+  const errors = [];
+  const linkPattern = /<link\b([^>]*)>/gi;
+
+  for (const match of html.matchAll(linkPattern)) {
+    const attrs = match[1] || "";
+    if (!/\brel\s*=\s*["']?stylesheet["']?/i.test(attrs)) continue;
+
+    const hrefMatch = /\bhref\s*=\s*["']([^"']+)["']/i.exec(attrs);
+    if (!hrefMatch) continue;
+
+    const stylesheetPath = localAssetPath(htmlFilePath, hrefMatch[1]);
+    if (stylesheetPath && !existsSync(stylesheetPath)) {
+      errors.push(`Stylesheet is missing: ${hrefMatch[1]}`);
+    }
+  }
+
+  return errors;
+}
+
+function relativeProjectPath(filePath) {
+  return path.relative(projectRoot, filePath) || ".";
+}
+
 function checkHtmlJs({ file }) {
   const filePath = resolveProjectPath(file);
   if (!existsSync(filePath)) {
@@ -99,10 +166,15 @@ function checkHtmlJs({ file }) {
   }
 
   const html = readFileSync(filePath, "utf8");
-  const errors = [...checkTags(html), ...checkInlineScripts(html)];
+  const errors = [
+    ...checkTags(html),
+    ...checkInlineScripts(html),
+    ...checkExternalScripts(html, filePath),
+    ...checkLocalStylesheets(html, filePath)
+  ];
 
   if (!errors.length) {
-    return `${file}: basic HTML structure and inline JavaScript syntax look OK.`;
+    return `${file}: basic HTML structure, linked local assets, and JavaScript syntax look OK.`;
   }
 
   return `${file}: found ${errors.length} issue(s):\n${errors.map((error) => `- ${error}`).join("\n")}`;
@@ -111,7 +183,7 @@ function checkHtmlJs({ file }) {
 server.registerTool(
   "check_html_js",
   {
-    description: "Check a project HTML file for basic tag balance and inline JavaScript syntax errors.",
+    description: "Check a project HTML file for basic tag balance, local linked asset existence, and inline/external JavaScript syntax errors.",
     inputSchema: {
       file: z.string().min(1)
     }
@@ -129,10 +201,14 @@ server.registerTool(
 async function main() {
   if (process.argv.includes("--self-test")) {
     const selfTestFile = ".opencode/mcp/html-check/self-test.html";
+    const selfTestScriptFile = ".opencode/mcp/html-check/self-test.js";
     const selfTestPath = resolveProjectPath(selfTestFile);
-    writeFileSync(selfTestPath, "<!DOCTYPE html><html><body><script>const ok = true;</script></body></html>\n", "utf8");
+    const selfTestScriptPath = resolveProjectPath(selfTestScriptFile);
+    writeFileSync(selfTestScriptPath, "const externalOk = true;\n", "utf8");
+    writeFileSync(selfTestPath, "<!DOCTYPE html><html><body><script>const ok = true;</script><script src=\"self-test.js\"></script></body></html>\n", "utf8");
     const output = checkHtmlJs({ file: selfTestFile });
     rmSync(selfTestPath);
+    rmSync(selfTestScriptPath);
     if (!output.includes("look OK")) {
       throw new Error(output);
     }

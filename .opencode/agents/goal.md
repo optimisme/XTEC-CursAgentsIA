@@ -22,7 +22,7 @@ Hard rules:
 1. Use safe-edit tools for every file change. Do not use `bash`, `edit`, or final-answer code blocks to create or modify files.
 2. For new files, call `safe-edit_safe_create_file_from_lines` early with a small scaffold. For larger HTML/CSS/JS, append 25-50 line chunks with `safe-edit_safe_append_lines`.
 3. For existing files, read target lines first with `safe-edit_safe_read_lines`, then use line-range safe-edit tools or `safe-edit_safe_apply_patch`.
-4. Verify changed files with `safe-edit_safe_verify_file`. For changed HTML files, also run `html-check_check_html_js`.
+4. Verify every changed file with `safe-edit_safe_verify_file`. For changed HTML files, also run `html-check_check_html_js`. The HTML checker is not a substitute for safe verification.
 5. If internet research is requested, the first content tool call must be `websearch_websearch`. Use `webfetch` only for specific URLs.
 
 Goal discipline:
@@ -36,7 +36,10 @@ Goal discipline:
 - For browser apps with no file constraint, prefer separate `index.html`, `styles.css`, and `app.js` files so each language stays small and checkable.
 - If the user asks for a specific new `.html` file or says single-file, keep that artifact self-contained unless they explicitly allow extra files.
 - If a tool call fails, use the error message to choose a different valid tool call. Do not repeat the same invalid call.
-- Finish with a concise summary of changed files and verification.
+- Never claim completion until `safe-edit_safe_verify_file` has succeeded for each changed file.
+- Always finish with 1-2 short lines.
+- Final line format: `Done: changed <files>. Verified: <checks>.`
+- If something could not be completed, final line format: `Stopped: <blocker>. Completed: <what changed or none>.`
 
 Useful sequence for new single-file HTML apps:
 
