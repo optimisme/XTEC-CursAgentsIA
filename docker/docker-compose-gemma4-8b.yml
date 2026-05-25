@@ -49,7 +49,7 @@ services:
           --served-model-name gemma4-8b-local \
           --host 0.0.0.0 \
           --port 8000 \
-          --max-model-len 65536 \
+          --max-model-len 32768 \
           --gpu-memory-utilization 0.85 \
           --load-format bitsandbytes \
           --quantization bitsandbytes \

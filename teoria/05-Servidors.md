@@ -2,5 +2,378 @@
 
 # Servidors locals
 
+Un servidor local de models permet executar un model d'IA a la nostra pròpia màquina o en un servidor controlat per nosaltres, en lloc d'utilitzar només APIs externes com OpenAI, Anthropic, Google o OpenCode Zen.
 
+La idea general és:
 
+```text
+OpenCode
+  -> opencode.json
+  -> provider OpenAI-compatible
+  -> servidor local vLLM / Ollama / llama.cpp
+  -> model descarregat localment
+```
+
+OpenCode no necessita saber com s'executa internament el model. Només necessita una URL compatible, un nom de model i una configuració dins `opencode.json`.
+
+---
+
+## Per què usar servidors locals?
+
+Executar models locals pot ser útil per:
+
+* reduir dependència de serveis externs;
+* treballar amb dades que no volem enviar a tercers;
+* provar models oberts de Hugging Face;
+* controlar costos;
+* experimentar amb quantització, context i rendiment;
+* donar servei a diversos usuaris dins d'un centre o una xarxa local.
+
+També té inconvenients:
+
+* cal una GPU adequada si es vol bon rendiment;
+* els models ocupen molt espai de disc;
+* la configuració és més tècnica;
+* no tots els models suporten bé tools, reasoning o context llarg;
+* els errors de memòria GPU poden ser difícils d'interpretar.
+
+---
+
+## Opcions habituals
+
+| Servidor | Ús principal | Avantatges | Limitacions |
+| -------- | ------------ | ---------- | ----------- |
+| **vLLM** | Servir models en GPU | Ràpid, escalable, bo per servidors i concurrència | Configuració més tècnica |
+| **Ollama** | Executar models de manera senzilla | Molt fàcil d'instal·lar i provar | Menys flexible i més lent |
+| **llama.cpp** | Executar models en format GGUF, fins i tot amb CPU | Lleuger, configurable i portable | Depen molt de la configuració |
+| **LM Studio** | Interfície gràfica per provar models | Fàcil per a proves manuals | Menys adequat com a servidor |
+
+En aquest projecte es fa servir sobretot **vLLM amb Docker**, per simplicitat de desplegament.
+
+---
+
+## Configuració d'OpenCode
+
+OpenCode es configura amb l'arxiu `opencode.json` a l'arrel del projecte.
+
+Els camps més importants són:
+
+| Camp         | Funció |
+| ------------ | --- |
+| `model`      | Model que OpenCode utilitza per defecte |
+| `provider`   | Llista de proveïdors disponibles |
+| `baseURL`    | URL de l'API del servidor local |
+| `apiKey`     | Clau d'accés; en local sovint pot ser `"local"` |
+| `models`     | Models que apareixeran dins OpenCode |
+| `max_tokens` | Màxim de tokens de sortida configurat per al model |
+| `tool_call`  | Indica que el model pot fer crides a eines |
+| `reasoning`  | Indica que el model pot treballar amb mode de raonament |
+
+Exemple mínim per connectar OpenCode a un servidor vLLM local:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "local-vllm/gemma4-8b-local",
+  "provider": {
+    "local-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Local vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8000/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 240000
+      },
+      "models": {
+        "gemma4-8b-local": {
+          "name": "Gemma 4 8B Local",
+          "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": true
+        }
+      }
+    }
+  }
+}
+```
+
+El nom `local-vllm/gemma4-8b-local` combina:
+
+* `local-vllm`: el nom del provider dins `opencode.json`;
+* `gemma4-8b-local`: el nom del model dins d'aquest provider.
+
+Aquest nom ha de correspondre amb el model que el servidor publica.
+
+---
+
+## vLLM
+
+**vLLM** és un motor d'inferència per servir models de llenguatge. Un servidor vLLM normalment s'aixeca amb una ordre de l'estil:
+
+```bash
+vllm serve Qwen/Qwen3-8B-AWQ \
+  --served-model-name qwen3-8b-local \
+  --host 0.0.0.0 \
+  --port 8000
+```
+
+El paràmetre més important per a OpenCode és:
+
+```bash
+--served-model-name qwen3-8b-local
+```
+
+Aquest és el nom que després s'ha de fer servir a `opencode.json`.
+
+Per comprovar que vLLM respon:
+
+```bash
+curl http://127.0.0.1:8000/v1/models
+```
+
+Si retorna una llista de models, OpenCode ja pot intentar connectar-s'hi.
+
+---
+
+## vLLM amb Docker
+
+En aquest projecte, vLLM s'executa amb Docker Compose. Això evita haver d'instal·lar manualment totes les dependències de Python, CUDA i vLLM a la màquina principal.
+
+Un `docker-compose` de vLLM sol tenir aquestes parts:
+
+| Part               | Funció |
+| ------------------ | ------ |
+| `image`            | Imatge Docker de vLLM |
+| `container_name`   | Nom del contenidor |
+| `environment`      | Variables d'entorn |
+| `volumes`          | Cache de Hugging Face, cache de vLLM i secrets |
+| `ports`            | Publica el port local, normalment `8000` |
+| `healthcheck`      | Comprova si `/v1/models` respon |
+| `deploy.resources` | Dona accés a la GPU NVIDIA |
+| `command`          | Ordre `vllm serve ...` amb el model i paràmetres |
+
+Fragment simplificat:
+
+```yaml
+services:
+  qwen-vllm:
+    image: vllm/vllm-openai:latest
+    container_name: qwen3_8b_awq_vllm
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command:
+      - |
+        exec vllm serve Qwen/Qwen3-8B-AWQ \
+          --served-model-name qwen3-8b-local \
+          --host 0.0.0.0 \
+          --port 8000
+```
+
+Els fitxers del projecte són:
+
+| Fitxer                                 | Model |
+| -------------------------------------- | --- |
+| `docker/docker-compose-gemma4-8b.yml`  | `google/gemma-4-E4B-it` |
+| `docker/docker-compose-qwen3-8b.yml`   | `Qwen/Qwen3-8B-AWQ` |
+| `docker/docker-compose-qwen3-14b.yml`  | `Qwen/Qwen3-14B-AWQ` |
+| `docker/docker-compose-qwen35-9b.yml`  | `QuantTrio/Qwen3.5-9B-AWQ` |
+| `docker/docker-compose-qwen36-27b.yml` | `Qwen/Qwen3.6-27B` |
+
+El model de 27B està pensat per a màquines amb més VRAM. En una GPU petita, normalment no cabrà.
+
+---
+
+## Script per reiniciar models
+
+El projecte inclou l'script:
+
+```bash
+docker/run_docker.sh
+```
+
+Serveix per arrencar, parar, reiniciar i consultar logs dels contenidors vLLM sense haver d'escriure cada vegada l'ordre completa de Docker Compose.
+
+Exemples:
+
+```bash
+./docker/run_docker.sh
+./docker/run_docker.sh gemma4-8b
+./docker/run_docker.sh qwen3-8b restart
+./docker/run_docker.sh qwen3-14b logs
+./docker/run_docker.sh qwen3-8b stop
+./docker/run_docker.sh qwen3-8b ps
+```
+
+Per defecte, l'script arrenca `gemma4-8b` i atura els altres contenidors coneguts abans d'iniciar el nou model.
+
+Això és important perquè diversos models poden intentar usar el mateix port `8000` o la mateixa GPU. Amb aquest script només es pot executar un model.
+
+L'script també permet veure fàcilment els logs del docker, i veure si funciona correctament (o ha fallat):
+
+```bash
+./docker/run_docker.sh gemma4-8b logs
+```
+
+---
+
+## Hugging Face i tokens
+
+Molts models es descarreguen des de **Hugging Face**. El nom del model té forma d'identificador:
+
+```text
+organització/model
+```
+
+Per exemple:
+
+```text
+Qwen/Qwen3-8B-AWQ
+google/gemma-4-E4B-it
+```
+
+Alguns models són oberts i es poden descarregar directament. Altres són **gated models**: cal acceptar les condicions a Hugging Face i usar un token.
+
+En aquest projecte, els `docker-compose` esperen un fitxer:
+
+```text
+docker/tokens.env
+```
+
+amb una variable d'entorn per al token de Hugging Face.
+
+Exemple de format:
+
+```bash
+HUGGINGFACE=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+> **Nota:** No s'ha de publicar mai un token real dins del repositori. Si un token s'ha compartit per error, cal revocar-lo i generar-ne un de nou.
+
+---
+
+## Models i formats
+
+No tots els servidors locals fan servir el mateix format de model.
+
+| Servidor      | Formats habituals | Comentari |
+| ------------- | --- | --- |
+| **vLLM**      | Models Hugging Face, AWQ, alguns GPTQ. | Ideal per servir models grans en GPU |
+| **Ollama**    | Empaquetats per Ollama, sovint basats en GGUF | Molt senzill per instal·lar |
+| **llama.cpp** | GGUF | Molt portable, pot funcionar amb CPU o GPU |
+| **MLX**       | Models convertits a format MLX | Optimitzat per Apple Silicon |
+
+---
+
+## Quantització
+
+La **quantització** redueix la memòria necessària per executar un model. A canvi, pot reduir una mica la qualitat o limitar algunes capacitats.
+
+| Tipus | Ús | Avantatge | Cost |
+| --- | --- | --- | --- |
+| `BF16` / `FP16` | Models sense quantitzar o gairebé sense quantitzar | Més qualitat | Molta VRAM |
+| `AWQ` | Models quantitzats per GPU | Bon equilibri entre qualitat i memòria | Pot requerir configuració específica |
+| `bitsandbytes` | Càrrega quantitzada flexible | Ajuda quan el model no cap complet | Pot ser més lent |
+| `GGUF Q4/Q5/Q8` | llama.cpp i Ollama | Molt portable | Qualitat variable segons quantització |
+| `kv-cache-dtype fp8` | Cache de context en vLLM | Redueix memòria amb contexts llarg | Pot afectar la qualitat |
+| `MLX` / `MLX quantized` | Apple Silicon | Optimitzat per Mac | Específic d'Apple |
+
+Com a regla pràctica:
+
+* Més paràmetres solen donar més capacitat, però demanen més VRAM;
+* Més context consumeix més memòria;
+* Més usuaris o més seqüències simultànies consumeixen més memòria;
+* La quantització permet encabir models més grans en GPUs més petites.
+
+---
+
+## Paràmetres importants de vLLM
+
+| Paràmetre | Funció |
+| --- | --- |
+| `--served-model-name` | Nom que exposa el servidor |
+| `--max-model-len` | Longitud màxima de context |
+| `--gpu-memory-utilization` | Percentatge de VRAM que vLLM pot usar |
+| `--quantization` | Tipus de quantització |
+| `--kv-cache-dtype` | Format de la cache de context |
+| `--max-num-seqs` | Nombre de seqüències simultànies |
+| `--max-num-batched-tokens` | Tokens màxims processats en batch |
+| `--enable-auto-tool-choice` | Permet tool calling automàtic |
+| `--tool-call-parser` | Parser de crides a tools |
+| `--reasoning-parser` | Parser per models amb raonament |
+| `--trust-remote-code` | Permet codi personalitzat del model |
+
+Cal ajustar aquests paràmetres segons la GPU i el model. Si el servidor falla per memòria, normalment cal baixar:
+
+* `--max-model-len`;
+* `--gpu-memory-utilization`;
+* `--max-num-seqs`;
+* `--max-num-batched-tokens`;
+* o usar un model més petit o més quantitzat.
+
+> **Nota:** OpenCode necessita un context mínim de 50k, però el mínim recomanat és de 64k.
+
+---
+
+## Ollama
+
+**Ollama** és una opció molt senzilla per executar models locals.
+
+Exemple:
+
+```bash
+ollama pull llama3.1:8b
+ollama run llama3.1:8b
+```
+
+Ollama també exposa una API local. En molts entorns es pot connectar amb clients OpenAI-compatible, però cal comprovar l'endpoint concret disponible.
+
+Una configuració d'OpenCode podria seguir aquest patró:
+
+```json
+{
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama local",
+      "options": {
+        "baseURL": "http://127.0.0.1:11434/v1",
+        "apiKey": "local"
+      },
+      "models": {
+        "llama3.1:8b": {
+          "name": "Llama 3.1 8B"
+        }
+      }
+    }
+  }
+}
+```
+
+Ollama és molt pràctic per començar, però dona menys control fi que vLLM sobre paràmetres com batches, parsers de tool calling o optimitzacions de servidor.
+
+---
+
+## llama.cpp
+
+**llama.cpp** és un projecte molt eficient per executar models en format `GGUF`.
+
+Pot funcionar amb CPU, GPU o una combinació de totes dues, segons com s'hagi compilat i segons el maquinari disponible.
+
+Exemple conceptual:
+
+```bash
+llama-server \
+  -m models/model-Q4_K_M.gguf \
+  --host 0.0.0.0 \
+  --port 8080
+```
+
+El seu punt fort és la portabilitat. El seu punt feble és que no tots els fluxos avançats d'agents, tool calling o reasoning funcionen igual que en servidors més orientats a API OpenAI-compatible.

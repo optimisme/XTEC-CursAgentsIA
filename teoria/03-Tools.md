@@ -2,6 +2,16 @@
 
 # Custom tools
 
+OpenCode pot treballar amb **tools integrades** i amb **custom tools**.
+
+Les **tools integrades** ja venen amb OpenCode i permeten fer accions habituals com llegir fitxers, modificar codi, executar comandes, buscar text o consultar informació externa.
+
+Les **custom tools** són eines creades per al projecte o per l’usuari. Serveixen per afegir una capacitat concreta que OpenCode no porta de sèrie, com validar una configuració pròpia, consultar una API interna o executar una comprovació específica.
+
+La diferència principal és que les tools integrades formen part de l’entorn base, mentre que les custom tools amplien OpenCode amb funcionalitats pròpies.
+
+---
+
 OpenCode permet crear **custom tools**: funcions pròpies que l’agent pot cridar durant una conversa, igual que pot cridar eines internes com `read`, `write` o `bash`.
 
 Una custom tool no és només una comanda de terminal. És una **funció registrada dins d’OpenCode**, amb:
@@ -20,12 +30,12 @@ OpenCode decideix quan la pot fer servir segons el nom, la descripció i els arg
 Les custom tools es poden definir dins del projecte:
 
 ```bash
-# .opencode/tools/<nom-eina>.js/
+# .opencode/tools/<nom-eina>.js
 projecte/
 └── .opencode/
     └── tools/
         └── code-stats.js
-````
+```
 
 O bé globalment per a tots els projectes:
 
@@ -68,8 +78,6 @@ Els camps principals són:
 | `execute()`   | Codi que s’executarà quan l’agent cridi la tool |
 | `context`     | Informació de la sessió actual                  |
 
-Use the search-notes tool to search the word "database" with case sensitive enabled.
-
 Els arguments es defineixen amb `tool.schema`, que funciona com un esquema de validació. 
 
 Exemple amb dos arguments:
@@ -93,7 +101,9 @@ export default tool({
 })
 ```
 
-Per exectuar la tool anterior amb els arguments:
+**Prompt d’exemple**
+
+Per executar la tool anterior amb els arguments:
 
 ```text
 Use the search-notes tool to search the word "database" with case sensitive enabled.
@@ -413,40 +423,8 @@ En general:
 
 ---
 
-## Les custom tools d’OpenCode són compatibles amb Codex o Claude?
+## Compatibilitat OpenCode amb Codex i Claude
 
-No directament.
+No són directament compatibles.
 
-Les custom tools d’OpenCode estan pensades per a OpenCode i fan servir el seu sistema de càrrega, la seva carpeta `.opencode/tools/` i el seu format de definició.
-
-Per tant:
-
-| Element                            | OpenCode |                   Codex |                                  Claude Code |
-| ---------------------------------- | -------: | ----------------------: | -------------------------------------------: |
-| `.opencode/tools/*.ts`             |       Sí |          No directament |                               No directament |
-| `AGENTS.md`                        |       Sí |                      Sí | Parcialment / via compatibilitat segons eina |
-| MCP                                |       Sí | Sí, segons configuració |                                           Sí |
-| Scripts normals del projecte       |       Sí |                      Sí |                                           Sí |
-| Custom commands pròpies d’OpenCode |       Sí |          No directament |                               No directament |
-
-La manera més portable de compartir eines entre OpenCode, Codex i Claude no és crear una custom tool específica d’OpenCode, sinó crear:
-
-1. un script normal del projecte
-2. una CLI pròpia
-3. o un servidor MCP
-
-Per exemple:
-
-```bash
-tools/
-└── validate-schema.js
-```
-
-Després cada agent pot cridar aquest script amb `bash`, o bé es pot embolcallar:
-
-* com a custom tool d’OpenCode
-* com a MCP
-* com a skill
-* com a instrucció dins `AGENTS.md`
-
----
+La manera més portable de compartir eines entre OpenCode, Codex i Claude és amb scripts de projecte o MCPs.

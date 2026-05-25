@@ -73,7 +73,7 @@ Use the matching skill for each agent: `code-review`, `frontend-design`, `access
 
 Available command: `supercommit`.
 
-Available tool: `code-statss`.
+Available tool: `code-stats`.
 
 ## Rules
 
@@ -136,49 +136,37 @@ OpenCode té dos agents principals visibles:
 
 Es poden definir més agents principals a la carpeta *"./opencode/agents"* amb la capçalera **"mode: primary"**. 
 
-Per exemple un agent educatiu:
+Per exemple, aquest projecte defineix un agent principal anomenat `goal`, pensat per executar una petició de principi a fi:
 
 ```bash
 # .opencode/agents/<nom-agent>.md
 projecte/
 └── .opencode/
     └── agents/
-        └── teacher.md
+        └── goal.md
 ```
 
 ```text
 ---
-description: Prepare teaching material and explanations
+description: Execute implementation requests end-to-end with research, safe edits, and verification.
 mode: primary
-tools:
-  write: true
-  bash: false
+permission:
+  read: allow
+  grep: allow
+  glob: allow
+  bash: deny
+  edit: deny
+  task: deny
 ---
 ```
 
-Aleshores podrem escollir el nou agent amb la tecla **TAB**:
-
-<center>
-<img src="./assets/01-agent-teacher.png" class="images">
-</center>
-
-Se li pot preguntar al *teacher*:
+Aleshores podrem escollir el nou agent amb la tecla **TAB**. Se li pot donar un objectiu concret:
 
 ```text
-Crea un document Markdown anomenat docs/explicacio-projecte.md explicant aquest projecte per a alumnes.
-
-Inclou:
-- què fa el projecte
-- estructura de carpetes
-- fitxers principals
-- com s’executa
-- com circulen les dades
-- exercicis senzills per practicar
-
-No canviïs codi font.
+Arregla els errors de validació HTML del projecte, modifica només els fitxers necessaris i verifica el resultat abans de respondre.
 ```
 
-> **Nota:** Aquest projecte inclou l'exemple d'un agent tipus **"Goal"**, per fer que es treballi fins aconseguir un objectiu.
+> **Nota:** En aquest projecte, `goal` és l’agent principal per treballar fins aconseguir un objectiu. També hi ha `goal-checker`, que pot servir com a subagent de revisió o depuració per comprovar si l’objectiu s’ha resolt correctament.
 
 ## Subagents
 
@@ -232,7 +220,7 @@ Una estructura normal d'agent amb subagents pot ser:
 
 ```text
 .opencode/
-└── agent/
+└── agents/
     ├── master.md
     ├── analyst.md
     ├── coder.md
@@ -376,7 +364,6 @@ Altres exemples d'eines personalitzades útils, que caldria personalitzar segons
 | `/docs`             | Genera o millora documentació                    |
 | `/frontend-review`  | Revisa accessibilitat, responsive i UX           |
 | `/clean`            | Busca fitxers sobrants, codi mort o dependències |
-| `/teacher-exercise` | Genera un exercici docent a partir del projecte  |
 
 
 # Tools (eines)
@@ -452,4 +439,3 @@ Un MCP és millor quan vols que la mateixa eina sigui reutilitzable per diferent
 | Només es fa servir amb OpenCode                | Custom tool         |
 | S'ha de compartir amb Codex, Claude o altres.  | MCP                 |
 | Accés estructurat a una API o base de dades    | Custom tool o MCP   |
-

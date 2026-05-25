@@ -6,7 +6,7 @@
 
 Un MCP no és simplement una comanda. És un **servidor d’eines** que OpenCode pot carregar i oferir al model com si fossin tools disponibles.
 
-* **MCPs locals**: Funcinen com un servidor intern sobre el nostre sistema o per comunicar-se amb serveis externs.
+* **MCPs locals**: Funcionen com un servidor intern sobre el nostre sistema o per comunicar-se amb serveis externs.
 
 * **MCPs remots**: Connecten directament amb serveis externs que compleixen els protocols MCPs.
 
@@ -71,29 +71,47 @@ En aquest cas, OpenCode executa la comanda indicada a `command` per iniciar el s
 
 ---
 
-## Exemple de MCP local de prova
+## Exemple de MCP local del projecte
 
-OpenCode mostra com a exemple el paquet `@modelcontextprotocol/server-everything`:
+En aquest projecte hi ha un MCP local anomenat `safe-edit`. Serveix per modificar fitxers de manera controlada: llegir línies concretes, aplicar canvis petits i verificar el resultat després de cada edició.
+
+La configuració a `opencode.json` és:
 
 ```jsonc
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "mcp_everything": {
+    "safe-edit": {
       "type": "local",
-      "command": ["npx", "-y", "@modelcontextprotocol/server-everything"]
+      "command": ["node", ".opencode/mcp/safe-edit/server.js"],
+      "enabled": true
     }
   }
 }
 ```
 
-Després es pot demanar a OpenCode:
+Aquest servidor exposa eines com:
+
+| Tool | Ús |
+| --- | --- |
+| `safe_read_lines` | Llegir un rang de línies abans d’editar |
+| `safe_apply_patch` | Aplicar un canvi amb un diff verificable |
+| `safe_replace_lines` | Substituir només un rang concret de línies |
+| `safe_verify_file` | Verificar el fitxer o una secció després d’editar |
+
+Un flux habitual seria:
+
+1. Llegir les línies afectades.
+2. Aplicar un canvi petit.
+3. Verificar el fragment modificat.
+
+Per exemple, es pot demanar a OpenCode:
 
 ```text
-Use the mcp_everything tool to add the number 3 and 4
+Use the safe-edit MCP to update app.js. First read the target lines with safe_read_lines, apply only the needed change, then verify the changed section with safe_verify_file.
 ```
 
-OpenCode indica que es pot fer referència al servidor MCP pel seu nom dins del prompt.
+El paquet `@modelcontextprotocol/server-everything` també pot servir com a MCP genèric de demostració, però `safe-edit` és més útil en aquest curs perquè està vinculat a una pràctica real del projecte.
 
 ### Opcions d’un MCP local
 
@@ -196,13 +214,13 @@ Així la clau es pot definir fora:
 export GITHUB_TOKEN="..."
 ```
 
-La configuració d’OpenCode permet substituir variables d’entorn amb la sintaxi `{env:VARIABLE_NAME}`. ([opencode.ai][2])
+La configuració d’OpenCode permet substituir variables d’entorn amb la sintaxi `{env:VARIABLE_NAME}`.
 
 ---
 
 ## Comandes útils per gestionar MCPs
 
-OpenCode inclou comandes CLI per gestionar MCPs. ([opencode.ai][3])
+OpenCode inclou comandes CLI per gestionar MCPs. 
 
 | Comanda                     | Funció                                    |
 | --------------------------- | ----------------------------------------- |

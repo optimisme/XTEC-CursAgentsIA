@@ -17,11 +17,11 @@
 - In OpenCode, safe-edit MCP tools appear as `safe-edit_safe_create_file_from_lines`, `safe-edit_safe_append_lines`, `safe-edit_safe_read_lines`, `safe-edit_safe_apply_patch`, `safe-edit_safe_replace_lines`, `safe-edit_safe_insert_after`, `safe-edit_safe_delete_lines`, and `safe-edit_safe_verify_file`.
 - Never replace code using exact old_text/new_text matching.
 - Before editing, read the target lines with `safe-edit_safe_read_lines`.
-- For new files, use `safe-edit_safe_create_file_from_lines`, then verify with `safe-edit_safe_verify_file`.
-- For large new HTML/JavaScript files, prefer `safe-edit_safe_create_file_from_lines`, or create an empty file and append 25-50 lines per call with `safe-edit_safe_append_lines`.
-- For nontrivial new single-file apps, make an early small scaffold file first, then append CSS, body, and JavaScript in separate safe-edit chunks.
+- For new files, prefer creating the complete valid file with `safe-edit_safe_create_file_from_lines`, then verify with `safe-edit_safe_verify_file`.
+- For large new files that are too big for one tool call, create a small scaffold with clear marker comments, read the marker line numbers, then use `safe-edit_safe_insert_after` or `safe-edit_safe_replace_lines` in 25-50 line chunks.
+- Use `safe-edit_safe_append_lines` only when the new content truly belongs at the end of the file. Do not use append to add CSS, HTML, or JavaScript into an existing HTML document.
 - For requested single-file HTML apps, keep CSS and JavaScript inside the HTML file with `<style>` and `<script>` blocks. Do not use external `styles.css`, `app.js`, `<link rel="stylesheet">`, or `<script src=...>`.
-- Insert CSS before `</style>`, HTML inside the body/main container, and JavaScript before `</script>`. Do not append code after `</html>`.
+- If a requested single-file HTML app is small or medium, create the whole HTML document in one `safe-edit_safe_create_file_from_lines` call. If it must be built in chunks, insert CSS before `</style>`, HTML inside the body/main container, and JavaScript before `</script>`. Do not append code after `</html>`.
 - For browser apps with no explicit file constraint, prefer separate `index.html`, `styles.css`, and `app.js` files so HTML, CSS, and JavaScript remain smaller and easier to verify.
 - If the user asks for a specific new `.html` file or says single-file, keep that file self-contained unless extra files are explicitly allowed.
 - Pass safe-edit tool parameters as JSON arguments, for example `{"file":"app.js","start":1,"end":20}`.
@@ -33,7 +33,7 @@
 - After editing, verify the modified section with `safe-edit_safe_verify_file`.
 - If line numbers are unclear, inspect the file again before editing.
 - Keep edits small and verifiable.
-- Do not rewrite whole files unless the file is very small or explicitly requested.
+- Do not rewrite existing whole files unless the file is very small or explicitly requested.
 - Do not override or redefine OpenCode internal tools such as read, write, edit, bash, grep, or glob.
 
 ## Tool call rules
@@ -42,6 +42,7 @@
 - If a tool call fails with a schema error, read the error and fix the exact missing field.
 - Do not repeat the same invalid tool call.
 - If a prompt contains conflicting constraints, preserve the most concrete constraints exactly as written and choose the smallest implementation that satisfies them.
+- For interactive pages, games, or tools, wire every requested control to its expected direct behavior before validating. Do not leave placeholder behavior, TODO comments, or comments saying the core logic still needs refinement.
 - Do not use `task` from the default `goal` agent. With the current local model, subagent planning can stop the run before implementation.
 - Goal-checker remains available as a manual/debug subagent, but it is not part of the default `/goal` execution path.
 - `webfetch` requires a URL.
@@ -54,6 +55,7 @@
 - Do not stop after `glob` finds a target file; read it, edit it, verify it, and report the result.
 - For HTML changes, run `html-check_check_html` on each changed HTML file before claiming completion.
 - The HTML checker is not a substitute for `safe-edit_safe_verify_file`; verify every changed file before claiming completion.
+- After the last file edit, the next required tool call is `safe-edit_safe_verify_file` for the changed file. For HTML files, the following required tool call is `html-check_check_html`.
 - End with 1-2 short lines, such as `Done: changed <files>. Verified: <checks>.`
 - If blocked, end with `Stopped: <blocker>. Completed: <what changed or none>.`
 - Do not use `bash` to create or modify project files.

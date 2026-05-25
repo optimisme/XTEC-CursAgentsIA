@@ -1,8 +1,6 @@
 <style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
-# OpenCode
-
-**OpenCode** és un software que permet fer ús d'agents per assistir la programació.
+# Programació amb agents
 
 Els **agents** són eines basades en intel·ligència artificial que ajuden a desenvolupar programari d’una manera més autònoma que un xat tradicional.
 
@@ -146,7 +144,7 @@ Menú intern de la interfície, fora de la conversa amb l'agent.
 
 * **Disable diff wrapping**: evita que les línies llargues dels diffs es parteixin visualment.
 
-### Agents i modes
+### Agents
 
 El xat d'OpenCode pot tenir accés a les dades del projecte, per llegir-les i/o modificar-les.
 
@@ -175,8 +173,7 @@ Crea un script que posi la següent capçalera a tots els arxius de codi ".java"
 // Copyright: Novita Nobi @ 2026
 ```
 
----
-> **Exercici**: Escull l'agent de planificació, demana que planifiqui una web senzilla. Canvia a l'agent "Build" i demana que implementi el què s'ha planificat.
+### Mode Shell
 
 * **Shell**: serveix per executar comandes sense cridar cap agent. S'activa escrivint una exclamació ! com a primer caràcter de la petició:
 
@@ -198,6 +195,8 @@ Revisa l’historial de la conversa on vaig fer un ls
 ## Connectar amb AIs
 
 OpenCode permet connectar amb diferents models AI, per fer-ho cal tenir una API de client o un usuari/contrasenya segons el proveidor.
+
+### ZEN
 
 El servei gratuït que ofereix Open Code s'anomena **Zen**:
 
@@ -249,6 +248,8 @@ Un cop feta la connexió es pot cridar opencode fora de l'entorn visual:
 ```bash
 opencode run "say hello"
 ```
+
+### NVIDIA
 
 Com que els comptes gratuïts tenen limitacions d'ús, cal combinar els proveïdors. Per exemple amb NVIDIA:
 
