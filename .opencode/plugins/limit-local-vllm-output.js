@@ -1,5 +1,6 @@
 const LIMITS = {
   "spark-vllm/Qwen/Qwen3.6-27B": 4096,
+  "spark-vllm/gemma4-8b-local": 4096,
   "local-vllm/gemma4-8b-local": 4096,
   "local-vllm/qwen3-8b-local": 4096,
   "local-vllm/qwen3-14b-local": 4096,

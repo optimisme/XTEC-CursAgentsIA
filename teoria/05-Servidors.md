@@ -236,6 +236,19 @@ L'script també permet veure fàcilment els logs del docker, i veure si funciona
 ./docker/run_docker.sh gemma4-8b logs
 ```
 
+La sortida és tipus:
+
+```text
+./run_docker.sh gemma4-8b logs
+(APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299] 
+(APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299]        █     █     █▄   ▄█
+(APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.19.1
+(APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299]   █▄█▀ █     █     █     █  model   google/gemma-4-E4B-it
+(APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299] 
+(APIServer pid=1) INFO 05-25 17:42:02 [utils.py:233] non-default args:
+```
+
 ---
 
 ## Hugging Face i tokens
