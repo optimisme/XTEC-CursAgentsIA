@@ -310,12 +310,12 @@ La **quantització** redueix la memòria necessària per executar un model. A ca
 
 | Tipus | Ús | Avantatge | Cost |
 | --- | --- | --- | --- |
-| `BF16` / `FP16` | Models sense quantitzar o gairebé sense quantitzar | Més qualitat | Molta VRAM |
-| `AWQ` | Models quantitzats per GPU | Bon equilibri entre qualitat i memòria | Pot requerir configuració específica |
-| `bitsandbytes` | Càrrega quantitzada flexible | Ajuda quan el model no cap complet | Pot ser més lent |
-| `GGUF Q4/Q5/Q8` | llama.cpp i Ollama | Molt portable | Qualitat variable segons quantització |
+| `BF16` / `FP16`      | Sense quantitzar o gairebé sense quantitzar | Més qualitat | Molta VRAM |
+| `AWQ`                | Quantitzats per GPU | Equilibri entre qualitat i memòria | Pot requerir configuració |
+| `bitsandbytes`.      | Càrrega quantitzada flexible | Ajuda quan el model no cap complet | Pot ser més lent |
+| `GGUF Q4/Q5/Q8`      | llama.cpp i Ollama | Molt portable | Qualitat variable segons quantització |
 | `kv-cache-dtype fp8` | Cache de context en vLLM | Redueix memòria amb contexts llarg | Pot afectar la qualitat |
-| `MLX` / `MLX quantized` | Apple Silicon | Optimitzat per Mac | Específic d'Apple |
+| `MLX` / `MLX qntzd`  | Apple Silicon | Optimitzat per Mac | Específic d'Apple |
 
 Com a regla pràctica:
 
