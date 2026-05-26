@@ -1,0 +1,77 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "spark-vllm/gemma4-8b-local",
+  "default_agent": "goal-lite",
+  "permission": {
+    "read": "allow",
+    "grep": "allow",
+    "glob": "allow",
+    "bash": "deny",
+    "edit": "deny",
+    "task": "deny",
+    "todowrite": "deny",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "lsp": "deny",
+    "skill": "deny"
+  },
+  "instructions": [
+    "AGENTS.md"
+  ],
+  "provider": {
+    "spark-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Spark vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8001/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "gemma4-8b-local": {
+          "name": "Gemma 4 8B Spark (32K)",
+          "max_tokens": 4096,
+          "tool_call": true,
+          "reasoning": false
+        }
+      }
+    },
+    "vram16-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "16GB vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8002/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "gemma4-8b-local": {
+          "name": "Gemma 4 8B 16GB (32K)",
+          "max_tokens": 4096,
+          "tool_call": true,
+          "reasoning": false
+        }
+      }
+    }
+  },
+  "mcp": {
+    "safe-edit": {
+      "type": "local",
+      "command": [
+        "node",
+        ".opencode/mcp/safe-edit/server.js"
+      ],
+      "enabled": true
+    },
+    "html-check": {
+      "type": "local",
+      "command": [
+        "node",
+        ".opencode/mcp/html-check/server.js"
+      ],
+      "enabled": true
+    }
+  }
+}

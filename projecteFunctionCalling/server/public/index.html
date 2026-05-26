@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ca">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Function Calling Canvas</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="canvas-pane" aria-label="Zona de dibuix">
+        <div class="canvas-toolbar">
+          <div>
+            <h1>Canvas IA</h1>
+            <p id="model-status">Connectant...</p>
+          </div>
+          <button id="clear-button" class="icon-button" type="button" title="Clear the canvas" aria-label="Clear the canvas">
+            <span aria-hidden="true">X</span>
+          </button>
+        </div>
+        <div class="canvas-frame">
+          <canvas id="drawing-canvas" width="800" height="600"></canvas>
+        </div>
+      </section>
+
+      <aside class="chat-pane" aria-label="Conversa amb la IA">
+        <div class="chat-header">
+          <h2>Conversa</h2>
+          <span>Function calling</span>
+        </div>
+        <div id="messages" class="messages" aria-live="polite"></div>
+        <form id="chat-form" class="chat-form">
+          <textarea
+            id="prompt-input"
+            rows="4"
+            placeholder="draw a green line from 50,75 to 200,300"
+            autocomplete="off"
+          ></textarea>
+          <button id="send-button" type="submit">Send</button>
+        </form>
+      </aside>
+    </main>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

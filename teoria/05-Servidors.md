@@ -48,7 +48,7 @@ També té inconvenients:
 | **llama.cpp** | Executar models en format GGUF, fins i tot amb CPU | Lleuger, configurable i portable | Depen molt de la configuració |
 | **LM Studio** | Interfície gràfica per provar models | Fàcil per a proves manuals | Menys adequat com a servidor |
 
-En aquest projecte es fa servir sobretot **vLLM amb Docker**, per simplicitat de desplegament.
+En els exemples de servidors locals d'aquest curs es fa servir sobretot **vLLM amb Docker**, per simplicitat de desplegament.
 
 ---
 
@@ -56,68 +56,61 @@ En aquest projecte es fa servir sobretot **vLLM amb Docker**, per simplicitat de
 
 OpenCode es configura amb l'arxiu `opencode.json` a l'arrel del projecte.
 
+En aquest curs hi ha dues configuracions separades:
+
+| Carpeta | Ús |
+| --- | --- |
+| `projecteOpenCode` | Configuració normal per treballar amb models grans o proveïdors externs. Manté les eines estàndard d'OpenCode, subagents, skills i MCPs de validació. |
+| `projecteOpenCodeLocal` | Configuració reduïda per a models locals petits. Té menys eines, menys instruccions i proveïdors locals vLLM. |
+
 Els camps més importants són:
 
 | Camp         | Funció |
 | ------------ | --- |
 | `model`      | Model que OpenCode utilitza per defecte |
 | `provider`   | Llista de proveïdors disponibles |
-| `baseURL`    | URL de l'API del servidor local |
+| `baseURL`    | URL de l'API del servidor o proveïdor |
 | `apiKey`     | Clau d'accés; en local sovint pot ser `"local"` |
 | `models`     | Models que apareixeran dins OpenCode |
 | `max_tokens` | Màxim de tokens de sortida configurat per al model |
 | `tool_call`  | Indica que el model pot fer crides a eines |
 | `reasoning`  | Indica que el model pot treballar amb mode de raonament |
 
-Exemple mínim per connectar OpenCode a un servidor vLLM local:
+El projecte normal no defineix proveïdors locals dins `opencode.json`. Està pensat perquè l'usuari triï o autentiqui el model gran que vulgui fer servir amb OpenCode. La configuració local de vLLM queda reservada per a `projecteOpenCodeLocal`, que es descriu al final d'aquest document.
+
+Exemple de la part de configuració que sí queda al projecte normal:
 
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "local-vllm/gemma4-8b-local",
-  "provider": {
-    "local-vllm": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "Local vLLM",
-      "options": {
-        "baseURL": "http://127.0.0.1:8000/v1",
-        "apiKey": "local",
-        "timeout": 900000,
-        "chunkTimeout": 240000
-      },
-      "models": {
-        "gemma4-8b-local": {
-          "name": "Gemma 4 8B Local (32K)",
-          "max_tokens": 4096,
-          "tool_call": true,
-          "reasoning": true
-        }
-      }
+  "default_agent": "goal",
+  "permission": {
+    "read": "allow",
+    "grep": "allow",
+    "glob": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "bash": "allow",
+    "edit": "allow",
+    "task": "allow",
+    "todowrite": "allow",
+    "lsp": "allow",
+    "skill": "allow"
+  },
+  "mcp": {
+    "html-check": {
+      "type": "local",
+      "command": ["node", ".opencode/mcp/html-check/server.js"],
+      "enabled": true
+    },
+    "java-check": {
+      "type": "local",
+      "command": ["node", ".opencode/mcp/java-check/server.js"],
+      "enabled": true
     }
   }
 }
 ```
-
-El nom `local-vllm/gemma4-8b-local` combina:
-
-* `local-vllm`: el nom del provider dins `opencode.json`;
-* `gemma4-8b-local`: el nom del model dins d'aquest provider.
-
-Aquest nom ha de correspondre amb el model que el servidor publica.
-
-En aquest projecte, els models locals es configuren amb un context de **32K tokens** al servidor vLLM:
-
-```bash
---max-model-len 32768
-```
-
-I OpenCode es limita a **4096 tokens de sortida** per evitar que el client demani respostes massa grans, per exemple `32000` tokens, i deixi massa poc marge per al prompt d'entrada.
-
-```json
-"max_tokens": 4096
-```
-
-Com que `max_tokens` pot no ser suficient en algunes versions d'OpenCode, el projecte també fa servir un plugin local a `.opencode/plugins/limit-local-vllm-output.js` que força `maxOutputTokens` a `4096` abans d'enviar la petició al servidor.
 
 ---
 
@@ -152,7 +145,7 @@ Si retorna una llista de models, OpenCode ja pot intentar connectar-s'hi.
 
 ## vLLM amb Docker
 
-En aquest projecte, vLLM s'executa amb Docker Compose. Això evita haver d'instal·lar manualment totes les dependències de Python, CUDA i vLLM a la màquina principal.
+En aquests exemples, vLLM s'executa amb Docker Compose. Això evita haver d'instal·lar manualment totes les dependències de Python, CUDA i vLLM a la màquina principal.
 
 Un `docker-compose` de vLLM sol tenir aquestes parts:
 
@@ -346,11 +339,11 @@ Cal ajustar aquests paràmetres segons la GPU i el model. Si el servidor falla p
 * `--max-num-batched-tokens`;
 * o usar un model més petit o més quantitzat.
 
-> **Nota:** En aquest projecte es prioritza estabilitat: 32K de context al servidor i 4096 tokens màxims de sortida al client.
+> **Nota:** En servidors locals convé prioritzar estabilitat. Un context de 32K pot ser útil, però cal ajustar la sortida màxima al client segons el model i la VRAM disponible.
 
 ### Optimització per concurrència
 
-Les configuracions actuals del projecte activen dues opcions importants per millorar el comportament amb OpenCode i diversos usuaris o subagents:
+Les configuracions Docker actuals activen dues opcions importants per millorar el comportament amb OpenCode i diversos usuaris o subagents:
 
 ```bash
 --max-num-batched-tokens 2048
@@ -361,7 +354,7 @@ Les configuracions actuals del projecte activen dues opcions importants per mill
 
 `--enable-prefix-caching` permet reutilitzar parts repetides del prompt. En agents com OpenCode això és útil perquè moltes peticions comparteixen context: instruccions del sistema, configuració del projecte, eines disponibles o fragments inicials de conversa. Si el prefix es pot reaprofitar, baixa el cost de processar peticions semblants.
 
-En una GPU de **16GB de VRAM**, el projecte fa servir una configuració conservadora:
+En una GPU de **16GB de VRAM**, una configuració conservadora pot ser:
 
 ```bash
 --max-model-len 32768
@@ -451,3 +444,29 @@ llama-server \
 ```
 
 El seu punt fort és la portabilitat. El seu punt feble és que no tots els fluxos avançats d'agents, tool calling o reasoning funcionen igual que en servidors més orientats a API OpenAI-compatible.
+
+---
+
+## projecteOpenCodeLocal: configuració per a models petits
+
+`projecteOpenCodeLocal` és la configuració pensada per treballar amb models locals més petits, com Gemma 8B servit amb vLLM. No és la configuració normal del projecte: és una variant reduïda perquè el model rebi menys soroll d'instruccions i eines.
+
+La configuració lite redueix deliberadament el context de l'agent:
+
+* `default_agent`: `"goal-lite"`;
+* permisos denegats: `bash`, `edit`, `task`, `todowrite`, `lsp` i `skill`;
+* instruccions carregades: només `AGENTS.md`;
+* MCPs essencials: `safe-edit` i `html-check`.
+
+Els proveïdors locals viuen en aquesta carpeta:
+
+| Provider | Endpoint |
+| --- | --- |
+| `spark-vllm` | `http://127.0.0.1:8001/v1` |
+| `vram16-vllm` | `http://127.0.0.1:8002/v1` |
+
+El límit `"max_tokens": 4096` i el plugin `.opencode/plugins/limit-local-vllm-output.js` són proteccions per a models petits. Eviten que OpenCode demani respostes massa grans i deixi poc marge per al prompt d'entrada. Aquestes proteccions no formen part de `projecteOpenCode`.
+
+`safe-edit` també pertany a aquesta variant: dona eines d'edició per línies perquè els models petits solen ser menys fiables amb edicions exactes basades en `oldString`.
+
+La documentació humana de `projecteOpenCodeLocal` no s'inclou automàticament al context de l'agent: `opencode.json` només carrega `AGENTS.md` dins `instructions`.

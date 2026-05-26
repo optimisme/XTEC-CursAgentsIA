@@ -1,0 +1,39 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "goal",
+  "permission": {
+    "read": "allow",
+    "grep": "allow",
+    "glob": "allow",
+    "webfetch": "allow",
+    "websearch": "allow",
+    "bash": "allow",
+    "edit": "allow",
+    "task": "allow",
+    "todowrite": "allow",
+    "lsp": "allow",
+    "skill": "allow"
+  },
+  "instructions": [
+    "AGENTS.md",
+    "docs/*.md"
+  ],
+  "mcp": {
+    "html-check": {
+      "type": "local",
+      "command": [
+        "node",
+        ".opencode/mcp/html-check/server.js"
+      ],
+      "enabled": true
+    },
+    "java-check": {
+      "type": "local",
+      "command": [
+        "node",
+        ".opencode/mcp/java-check/server.js"
+      ],
+      "enabled": true
+    }
+  }
+}

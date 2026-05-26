@@ -148,15 +148,15 @@ projecte/
 
 ```text
 ---
-description: Execute implementation requests end-to-end with research, safe edits, and verification.
+description: Execute implementation requests end-to-end with research, edits, and verification.
 mode: primary
 permission:
   read: allow
   grep: allow
   glob: allow
-  bash: deny
-  edit: deny
-  task: deny
+  bash: allow
+  edit: allow
+  task: allow
 ---
 ```
 

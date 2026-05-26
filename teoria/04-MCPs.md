@@ -73,7 +73,12 @@ En aquest cas, OpenCode executa la comanda indicada a `command` per iniciar el s
 
 ## Exemple de MCP local del projecte
 
-En aquest projecte hi ha un MCP local anomenat `safe-edit`. Serveix per modificar fitxers de manera controlada: llegir línies concretes, aplicar canvis petits i verificar el resultat després de cada edició.
+En `projecteOpenCode`, els MCPs locals principals són de validació:
+
+| MCP | Ús |
+| --- | --- |
+| `html-check` | Comprovar fitxers HTML després d'una modificació |
+| `java-check` | Comprovar fitxers Java després d'una modificació |
 
 La configuració a `opencode.json` és:
 
@@ -81,37 +86,52 @@ La configuració a `opencode.json` és:
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "safe-edit": {
+    "html-check": {
       "type": "local",
-      "command": ["node", ".opencode/mcp/safe-edit/server.js"],
+      "command": ["node", ".opencode/mcp/html-check/server.js"],
+      "enabled": true
+    },
+    "java-check": {
+      "type": "local",
+      "command": ["node", ".opencode/mcp/java-check/server.js"],
       "enabled": true
     }
   }
 }
 ```
 
+Un flux habitual seria:
+
+1. Modificar el fitxer amb les eines estàndard d'OpenCode.
+2. Executar el MCP de validació corresponent.
+3. Corregir els errors detectats abans de donar la tasca per acabada.
+
+Per exemple, es pot demanar a OpenCode:
+
+```text
+Update webs/index.html and then run html-check on the changed file.
+```
+
+### MCPs per a models petits
+
+`projecteOpenCodeLocal` sí que inclou un MCP local anomenat `safe-edit`. Serveix per modificar fitxers de manera controlada quan es fan servir models petits: llegir línies concretes, aplicar canvis petits i verificar el resultat després de cada edició.
+
 Aquest servidor exposa eines com:
 
 | Tool | Ús |
 | --- | --- |
-| `safe_read_lines` | Llegir un rang de línies abans d’editar |
+| `safe_read_lines` | Llegir un rang de línies abans d'editar |
 | `safe_apply_patch` | Aplicar un canvi amb un diff verificable |
 | `safe_replace_lines` | Substituir només un rang concret de línies |
-| `safe_verify_file` | Verificar el fitxer o una secció després d’editar |
+| `safe_verify_file` | Verificar el fitxer o una secció després d'editar |
 
-Un flux habitual seria:
-
-1. Llegir les línies afectades.
-2. Aplicar un canvi petit.
-3. Verificar el fragment modificat.
-
-Per exemple, es pot demanar a OpenCode:
+Exemple de prompt per a la variant lite:
 
 ```text
 Use the safe-edit MCP to update app.js. First read the target lines with safe_read_lines, apply only the needed change, then verify the changed section with safe_verify_file.
 ```
 
-El paquet `@modelcontextprotocol/server-everything` també pot servir com a MCP genèric de demostració, però `safe-edit` és més útil en aquest curs perquè està vinculat a una pràctica real del projecte.
+La configuració completa d'aquesta variant es resumeix a la secció final de `05-Servidors.md`.
 
 ### Opcions d’un MCP local
 
@@ -250,14 +270,15 @@ Es fa amb llenguatge natural, igual que amb les tools:
 Use the github MCP to list open issues.
 ```
 
-En aquest projecte hi ha un servidor per modificar arxius de manera segura quan es fan servir models petits:
+La carpeta dels MCPs locals del projecte queda dins `.opencode/mcp/`. En el projecte normal hi ha MCPs de validació:
 
 ```bash
 # .opencode/mcp/<nom-mcp-local>/
 projecte/
 └── .opencode/
     └── mcp/
-        └── safe-edit
+        ├── html-check
+        └── java-check
 ```
 
-A més, l'arxiu *"agents.md"* conté la secció específica **"Safe editing"** per informar de com ha de fer servir l'MCP *"safe-edit"*.
+En `projecteOpenCodeLocal` també hi ha `safe-edit`, que és específic de la configuració per a models petits.
