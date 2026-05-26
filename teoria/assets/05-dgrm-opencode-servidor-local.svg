@@ -15,13 +15,6 @@
   <text x="490" y="44" text-anchor="middle" class="title">OpenCode amb servidor local</text>
   <text x="490" y="72" text-anchor="middle" class="small">OpenCode només necessita una API compatible, un model i una configuració.</text>
 
-  <g stroke="#334155" stroke-width="3" marker-end="url(#arrow)">
-    <line x1="160" y1="180" x2="218" y2="180"/>
-    <line x1="350" y1="180" x2="408" y2="180"/>
-    <line x1="548" y1="180" x2="606" y2="180"/>
-    <line x1="750" y1="180" x2="808" y2="180"/>
-  </g>
-
   <g>
     <rect x="42" y="132" width="118" height="96" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
     <text x="101" y="170" text-anchor="middle" class="label">OpenCode</text>
@@ -51,5 +44,12 @@
     <text x="873" y="160" text-anchor="middle" class="label">Model local</text>
     <text x="873" y="184" text-anchor="middle" class="small">pesos descarregats</text>
     <text x="873" y="204" text-anchor="middle" class="small">GPU / CPU</text>
+  </g>
+
+  <g stroke="#334155" stroke-width="3" marker-end="url(#arrow)">
+    <line x1="160" y1="180" x2="218" y2="180"/>
+    <line x1="350" y1="180" x2="408" y2="180"/>
+    <line x1="548" y1="180" x2="606" y2="180"/>
+    <line x1="750" y1="180" x2="808" y2="180"/>
   </g>
 </svg>

@@ -151,6 +151,8 @@ En aquests exemples, vLLM s'executa amb Docker Compose. Això evita haver d'inst
 
 Un `docker-compose` de vLLM sol tenir aquestes parts:
 
+<img src="assets/05-dgrm-docker-vllm.svg" alt="vLLM amb Docker" class="images">
+
 | Part               | Funció |
 | ------------------ | ------ |
 | `image`            | Imatge Docker de vLLM |

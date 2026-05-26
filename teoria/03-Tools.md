@@ -1,4 +1,4 @@
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
+<style> .images { max-width: 960px; width: 100%; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # Custom tools
 
@@ -50,6 +50,8 @@ Les eines locals del projecte són les més recomanables quan depenen de l’est
 ## Estructura bàsica d’una custom tool
 
 OpenCode espera que cada fitxer de `.opencode/tools/` exporti una eina vàlida.
+
+<img src="assets/03-dgrm-cicle-custom-tool.svg" alt="Cicle d'una custom tool" class="images">
 
 La forma recomanada és aquesta:
 

@@ -1,4 +1,4 @@
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
+<style> .images { max-width: 960px; width: 100%; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # Harness engineering
 
@@ -88,6 +88,8 @@ Keep the project simple. Do not add external dependencies. Ask before changing t
 | **Agent** | Perfil que fa una tasca | `security`, `reviewer`, `frontend-designer` |
 | **Command** | Prompt reutilitzable | `/supercommit`, `/fix-tests` |
 | **Tool** | Acció executable | llegir fitxers, executar `bash`, consultar una API |
+
+<img src="assets/02-dgrm-components-harness.svg" alt="Components del harness" class="images">
 
 # Skills (habilitats)
 
@@ -236,6 +238,8 @@ Una estructura normal d'agent amb subagents pot ser:
 | -------------------- | ------------------------- | -------------------------------------------------------------- |
 | **Skill `security`** | Coneixement especialitzat | Explica **com revisar seguretat**                              |
 | **Agent `security`** | Treballador especialitzat | Fa la feina de **revisar seguretat** amb uns permisos concrets |
+
+<img src="assets/02-dgrm-agents-vs-skills.svg" alt="Agents vs Skills" class="images">
 
 Per donar coneixement a l'agent sobre la skill, pot contenir una instrucció de l'estil:
 

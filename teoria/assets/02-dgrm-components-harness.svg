@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="520" viewBox="0 0 980 520" role="img" aria-labelledby="title desc">
+  <title id="title">Components del harness</title>
+  <desc id="desc">Relació entre AGENTS.md, skills, agents, commands i tools dins del harness.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .title { font: 700 26px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .label { font: 700 18px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .small { font: 13px Arial, Helvetica, sans-serif; fill: #475569; }
+    </style>
+  </defs>
+  <rect width="980" height="520" fill="#f8fafc"/>
+  <text x="490" y="44" text-anchor="middle" class="title">Components del harness</text>
+  <text x="490" y="72" text-anchor="middle" class="small">El harness defineix què sap l'agent, quin rol adopta i quines accions pot executar.</text>
+
+  <rect x="365" y="198" width="250" height="112" rx="18" fill="#e0f2fe" stroke="#38bdf8"/>
+  <text x="490" y="244" text-anchor="middle" class="label">Agent en execució</text>
+  <text x="490" y="270" text-anchor="middle" class="small">model + context + eines</text>
+
+  <g>
+    <rect x="60" y="102" width="170" height="80" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="145" y="135" text-anchor="middle" class="label">AGENTS.md</text>
+    <text x="145" y="159" text-anchor="middle" class="small">context base</text>
+  </g>
+  <g>
+    <rect x="60" y="214" width="170" height="80" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="145" y="247" text-anchor="middle" class="label">Skills</text>
+    <text x="145" y="271" text-anchor="middle" class="small">coneixement</text>
+  </g>
+  <g>
+    <rect x="60" y="326" width="170" height="80" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="145" y="359" text-anchor="middle" class="label">Agents</text>
+    <text x="145" y="383" text-anchor="middle" class="small">perfils i permisos</text>
+  </g>
+  <g>
+    <rect x="750" y="142" width="170" height="80" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="835" y="175" text-anchor="middle" class="label">Commands</text>
+    <text x="835" y="199" text-anchor="middle" class="small">prompts reutilitzables</text>
+  </g>
+  <g>
+    <rect x="750" y="286" width="170" height="80" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="835" y="319" text-anchor="middle" class="label">Tools</text>
+    <text x="835" y="343" text-anchor="middle" class="small">accions executables</text>
+  </g>
+
+  <g stroke="#334155" stroke-width="3" fill="none" marker-end="url(#arrow)">
+    <path d="M 230 142 C 310 145 335 205 363 232"/>
+    <path d="M 230 254 L 360 254"/>
+    <path d="M 230 366 C 312 360 335 305 363 278"/>
+    <path d="M 750 182 C 672 184 646 220 618 240"/>
+    <path d="M 750 326 C 672 324 646 288 618 268"/>
+  </g>
+
+  <text x="490" y="458" text-anchor="middle" class="small">No són alternatives: són peces diferents que treballen juntes.</text>
+</svg>

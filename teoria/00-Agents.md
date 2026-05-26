@@ -56,23 +56,27 @@ En el segon cas, el model necessita inspeccionar el codi, decidir on canviar-lo,
 
 ---
 
-## El cicle agentic
+## Seqüència i bucle agentic
 
-Molts agents segueixen un bucle semblant:
+Molts agents treballen amb un objectiu inicial, però l'objectiu no és una etapa més del bucle. És el que guia la tasca i el criteri que permet decidir quan s'ha acabat.
+
+El bucle acostuma a ser semblant a aquest:
 
 ```text
-objectiu
-  -> context
+objectiu + context inicial
   -> planificació
   -> acció
   -> observació
   -> correcció
-  -> finalització
+  -> context actualitzat
+  -> planificació
+  ...
+  -> finalització quan l'objectiu està resolt
 ```
 
 <img src="assets/00-dgrm-cicle-agentic.svg" alt="Cicle agentic" class="images">
 
-Aquest bucle és el que permet treballar amb problemes oberts.
+Aquest bucle és el que permet treballar amb problemes oberts: l'agent actua, observa què ha passat, actualitza el context i decideix el pas següent fins que pot entregar el resultat o necessita una decisió humana.
 
 ### Objectiu
 
@@ -87,7 +91,7 @@ Explica aquest PR.
 Converteix aquesta ordre en function calling.
 ```
 
-Un bon objectiu no sempre ha d'explicar tots els passos. L'agent pot descobrir-los, però necessita saber què vol dir "fet".
+Un bon objectiu no sempre ha d'explicar tots els passos. L'agent pot descobrir-los, però necessita saber què vol dir "fet". Per això l'objectiu també serveix com a criteri de finalització.
 
 ### Context
 
@@ -161,11 +165,11 @@ La pàgina mostra el botó esperat.
 El model ha retornat una tool_call invàlida.
 ```
 
-L'observació alimenta el següent pas.
+L'observació alimenta el següent pas. Normalment no es torna a definir l'objectiu; es reinterpreta el context amb el que s'ha après i es decideix si cal corregir, continuar o finalitzar.
 
 ### Correcció
 
-Quan alguna cosa falla, l'agent ha de corregir el pla.
+Quan alguna cosa falla o apareix informació nova, l'agent ha de corregir el pla o actualitzar el context abans de continuar.
 
 Exemples:
 

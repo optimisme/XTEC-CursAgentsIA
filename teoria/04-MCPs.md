@@ -1,4 +1,4 @@
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
+<style> .images { max-width: 960px; width: 100%; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # MCPs a OpenCode
 
@@ -24,6 +24,8 @@ Un MCP serveix per connectar OpenCode amb funcionalitats externes com:
 | API externa    | Donar accés controlat a un servei remot       |
 
 La idea és que l’agent no només pugui llegir o editar fitxers, sinó també **interactuar amb sistemes externs**.
+
+<img src="assets/04-dgrm-mcp-local-remot.svg" alt="MCP local vs MCP remot" class="images">
 
 ---
 
@@ -201,6 +203,8 @@ Exemple:
 ```
 
 En el cas d'autenticar-se amb OAuth, OpenCode inicia el flux OAuth al fer servir el servidor. També es pot iniciar aquest flux manualment amb:
+
+<img src="assets/04-dgrm-oauth-mcp-remot.svg" alt="Flux OAuth d'un MCP remot" class="images">
 
 ```bash
 opencode mcp auth my-oauth-server

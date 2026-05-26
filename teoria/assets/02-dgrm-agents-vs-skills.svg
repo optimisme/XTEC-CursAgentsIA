@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="420" viewBox="0 0 980 420" role="img" aria-labelledby="title desc">
+  <title id="title">Agents vs Skills</title>
+  <desc id="desc">Comparació entre skill com instruccions i coneixement, i agent com rol amb permisos i comportament.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      .title { font: 700 26px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .label { font: 700 22px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .small { font: 14px Arial, Helvetica, sans-serif; fill: #475569; }
+    </style>
+  </defs>
+  <rect width="980" height="420" fill="#f8fafc"/>
+  <text x="490" y="44" text-anchor="middle" class="title">Agents vs Skills</text>
+  <text x="490" y="74" text-anchor="middle" class="small">La skill explica com fer una feina; l'agent és qui la fa amb un rol concret.</text>
+
+  <rect x="90" y="128" width="300" height="170" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="240" y="170" text-anchor="middle" class="label">Skill</text>
+  <text x="240" y="205" text-anchor="middle" class="small">instruccions</text>
+  <text x="240" y="230" text-anchor="middle" class="small">coneixement especialitzat</text>
+  <text x="240" y="255" text-anchor="middle" class="small">criteris i bones pràctiques</text>
+
+  <rect x="590" y="128" width="300" height="170" rx="18" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="740" y="170" text-anchor="middle" class="label">Agent</text>
+  <text x="740" y="205" text-anchor="middle" class="small">rol</text>
+  <text x="740" y="230" text-anchor="middle" class="small">permisos</text>
+  <text x="740" y="255" text-anchor="middle" class="small">comportament</text>
+
+  <rect x="420" y="176" width="140" height="74" rx="16" fill="#e0f2fe" stroke="#38bdf8"/>
+  <text x="490" y="205" text-anchor="middle" class="small">l'agent pot</text>
+  <text x="490" y="229" text-anchor="middle" class="small">aplicar la skill</text>
+
+  <line x1="390" y1="213" x2="417" y2="213" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="560" y1="213" x2="587" y2="213" stroke="#334155" stroke-width="3" marker-end="url(#arrow)"/>
+</svg>

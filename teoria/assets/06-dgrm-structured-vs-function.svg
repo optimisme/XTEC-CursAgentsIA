@@ -20,9 +20,6 @@
   <text x="490" y="143" text-anchor="middle" class="label">Model</text>
   <text x="490" y="164" text-anchor="middle" class="small">interpreta la petició</text>
 
-  <path d="M 440 184 C 300 215 235 245 205 285" stroke="#334155" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
-  <path d="M 540 184 C 680 215 745 245 775 285" stroke="#334155" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
-
   <g>
     <rect x="70" y="285" width="310" height="108" rx="16" fill="#ffffff" stroke="#cbd5e1"/>
     <text x="225" y="318" text-anchor="middle" class="label">Structured output</text>
@@ -38,4 +35,7 @@
 
   <text x="225" y="236" text-anchor="middle" class="small">Extreure, classificar, transformar</text>
   <text x="755" y="236" text-anchor="middle" class="small">Decidir què cal executar</text>
+
+  <path d="M 440 184 C 300 215 235 245 205 285" stroke="#334155" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 540 184 C 680 215 745 245 775 285" stroke="#334155" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
 </svg>

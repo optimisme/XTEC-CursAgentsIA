@@ -17,13 +17,6 @@
   <text x="490" y="42" text-anchor="middle" class="title">Flux principal de function calling</text>
   <text x="490" y="70" text-anchor="middle" class="small">El model decideix una acció, però el servidor valida i normalitza abans d'executar.</text>
 
-  <g stroke="#334155" stroke-width="3" marker-end="url(#arrow)">
-    <line x1="170" y1="180" x2="238" y2="180"/>
-    <line x1="382" y1="180" x2="450" y2="180"/>
-    <line x1="594" y1="180" x2="662" y2="180"/>
-    <line x1="806" y1="180" x2="874" y2="180"/>
-  </g>
-
   <g>
     <rect x="42" y="128" width="128" height="104" rx="14" class="box"/>
     <text x="106" y="166" text-anchor="middle" class="label">Usuari</text>
@@ -59,4 +52,11 @@
 
   <rect x="398" y="282" width="184" height="44" rx="22" fill="#ecfdf5" stroke="#86efac"/>
   <text x="490" y="309" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#166534">Traça visible: funció + arguments crus</text>
+
+  <g stroke="#334155" stroke-width="3" marker-end="url(#arrow)">
+    <line x1="170" y1="180" x2="238" y2="180"/>
+    <line x1="382" y1="180" x2="450" y2="180"/>
+    <line x1="594" y1="180" x2="662" y2="180"/>
+    <line x1="806" y1="180" x2="874" y2="180"/>
+  </g>
 </svg>

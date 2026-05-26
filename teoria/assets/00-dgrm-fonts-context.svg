@@ -13,17 +13,6 @@
   <text x="490" y="46" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#0f172a">Fonts de context</text>
   <text x="490" y="76" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#475569">El model no rep només el missatge de l'usuari: rep un context construït.</text>
 
-  <g stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
-    <path d="M 232 154 C 330 154 335 250 405 269"/>
-    <path d="M 232 246 C 322 246 340 270 405 280"/>
-    <path d="M 232 338 C 322 338 340 300 405 292"/>
-    <path d="M 232 430 C 330 430 335 315 405 303"/>
-    <path d="M 748 154 C 650 154 645 250 575 269"/>
-    <path d="M 748 246 C 658 246 640 270 575 280"/>
-    <path d="M 748 338 C 658 338 640 300 575 292"/>
-    <path d="M 748 430 C 650 430 645 315 575 303"/>
-  </g>
-
   <g font-family="Arial, Helvetica, sans-serif" filter="url(#shadow)">
     <rect x="405" y="235" width="170" height="108" rx="16" fill="#e0f2fe" stroke="#38bdf8"/>
     <text x="490" y="278" text-anchor="middle" font-size="23" font-weight="700" fill="#0f172a">Model</text>
@@ -69,6 +58,17 @@
       <text x="839" y="425" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">Memòria</text>
       <text x="839" y="447" text-anchor="middle" font-size="12" fill="#64748b">preferències persistents</text>
     </g>
+  </g>
+
+  <g stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
+    <path d="M 232 154 C 330 154 335 250 405 269"/>
+    <path d="M 232 246 C 322 246 340 270 405 280"/>
+    <path d="M 232 338 C 322 338 340 300 405 292"/>
+    <path d="M 232 430 C 330 430 335 315 405 303"/>
+    <path d="M 748 154 C 650 154 645 250 575 269"/>
+    <path d="M 748 246 C 658 246 640 270 575 280"/>
+    <path d="M 748 338 C 658 338 640 300 575 292"/>
+    <path d="M 748 430 C 650 430 645 315 575 303"/>
   </g>
 
   <text x="490" y="510" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#475569">Context engineering = seleccionar, ordenar i limitar aquestes fonts perquè siguin útils.</text>
