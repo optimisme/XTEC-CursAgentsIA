@@ -1,6 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "default_agent": "goal",
   "permission": {
     "read": "allow",
     "grep": "allow",
@@ -34,6 +33,17 @@
         ".opencode/mcp/java-check/server.js"
       ],
       "enabled": true
+    },
+    "memory": {
+      "type": "local",
+      "command": [
+        "node",
+        ".opencode/mcp/memory/server.js"
+      ],
+      "enabled": true,
+      "environment": {
+        "MEMORY_DIR": "memory"
+      }
     }
   }
 }

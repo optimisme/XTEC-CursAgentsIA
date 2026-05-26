@@ -1,9 +1,14 @@
 # Project Guidelines
 
+This project is the local-model OpenCode teaching example.
+
+It is designed for a small local model, so the workflow is intentionally narrower than `projecteOpenCode`: no subagents, no built-in edit tool, no broad shell access and no persistent memory MCP by default.
+
 ## Workflow
 
 - Read the relevant file before changing it.
 - Keep context small. Do not scan the whole project unless needed.
+- Read `docs/architecture.md` or `docs/decisions.md` only when the user asks for architectural or workflow changes.
 - Make the smallest change that satisfies the request.
 - For new files, create the complete file directly.
 - For existing files, edit small exact sections.
@@ -23,6 +28,7 @@
 - Do not narrate long plans. Act directly with the available tools.
 - Use concise tool arguments and avoid sending unnecessary file content back to the model.
 - If a task is a small web app, create exactly the requested files and stop after verification.
+- Do not use persistent memory workflows unless the user explicitly asks for that experiment.
 
 ## Editing
 

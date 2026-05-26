@@ -76,12 +76,13 @@ En aquest cas, OpenCode executa la comanda indicada a `command` per iniciar el s
 
 ## Exemple de MCP local del projecte
 
-En `projecteOpenCode`, els MCPs locals principals són de validació:
+En `projecteOpenCode`, els MCPs locals principals combinen validació i memòria:
 
 | MCP | Ús |
 | --- | --- |
 | `html-check` | Comprovar fitxers HTML després d'una modificació |
 | `java-check` | Comprovar fitxers Java després d'una modificació |
+| `memory` | Recuperar i guardar memòria curada del projecte |
 
 La configuració a `opencode.json` és:
 
@@ -98,6 +99,14 @@ La configuració a `opencode.json` és:
       "type": "local",
       "command": ["node", ".opencode/mcp/java-check/server.js"],
       "enabled": true
+    },
+    "memory": {
+      "type": "local",
+      "command": ["node", ".opencode/mcp/memory/server.js"],
+      "enabled": true,
+      "environment": {
+        "MEMORY_DIR": "memory"
+      }
     }
   }
 }
@@ -105,9 +114,11 @@ La configuració a `opencode.json` és:
 
 Un flux habitual seria:
 
-1. Modificar el fitxer amb les eines estàndard d'OpenCode.
-2. Executar el MCP de validació corresponent.
-3. Corregir els errors detectats abans de donar la tasca per acabada.
+1. Consultar la memòria només si pot aportar context reutilitzable.
+2. Modificar el fitxer amb les eines estàndard d'OpenCode.
+3. Executar el MCP de validació corresponent.
+4. Corregir els errors detectats abans de donar la tasca per acabada.
+5. Proposar una actualització de memòria si s'ha après una convenció o error recurrent.
 
 Per exemple, es pot demanar a OpenCode:
 

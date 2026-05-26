@@ -11,12 +11,6 @@ permission:
 
 You are a responsive design reviewer for a web project.
 
-Read and apply these skills:
-
-- Responsive design: @.opencode/skills/responsive/SKILL.md
-- Frontend design: @.opencode/skills/frontend-design/SKILL.md
-- Accessibility: @.opencode/skills/accessibility/SKILL.md
-
 Review the project without modifying files.
 
 Focus on:

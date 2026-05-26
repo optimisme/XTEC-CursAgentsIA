@@ -67,13 +67,15 @@ Use `bun run dev` to start the development server. Do not use `node` unless expl
 - Commands are in `.opencode/commands/`.
 - Tools are in `.opencode/tools/`.
 
-Available agents: `reviewer`, `frontend-designer`, `accessibility`, `responsive`, `performance`, `security`, `seo`.
+Available agents: `explorer`, `goal-checker`, `reviewer`, `responsive`, `performance`, `teacher`.
 
-Use the matching skill for each agent: `code-review`, `frontend-design`, `accessibility`, `responsive`, `performance`, `security`, `seo`.
+Available skills: `code-review`, `frontend-design`, `accessibility`, `security`, `seo`.
 
-Available command: `supercommit`.
+Available commands: `supercommit`, `listpng`.
 
-Available tool: `code-stats`.
+Available tools: `code-stats`.
+
+Available MCPs: `html-check`, `java-check`, `memory`.
 
 ## Rules
 
@@ -136,29 +138,29 @@ OpenCode té dos agents principals visibles:
 
 > **Nota:** Hi ha altres agents interns, com `compact`, `title` i `resume`, però no són agents que l’usuari utilitzi directament. 
 
-Es poden definir més agents principals a la carpeta *"./opencode/agents"* amb la capçalera **"mode: primary"**. 
+Es poden definir més agents principals a la carpeta *"./opencode/agents"* amb la capçalera **"mode: primary"**.
 
-Per exemple, aquest projecte defineix un agent principal anomenat `goal`, pensat per executar una petició de principi a fi:
+La variant local d'aquest curs defineix un agent principal anomenat `goal-lite`, pensat per a models petits i edicions controlades:
 
 ```bash
 # .opencode/agents/<nom-agent>.md
 projecte/
 └── .opencode/
     └── agents/
-        └── goal.md
+        └── goal-lite.md
 ```
 
 ```text
 ---
-description: Execute implementation requests end-to-end with research, edits, and verification.
+description: Complete one implementation request with safe-edit and one verification/fix pass.
 mode: primary
 permission:
   read: allow
   grep: allow
   glob: allow
-  bash: allow
-  edit: allow
-  task: allow
+  bash: deny
+  edit: deny
+  task: deny
 ---
 ```
 
@@ -168,7 +170,7 @@ Aleshores podrem escollir el nou agent amb la tecla **TAB**. Se li pot donar un 
 Arregla els errors de validació HTML del projecte, modifica només els fitxers necessaris i verifica el resultat abans de respondre.
 ```
 
-> **Nota:** En aquest projecte, `goal` és l’agent principal per treballar fins aconseguir un objectiu. També hi ha `goal-checker`, que pot servir com a subagent de revisió o depuració per comprovar si l’objectiu s’ha resolt correctament.
+> **Nota:** En `projecteOpenCode` ja no es defineix un agent principal `goal`; s'usen els agents principals estàndard d'OpenCode i subagents especialitzats. En `projecteOpenCodeLocal`, en canvi, `goal-lite` sí que és l'agent principal perquè la configuració local necessita menys eines, menys soroll i un flux més controlat.
 
 ## Subagents
 

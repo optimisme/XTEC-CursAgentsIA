@@ -62,7 +62,7 @@ En aquest curs hi ha dues configuracions separades:
 
 | Carpeta | Ús |
 | --- | --- |
-| `projecteOpenCode` | Configuració normal per treballar amb models grans o proveïdors externs. Manté les eines estàndard d'OpenCode, subagents, skills i MCPs de validació. |
+| `projecteOpenCode` | Configuració normal per treballar amb models grans o proveïdors externs. Manté les eines estàndard d'OpenCode, subagents, skills, MCPs de validació i MCP de memòria. |
 | `projecteOpenCodeLocal` | Configuració reduïda per a models locals petits. Té menys eines, menys instruccions i proveïdors locals vLLM. |
 
 Els camps més importants són:
@@ -85,7 +85,6 @@ Exemple de la part de configuració que sí queda al projecte normal:
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
-  "default_agent": "goal",
   "permission": {
     "read": "allow",
     "grep": "allow",
@@ -109,6 +108,14 @@ Exemple de la part de configuració que sí queda al projecte normal:
       "type": "local",
       "command": ["node", ".opencode/mcp/java-check/server.js"],
       "enabled": true
+    },
+    "memory": {
+      "type": "local",
+      "command": ["node", ".opencode/mcp/memory/server.js"],
+      "enabled": true,
+      "environment": {
+        "MEMORY_DIR": "memory"
+      }
     }
   }
 }
