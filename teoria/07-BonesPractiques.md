@@ -229,7 +229,65 @@ Aquestes instruccions fan que diferents sessions d'agent treballin amb criteris 
 
 ---
 
-## 8. Separar context, skills, agents, commands i tools
+## 8. Definir identitat de l'agent amb criteri
+
+Algunes arquitectures fan servir un fitxer d'identitat de l'agent, de vegades anomenat `SOUL.md`.
+
+No és un substitut d'`AGENTS.md`. Té una funció diferent:
+
+```text
+SOUL.md
+  -> qui és l'agent, com parla, quins principis segueix i quins límits no travessa
+
+AGENTS.md
+  -> com ha de treballar dins del projecte
+
+memory/
+  -> què recorda entre sessions
+
+skills/
+  -> coneixement reutilitzable
+
+tools / MCPs
+  -> accions executables
+```
+
+Pot tenir sentit en agents persistents, especialitzats o amb una veu molt controlada.
+
+No cal en agents petits, tasques puntuals o configuracions locals reduïdes. En aquests casos, afegeix context i pot empitjorar el rendiment.
+
+Un fitxer d'identitat útil hauria de ser curt i concret. Per exemple, pot definir:
+
+* identitat: qui és l'agent en una frase;
+* principis: criteris que afecten decisions reals;
+* veu: regles concretes de comunicació;
+* expertesa: què sap fer bé i quan ha de deferir;
+* límits: què no farà;
+* política de memòria: què pot guardar i què no;
+* expressions prohibides: tons o frases que no ha d'utilitzar.
+
+Mala pràctica:
+
+```text
+Be helpful, professional and creative.
+```
+
+Això gairebé no canvia res, perquè el model ja intenta fer-ho per defecte.
+
+Millor:
+
+```text
+Prioritza canvis petits i verificables.
+No facis refactors no demanats.
+Si falta informació crítica, atura't i formula una pregunta concreta.
+No guardis secrets, tokens ni estat temporal a memòria.
+```
+
+La idea és que la identitat de l'agent sigui predictible. Si el fitxer no canvia decisions, to o límits, probablement sobra.
+
+---
+
+## 9. Separar context, skills, agents, commands i tools
 
 És fàcil barrejar conceptes.
 
@@ -253,7 +311,7 @@ Si és una manera repetible de demanar una feina, pot ser un command.
 
 ---
 
-## 9. Dissenyar tools robustes
+## 10. Dissenyar tools robustes
 
 Una tool és una frontera entre el model i el món real.
 
@@ -288,7 +346,7 @@ run_tests(packageName, testPattern)
 
 ---
 
-## 10. Validar les sortides del model
+## 11. Validar les sortides del model
 
 El model pot equivocar-se encara que el prompt sigui bo.
 
@@ -319,7 +377,7 @@ El servidor ha de normalitzar o rebutjar valors segons les regles de l'aplicaci�
 
 ---
 
-## 11. Validació automàtica abans i després d'eines
+## 12. Validació automàtica abans i després d'eines
 
 Quan un agent pot cridar eines, no n'hi ha prou amb escriure bones instruccions. Algunes validacions han de ser automàtiques.
 
@@ -374,7 +432,7 @@ La regla pràctica és: les comprovacions crítiques no haurien de dependre nom�
 
 ---
 
-## 12. Function calling i structured outputs
+## 13. Function calling i structured outputs
 
 El function calling serveix quan volem que el model triï una acció i en retorni els arguments.
 
@@ -410,7 +468,7 @@ Bones pràctiques:
 
 ---
 
-## 13. Treballar amb servidors i models locals
+## 14. Treballar amb servidors i models locals
 
 Quan es treballa amb models locals, convé separar configuració i codi.
 
@@ -453,7 +511,7 @@ Un `package.json` pot tenir scripts diferents per a preproducció i producció:
 
 ---
 
-## 14. Seguretat i permisos
+## 15. Seguretat i permisos
 
 Un agent amb eines pot fer canvis reals.
 
@@ -473,7 +531,7 @@ La pregunta important és: què podria passar si el model interpreta malament la
 
 ---
 
-## 15. Observabilitat i depuració
+## 16. Observabilitat i depuració
 
 Quan un agent falla, necessitem entendre on ha fallat.
 
@@ -494,7 +552,7 @@ No cal mostrar la cadena de pensament interna del model. És millor mostrar trac
 
 ---
 
-## 16. Documentació i traçabilitat
+## 17. Documentació i traçabilitat
 
 La documentació del projecte ha d'estar al projecte, no amagada dins d'una configuració local de l'eina.
 
