@@ -62,18 +62,121 @@ Usuari
 
 ---
 
+## Structured Outputs
+
+Abans de parlar de function calling, cal entendre una idea molt propera: els **structured outputs**.
+
+Un structured output és una resposta del model que ha de seguir una forma concreta, normalment JSON. En lloc de demanar:
+
+```text
+Resumeix aquesta factura.
+```
+
+podem demanar:
+
+```text
+Extreu el número de factura, la data, el proveïdor i l'import total.
+Retorna només JSON amb aquest format.
+```
+
+I esperar una resposta com:
+
+```json
+{
+  "invoiceNumber": "F-2026-0142",
+  "date": "2026-05-26",
+  "supplier": "Example SL",
+  "total": 183.4,
+  "currency": "EUR"
+}
+```
+
+La diferència principal és aquesta:
+
+| Tècnica           | Objectiu |
+| ----------------- | --- |
+| Text lliure       | Obtenir una resposta natural per llegir |
+| Structured output | Obtenir dades amb una forma concreta |
+| Function calling  | Decidir quina acció o eina cal executar |
+
+Els structured outputs són molt útils quan volem **extreure, classificar o transformar dades**, però no necessàriament executar una acció.
+
+Exemples:
+
+| Cas                          | Sortida esperada |
+| ---------------------------- | --- |
+| Extreure camps d'una factura | JSON amb data, import, proveïdor |
+| Classificar un missatge      | JSON amb categoria i prioritat |
+| Analitzar una incidència     | JSON amb resum, severitat i passos |
+| Convertir text a estructura  | JSON validable per l'aplicació |
+
+Un exemple de prompt seria:
+
+```text
+Return only valid JSON with this schema:
+
+{
+  "title": "string",
+  "priority": "low | medium | high",
+  "tags": ["string"],
+  "needsHumanReview": true
+}
+```
+
+I una resposta vàlida:
+
+```json
+{
+  "title": "Login button does not respond",
+  "priority": "high",
+  "tags": ["frontend", "bug"],
+  "needsHumanReview": false
+}
+```
+
+Això encara s'ha de validar al servidor. Que el model digui que retorna JSON no garanteix que sempre sigui JSON correcte, ni que els valors siguin admissibles.
+
+Per tant, el patró recomanat és:
+
+```text
+model
+  -> JSON estructurat
+  -> parseig
+  -> validació
+  -> normalització
+  -> ús dins l'aplicació
+```
+
+La diferència amb function calling és que en structured outputs el model retorna directament dades. En function calling, el model retorna una proposta d'acció:
+
+```text
+Structured output:
+  "aquest text és una incidència de prioritat alta"
+
+Function calling:
+  "cal cridar create_issue amb aquests arguments"
+```
+
+En molts sistemes reals es fan servir les dues coses:
+
+* structured outputs per obtenir dades netes;
+* function calling per decidir accions;
+* validació del servidor en tots dos casos.
+
+---
+
 ## Informar el model de les funcions disponibles
 
 Quan fem una petició a un model compatible amb l'API d'OpenAI, podem enviar un camp `tools`. Aquest camp descriu les funcions que el model pot fer servir.
 
 Cada eina acostuma a tenir:
 
-| Camp | Funció |
-| --- | --- |
-| `type` | Normalment `"function"` |
-| `function.name` | Nom estable de la funció |
+| Camp                   | Funció |
+| ---------------------- | --- |
+| `type`                 | Normalment `"function"` |
+| `function.name`        | Nom estable de la funció |
 | `function.description` | Explicació de quan s'ha d'usar |
-| `function.parameters` | Esquema JSON dels arguments |
+| `function.parameters`  | Esquema JSON dels arguments |
 
 En el projecte `projecteFunctionCalling`, aquesta llista es construeix a `server/app.js` dins la constant `drawingTools`.
 
