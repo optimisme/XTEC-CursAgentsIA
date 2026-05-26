@@ -32,9 +32,10 @@
         "local-vllm": {
           "name": "Spark 25 vLLM",
           "limit": {
-            "context": 4096,
-            "output": 2048
+            "context": 16384,
+            "output": 8192
           },
+          "max_tokens": 4096,
           "tool_call": true,
           "reasoning": false
         }
@@ -53,9 +54,10 @@
         "gemma4-8b-local": {
           "name": "Gemma 4 8B 16GB (32K)",
           "limit": {
-            "context": 32768,
-            "output": 16384
+            "context": 16384,
+            "output": 8192
           },
+          "max_tokens": 4096,
           "tool_call": true,
           "reasoning": false
         }
@@ -74,9 +76,10 @@
         "gemma4-8b-local": {
           "name": "Gemma 4 8B Spark (32K)",
           "limit": {
-            "context": 32768,
-            "output": 16384
+            "context": 16384,
+            "output": 8192
           },
+          "max_tokens": 4096,
           "tool_call": true,
           "reasoning": false
         }
