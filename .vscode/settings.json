@@ -1,5 +1,6 @@
 {
-  "workbench.editorAssociations": {
-    "*.md": "vscode.markdown.preview.editor"
-  }
+    "workbench.colorTheme": "Dark+",
+    "notebook.lineNumbers": "on",
+    "files.encoding": "utf8",
+    "markdown.preview.openMarkdownLinks": "inPreview"
 }

@@ -22,6 +22,7 @@ Un MCP serveix per connectar OpenCode amb funcionalitats externes com:
 | Base de dades  | Consultar dades d’un projecte                 |
 | Sistema intern | Connectar amb eines pròpies d’una empresa     |
 | API externa    | Donar accés controlat a un servei remot       |
+| Memòria        | Recuperar i guardar coneixement entre sessions |
 
 La idea és que l’agent no només pugui llegir o editar fitxers, sinó també **interactuar amb sistemes externs**.
 
@@ -134,6 +135,96 @@ Use the safe-edit MCP to update app.js. First read the target lines with safe_re
 ```
 
 La configuració completa d'aquesta variant es resumeix a la secció final de `05-Servidors.md`.
+
+### MCP de memòria per a models grans
+
+Un MCP també pot servir com a capa de **memòria persistent** per a l'agent.
+
+La idea és que el model no depengui només del context de la conversa actual. Pot consultar records útils abans d'actuar i escriure aprenentatges després d'una tasca.
+
+Eines típiques d'un MCP de memòria:
+
+| Tool | Ús |
+| --- | --- |
+| `memory_search` | Cercar records rellevants per una consulta |
+| `memory_read` | Llegir un record concret |
+| `memory_write` | Guardar un nou record |
+| `memory_update` | Actualitzar un record existent |
+| `memory_forget` | Esborrar o invalidar un record |
+| `memory_summarize_session` | Resumir una sessió i proposar aprenentatges |
+
+Exemple de configuració local:
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "memory": {
+      "type": "local",
+      "command": ["node", ".opencode/mcp/memory/server.js"],
+      "enabled": true,
+      "environment": {
+        "MEMORY_DIR": "memory"
+      }
+    }
+  }
+}
+```
+
+Una estructura senzilla del projecte podria ser:
+
+```bash
+projecte/
+├── memory/
+│   ├── project.md
+│   ├── user-preferences.md
+│   ├── workflows.md
+│   ├── recurring-errors.md
+│   └── session-summaries/
+└── .opencode/
+    └── mcp/
+        └── memory/
+            └── server.js
+```
+
+Flux habitual:
+
+```text
+1. L'agent rep una tasca.
+2. Crida memory_search amb l'objectiu de la tasca.
+3. Afegeix els records rellevants al context.
+4. Treballa amb fitxers, tools i validacions.
+5. En acabar, proposa records nous o actualitzacions.
+6. La memòria s'actualitza automàticament o amb revisió humana.
+```
+
+Exemple de prompt:
+
+```text
+Before changing the project, search the memory MCP for relevant conventions and recurring errors. After finishing, propose any memory updates instead of writing secrets or temporary state.
+```
+
+Aquest patró té més sentit amb **models grans** o agents que treballen durant moltes sessions, perquè poden aprofitar millor records diversos i decidir quan són rellevants.
+
+En `projecteOpenCodeLocal`, que està pensat per a models petits i edicions controlades, no és imprescindible afegir aquest MCP. Pot ser útil com a exercici avançat, però el risc és que un model petit recuperi massa memòria, la interpreti malament o la prioritzi per sobre del codi actual.
+
+Per a models petits, sovint és millor:
+
+* `AGENTS.md` curt i molt explícit;
+* tools concretes com `safe-edit`;
+* memòria mínima i molt curada;
+* validació després de cada pas.
+
+Per a models grans, una memòria MCP pot aportar més valor:
+
+* continuïtat entre sessions;
+* aprenentatge de patrons del projecte;
+* preferències persistents;
+* errors recurrents;
+* workflows consolidats;
+* coordinació entre agents.
+
+La memòria no ha de substituir la verificació. Un record pot orientar, però l'agent ha de comprovar l'estat real del projecte abans de modificar-lo.
 
 ### Opcions d’un MCP local
 

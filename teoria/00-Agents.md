@@ -278,6 +278,93 @@ buscar poc
   -> ampliar context només si cal
 ```
 
+### Memòria agentica
+
+La **memòria agentica** és la informació que un agent pot conservar, recuperar i actualitzar més enllà del prompt immediat.
+
+No és el mateix que l'historial del xat. L'historial és una transcripció del que ha passat. La memòria hauria de ser una selecció útil, estructurada i mantenible del que convé recordar.
+
+Tipus habituals de memòria:
+
+| Tipus | Què guarda | Exemple |
+| --- | --- | --- |
+| Memòria de treball | Informació de la sessió actual | Pla, errors recents, fitxers oberts |
+| Memòria de sessió | Resum d'una tasca o conversa | Decisions preses durant una implementació |
+| Memòria de projecte | Coneixement estable del repositori | Arquitectura, scripts, convencions |
+| Memòria d'usuari | Preferències persistents | Idioma, estil de resposta, eines preferides |
+| Memòria procedimental | Com fer una tasca recurrent | Workflow per validar una web |
+| Memòria d'errors | Problemes que ja han passat | "Aquest test falla si no s'arrenca Redis" |
+
+Un agent amb memòria pot seguir aquest patró:
+
+```text
+inici de sessió
+  -> buscar memòria rellevant
+  -> afegir-la al context
+  -> treballar amb eines
+  -> observar resultats
+  -> escriure aprenentatges útils
+  -> consolidar o descartar memòria antiga
+```
+
+La memòria és especialment útil quan:
+
+* el projecte dura moltes sessions;
+* hi ha convencions que es repeteixen;
+* l'agent comet el mateix error més d'una vegada;
+* hi ha preferències de l'usuari que no haurien de repetir-se sempre;
+* diversos agents treballen sobre el mateix projecte.
+
+Però la memòria també pot empitjorar un agent si no es governa bé.
+
+Riscos:
+
+* guardar informació incorrecta;
+* recuperar records obsolets;
+* donar massa pes a una preferència antiga;
+* omplir el context amb records irrellevants;
+* barrejar dades d'usuaris o projectes diferents;
+* convertir una pista en una veritat no verificada.
+
+Per això una bona memòria ha de tenir:
+
+* abast clar: usuari, projecte, agent o organització;
+* format llegible;
+* data o versió;
+* possibilitat d'actualitzar-se;
+* possibilitat d'esborrar-se;
+* criteris sobre què es pot recordar i què no.
+
+Una pràctica útil és separar:
+
+```text
+Memòria estable:
+  "Aquest projecte usa Express 5 i arrenca amb npm run dev."
+
+Memòria provisional:
+  "L'última vegada el port 3000 estava ocupat."
+```
+
+La primera pot viure a `AGENTS.md` o a documentació del projecte. La segona pot ser només una observació temporal que cal verificar abans d'actuar.
+
+### Consolidació de memòria
+
+Quan un agent revisa sessions anteriors i extreu patrons útils, està fent una forma de consolidació de memòria.
+
+Algunes plataformes ho anomenen **dreaming**: un procés fora de la sessió principal que revisa historial, detecta patrons i proposa canvis a la memòria persistent.
+
+En un entorn local es pot fer de manera més simple:
+
+```text
+logs de sessions
+  -> resumir decisions importants
+  -> detectar errors repetits
+  -> actualitzar docs o memòria
+  -> eliminar informació obsoleta
+```
+
+No cal que la consolidació sigui automàtica. En molts projectes educatius és millor que l'agent proposi canvis i una persona els revisi abans d'incorporar-los.
+
 ---
 
 ## Arquitectures habituals
@@ -353,12 +440,16 @@ Pot recordar:
 * preferències de l'usuari;
 * convencions del projecte;
 * decisions recurrents;
-* configuracions habituals.
+* configuracions habituals;
+* errors ja resolts;
+* workflows que han funcionat.
 
 La memòria pot ser útil, però també és perillosa si queda obsoleta. Sempre cal distingir entre:
 
 * memòria com a pista;
 * estat actual verificat.
+
+En programació, una memòria fiable no ha de substituir la lectura del codi. Ha d'ajudar a decidir què cal mirar primer.
 
 ### Agent amb RAG
 
