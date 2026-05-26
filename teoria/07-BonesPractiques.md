@@ -319,7 +319,62 @@ El servidor ha de normalitzar o rebutjar valors segons les regles de l'aplicaci�
 
 ---
 
-## 11. Function calling i structured outputs
+## 11. Validació automàtica abans i després d'eines
+
+Quan un agent pot cridar eines, no n'hi ha prou amb escriure bones instruccions. Algunes validacions han de ser automàtiques.
+
+Hi ha dos moments especialment importants:
+
+```text
+abans d'executar l'eina
+  -> validar intenció, arguments, permisos i risc
+
+després d'executar l'eina
+  -> validar resultat, errors, estat del projecte i següent pas
+```
+
+Abans d'una eina cal comprovar:
+
+* que la tool existeix;
+* que els arguments compleixen l'schema;
+* que els paths no surten del projecte;
+* que l'acció no és destructiva o fora d'abast;
+* que no s'estan enviant secrets a serveis externs;
+* que el model no intenta saltar-se permisos;
+* que la tasca justifica realment aquella eina.
+
+Després d'una eina cal comprovar:
+
+* si l'eina ha retornat error;
+* si el resultat confirma o contradiu el pla;
+* si cal repetir, corregir o aturar-se;
+* si s'ha modificat algun fitxer inesperat;
+* si cal executar una validació addicional;
+* si la informació obtinguda és temporal o s'ha de documentar.
+
+Exemples:
+
+```text
+PreToolUse sobre bash:
+  bloquejar rm -rf, curl amb secrets o ordres fora del projecte
+
+PreToolUse sobre memory_write:
+  impedir guardar claus, tokens o estat temporal
+
+PostToolUse sobre edit:
+  llegir el fitxer modificat i executar el validador corresponent
+
+PostToolUse sobre html-check:
+  si falla, tornar a observar l'error abans de continuar
+```
+
+Aquest patró és útil encara que l'eina concreta no tingui un sistema formal de hooks. Es pot implementar amb codi del servidor, wrappers, MCPs més estrictes, scripts de validació o instruccions operatives a `AGENTS.md`.
+
+La regla pràctica és: les comprovacions crítiques no haurien de dependre només que el model les recordi.
+
+---
+
+## 12. Function calling i structured outputs
 
 El function calling serveix quan volem que el model triï una acció i en retorni els arguments.
 
@@ -355,7 +410,7 @@ Bones pràctiques:
 
 ---
 
-## 12. Treballar amb servidors i models locals
+## 13. Treballar amb servidors i models locals
 
 Quan es treballa amb models locals, convé separar configuració i codi.
 
@@ -398,7 +453,7 @@ Un `package.json` pot tenir scripts diferents per a preproducció i producció:
 
 ---
 
-## 13. Seguretat i permisos
+## 14. Seguretat i permisos
 
 Un agent amb eines pot fer canvis reals.
 
@@ -418,7 +473,7 @@ La pregunta important és: què podria passar si el model interpreta malament la
 
 ---
 
-## 14. Observabilitat i depuració
+## 15. Observabilitat i depuració
 
 Quan un agent falla, necessitem entendre on ha fallat.
 
@@ -439,7 +494,7 @@ No cal mostrar la cadena de pensament interna del model. És millor mostrar trac
 
 ---
 
-## 15. Documentació i traçabilitat
+## 16. Documentació i traçabilitat
 
 La documentació del projecte ha d'estar al projecte, no amagada dins d'una configuració local de l'eina.
 
