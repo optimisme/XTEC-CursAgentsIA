@@ -1,5 +1,5 @@
 
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
+<style> .images { max-width: 960px; width: 100%; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # Function Calling
 
@@ -60,6 +60,8 @@ Usuari
   -> client executa l'acció
 ```
 
+<img src="assets/06-dgrm-flux-function-calling.svg" alt="Flux principal de function calling" class="images">
+
 ---
 
 ## Structured Outputs
@@ -98,6 +100,8 @@ La diferència principal és aquesta:
 | Text lliure       | Obtenir una resposta natural per llegir |
 | Structured output | Obtenir dades amb una forma concreta |
 | Function calling  | Decidir quina acció o eina cal executar |
+
+<img src="assets/06-dgrm-structured-vs-function.svg" alt="Structured Outputs vs Function Calling" class="images">
 
 Els structured outputs són molt útils quan volem **extreure, classificar o transformar dades**, però no necessàriament executar una acció.
 

@@ -1,4 +1,4 @@
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
+<style> .images { max-width: 960px; width: 100%; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # Agents
 
@@ -69,6 +69,8 @@ objectiu
   -> correcció
   -> finalització
 ```
+
+<img src="assets/00-dgrm-cicle-agentic.svg" alt="Cicle agentic" class="images">
 
 Aquest bucle és el que permet treballar amb problemes oberts.
 
@@ -210,6 +212,8 @@ Un agent de programació pot rebre context de moltes fonts:
 | Documentació.             | APIs, manuals, exemples |
 | Memòria                   | Preferències o dades persistents, si existeixen |
 
+<img src="assets/00-dgrm-fonts-context.svg" alt="Fonts de context d'un agent" class="images">
+
 El repte és que el context és limitat. No podem posar sempre tot el projecte dins del model.
 
 ### Context bo i context dolent
@@ -275,6 +279,8 @@ buscar poc
 ## Arquitectures habituals
 
 No tots els agents tenen la mateixa arquitectura. La forma depèn de la tasca, el risc i les eines disponibles.
+
+<img src="assets/00-dgrm-arquitectures-agents.svg" alt="Arquitectures habituals d'agents" class="images">
 
 ### Agent simple amb eines
 

@@ -1,4 +1,4 @@
-<style> .images { max-width: 400px; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
+<style> .images { max-width: 960px; width: 100%; border: 1px solid grey; padding: 4px; margin-bottom: 25px; } </style>
 
 # Servidors locals
 
@@ -13,6 +13,8 @@ OpenCode
   -> servidor local vLLM / Ollama / llama.cpp
   -> model descarregat localment
 ```
+
+<img src="assets/05-dgrm-opencode-servidor-local.svg" alt="Arquitectura d'OpenCode amb servidor local" class="images">
 
 OpenCode no necessita saber com s'executa internament el model. Només necessita una URL compatible, un nom de model i una configuració dins `opencode.json`.
 

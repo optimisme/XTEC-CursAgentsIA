@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">Cicle agentic</title>
+  <desc id="desc">Diagrama del cicle agentic: objectiu, context, planificació, acció, observació, correcció i finalització.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.14"/>
+    </filter>
+  </defs>
+  <rect width="960" height="520" fill="#f8fafc"/>
+  <text x="480" y="48" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#0f172a">Cicle agentic</text>
+  <text x="480" y="78" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#475569">Un agent avança observant resultats i ajustant el següent pas.</text>
+
+  <g fill="none" stroke="#334155" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M 480 142 C 580 142 662 180 700 250"/>
+    <path d="M 700 292 C 662 362 580 400 480 400"/>
+    <path d="M 438 400 C 338 400 256 362 218 292"/>
+    <path d="M 218 250 C 256 180 338 142 438 142"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif" filter="url(#shadow)">
+    <g>
+      <rect x="370" y="104" width="220" height="76" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="480" y="137" text-anchor="middle" font-size="19" font-weight="700" fill="#0f172a">Objectiu</text>
+      <text x="480" y="160" text-anchor="middle" font-size="13" fill="#64748b">Què vol aconseguir l'usuari?</text>
+    </g>
+    <g>
+      <rect x="640" y="220" width="220" height="76" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="750" y="253" text-anchor="middle" font-size="19" font-weight="700" fill="#0f172a">Context</text>
+      <text x="750" y="276" text-anchor="middle" font-size="13" fill="#64748b">Fitxers, instruccions i estat</text>
+    </g>
+    <g>
+      <rect x="560" y="386" width="220" height="76" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="670" y="419" text-anchor="middle" font-size="19" font-weight="700" fill="#0f172a">Planificació</text>
+      <text x="670" y="442" text-anchor="middle" font-size="13" fill="#64748b">Decidir el següent pas</text>
+    </g>
+    <g>
+      <rect x="190" y="386" width="220" height="76" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="300" y="419" text-anchor="middle" font-size="19" font-weight="700" fill="#0f172a">Acció</text>
+      <text x="300" y="442" text-anchor="middle" font-size="13" fill="#64748b">Usar eines o editar codi</text>
+    </g>
+    <g>
+      <rect x="100" y="220" width="220" height="76" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="210" y="253" text-anchor="middle" font-size="19" font-weight="700" fill="#0f172a">Observació</text>
+      <text x="210" y="276" text-anchor="middle" font-size="13" fill="#64748b">Resultats, errors i proves</text>
+    </g>
+    <g>
+      <rect x="370" y="220" width="220" height="76" rx="12" fill="#e0f2fe" stroke="#38bdf8"/>
+      <text x="480" y="253" text-anchor="middle" font-size="19" font-weight="700" fill="#0f172a">Correcció</text>
+      <text x="480" y="276" text-anchor="middle" font-size="13" fill="#0369a1">Ajustar el pla segons l'observació</text>
+    </g>
+  </g>
+
+  <g fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)">
+    <path d="M 320 258 L 366 258"/>
+    <path d="M 594 258 L 634 258"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="370" y="18" width="220" height="2" fill="none"/>
+    <rect x="355" y="316" width="250" height="42" rx="21" fill="#ecfdf5" stroke="#86efac"/>
+    <text x="480" y="342" text-anchor="middle" font-size="15" font-weight="700" fill="#166534">Finalització: entregar resultat o demanar decisió humana</text>
+    <path d="M 480 296 L 480 314" fill="none" stroke="#16a34a" stroke-width="3" marker-end="url(#arrow)"/>
+  </g>
+</svg>
