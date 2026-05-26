@@ -63,7 +63,7 @@ En aquest curs hi ha dues configuracions separades:
 | Carpeta | Ús |
 | --- | --- |
 | `projecteOpenCode` | Configuració normal per treballar amb models grans o proveïdors externs. Manté les eines estàndard d'OpenCode, subagents, skills, MCPs de validació i MCP de memòria. |
-| `projecteOpenCodeLocal` | Configuració reduïda per a models locals petits. Té menys eines, menys instruccions i proveïdors locals vLLM. |
+| `projectOpenCodeLite` | Configuració reduïda per a models locals petits. Té menys eines, menys instruccions i proveïdors locals vLLM. |
 
 Els camps més importants són:
 
@@ -78,7 +78,7 @@ Els camps més importants són:
 | `tool_call`  | Indica que el model pot fer crides a eines |
 | `reasoning`  | Indica que el model pot treballar amb mode de raonament |
 
-El projecte normal no defineix proveïdors locals dins `opencode.json`. Està pensat perquè l'usuari triï o autentiqui el model gran que vulgui fer servir amb OpenCode. La configuració local de vLLM queda reservada per a `projecteOpenCodeLocal`, que es descriu al final d'aquest document.
+El projecte normal no defineix proveïdors locals dins `opencode.json`. Està pensat perquè l'usuari triï o autentiqui el model gran que vulgui fer servir amb OpenCode. La configuració local de vLLM queda reservada per a `projectOpenCodeLite`, que es descriu al final d'aquest document.
 
 Exemple de la part de configuració que sí queda al projecte normal:
 
@@ -458,9 +458,9 @@ El seu punt fort és la portabilitat. El seu punt feble és que no tots els flux
 
 ---
 
-## projecteOpenCodeLocal: configuració per a models petits
+## projectOpenCodeLite: configuració per a models petits
 
-`projecteOpenCodeLocal` és la configuració pensada per treballar amb models locals més petits, com Gemma 8B servit amb vLLM. No és la configuració normal del projecte: és una variant reduïda perquè el model rebi menys soroll d'instruccions i eines.
+`projectOpenCodeLite` és la configuració pensada per treballar amb models locals més petits, com Gemma 8B servit amb vLLM. No és la configuració normal del projecte: és una variant reduïda perquè el model rebi menys soroll d'instruccions i eines.
 
 La configuració lite redueix deliberadament el context de l'agent:
 
@@ -480,4 +480,4 @@ El límit `"max_tokens": 4096` i el plugin `.opencode/plugins/limit-local-vllm-o
 
 `safe-edit` també pertany a aquesta variant: dona eines d'edició per línies perquè els models petits solen ser menys fiables amb edicions exactes basades en `oldString`.
 
-La documentació humana de `projecteOpenCodeLocal` no s'inclou automàticament al context de l'agent: `opencode.json` només carrega `AGENTS.md` dins `instructions`.
+La documentació humana de `projectOpenCodeLite` no s'inclou automàticament al context de l'agent: `opencode.json` només carrega `AGENTS.md` dins `instructions`.

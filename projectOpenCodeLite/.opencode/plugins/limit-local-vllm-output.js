@@ -1,6 +1,7 @@
 const LIMITS = {
-  "spark-vllm/gemma4-8b-local": 4096,
-  "vram16-vllm/gemma4-8b-local": 4096,
+  "spark-vllm/gemma4-8b-local": 16384,
+  "vram16-vllm/gemma4-8b-local": 16384,
+  "ieti-agents/local-vllm": 16384,
 }
 
 export const LimitLocalVllmOutput = async () => {

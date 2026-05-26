@@ -170,7 +170,7 @@ Aleshores podrem escollir el nou agent amb la tecla **TAB**. Se li pot donar un 
 Arregla els errors de validació HTML del projecte, modifica només els fitxers necessaris i verifica el resultat abans de respondre.
 ```
 
-> **Nota:** En `projecteOpenCode` ja no es defineix un agent principal `goal`; s'usen els agents principals estàndard d'OpenCode i subagents especialitzats. En `projecteOpenCodeLocal`, en canvi, `goal-lite` sí que és l'agent principal perquè la configuració local necessita menys eines, menys soroll i un flux més controlat.
+> **Nota:** En `projecteOpenCode` ja no es defineix un agent principal `goal`; s'usen els agents principals estàndard d'OpenCode i subagents especialitzats. En `projectOpenCodeLite`, en canvi, `goal-lite` sí que és l'agent principal perquè la configuració local necessita menys eines, menys soroll i un flux més controlat.
 
 ## Subagents
 

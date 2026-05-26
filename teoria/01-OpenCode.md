@@ -52,7 +52,7 @@ En aquest repositori hi ha dues carpetes preparades:
 | Carpeta | Ús |
 | --- | --- |
 | `projecteOpenCode` | Configuració normal per a models grans o proveïdors externs. Manté les eines estàndard, subagents, skills i MCPs de validació. |
-| `projecteOpenCodeLocal` | Configuració reduïda per a models locals petits. Limita eines i instruccions per donar menys soroll al model. |
+| `projectOpenCodeLite` | Configuració reduïda per a models locals petits. Limita eines i instruccions per donar menys soroll al model. |
 
 ## Interacció
 

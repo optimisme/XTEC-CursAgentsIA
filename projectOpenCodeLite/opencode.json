@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "spark-vllm/gemma4-8b-local",
+  "model": "ieti-agents/local-vllm",
   "default_agent": "goal-lite",
   "permission": {
     "read": "allow",
@@ -19,21 +19,20 @@
     "AGENTS.md"
   ],
   "provider": {
-    "spark-vllm": {
+    "ieti-agents": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Spark vLLM",
+      "name": "IETI Agents",
       "options": {
-        "baseURL": "http://127.0.0.1:8001/v1",
-        "apiKey": "local",
-        "timeout": 900000,
-        "chunkTimeout": 600000
+        "baseURL": "https://agents.ieti.site/v1",
+        "apiKey": "{env:IETI_AGENT_KEY}"
       },
       "models": {
-        "gemma4-8b-local": {
-          "name": "Gemma 4 8B Spark (32K)",
-          "max_tokens": 4096,
-          "tool_call": true,
-          "reasoning": false
+        "local-vllm": {
+          "name": "Spark 25 vLLM",
+          "limit": {
+            "context": 16384,
+            "output": 8192
+          }
         }
       }
     },
@@ -49,7 +48,25 @@
       "models": {
         "gemma4-8b-local": {
           "name": "Gemma 4 8B 16GB (32K)",
-          "max_tokens": 4096,
+          "max_tokens": 16384,
+          "tool_call": true,
+          "reasoning": false
+        }
+      }
+    },
+    "spark-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Spark vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8001/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "gemma4-8b-local": {
+          "name": "Gemma 4 8B Spark (32K)",
+          "max_tokens": 16384,
           "tool_call": true,
           "reasoning": false
         }

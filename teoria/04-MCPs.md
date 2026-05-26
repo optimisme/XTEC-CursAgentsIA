@@ -128,7 +128,7 @@ Update webs/index.html and then run html-check on the changed file.
 
 ### MCPs per a models petits
 
-`projecteOpenCodeLocal` sí que inclou un MCP local anomenat `safe-edit`. Serveix per modificar fitxers de manera controlada quan es fan servir models petits: llegir línies concretes, aplicar canvis petits i verificar el resultat després de cada edició.
+`projectOpenCodeLite` sí que inclou un MCP local anomenat `safe-edit`. Serveix per modificar fitxers de manera controlada quan es fan servir models petits: llegir línies concretes, aplicar canvis petits i verificar el resultat després de cada edició.
 
 Aquest servidor exposa eines com:
 
@@ -217,7 +217,7 @@ Before changing the project, search the memory MCP for relevant conventions and 
 
 Aquest patró té més sentit amb **models grans** o agents que treballen durant moltes sessions, perquè poden aprofitar millor records diversos i decidir quan són rellevants.
 
-En `projecteOpenCodeLocal`, que està pensat per a models petits i edicions controlades, no és imprescindible afegir aquest MCP. Pot ser útil com a exercici avançat, però el risc és que un model petit recuperi massa memòria, la interpreti malament o la prioritzi per sobre del codi actual.
+En `projectOpenCodeLite`, que està pensat per a models petits i edicions controlades, no és imprescindible afegir aquest MCP. Pot ser útil com a exercici avançat, però el risc és que un model petit recuperi massa memòria, la interpreti malament o la prioritzi per sobre del codi actual.
 
 Per a models petits, sovint és millor:
 
@@ -387,4 +387,4 @@ projecte/
         └── java-check
 ```
 
-En `projecteOpenCodeLocal` també hi ha `safe-edit`, que és específic de la configuració per a models petits.
+En `projectOpenCodeLite` també hi ha `safe-edit`, que és específic de la configuració per a models petits.

@@ -2,7 +2,24 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+KEYS_FILE="$SCRIPT_DIR/keys.env"
+EXAMPLE_FILE="$SCRIPT_DIR/keys.env.example"
+
 cd "$SCRIPT_DIR"
+
+if [ ! -f "$KEYS_FILE" ]; then
+  echo "Error: keys.env was not found."
+  echo
+  echo "Create it from the example file:"
+  echo "  cp \"$EXAMPLE_FILE\" \"$KEYS_FILE\""
+  echo
+  echo "Then edit keys.env and fill in your API keys."
+  exit 1
+fi
+
+set -a
+source "$KEYS_FILE"
+set +a
 
 if [ "${1:-}" = "run" ]; then
   args=("${@:2}")
@@ -19,7 +36,7 @@ if [ "${1:-}" = "run" ]; then
 
   final_args=(run)
   if [ "$has_agent" -eq 0 ]; then
-    final_args+=(--agent build)
+    final_args+=(--agent goal)
   fi
   final_args+=("${args[@]}")
 

@@ -175,7 +175,7 @@ Aquesta divisió permet comprovar cada part abans de continuar.
 
 Si el projecte té gestió de tasques, ha d'estar fora de la configuració privada de l'eina.
 
-No tots els projectes necessiten aquesta capa. En una configuració reduïda per a models locals petits, com `projecteOpenCodeLocal`, pot ser soroll innecessari. En canvi, en un projecte gran o de llarga durada, com `projecteOpenCode`, ajuda a mantenir continuïtat entre sessions.
+No tots els projectes necessiten aquesta capa. En una configuració reduïda per a models locals petits, com `projectOpenCodeLite`, pot ser soroll innecessari. En canvi, en un projecte gran o de llarga durada, com `projecteOpenCode`, ajuda a mantenir continuïtat entre sessions.
 
 Per exemple:
 
