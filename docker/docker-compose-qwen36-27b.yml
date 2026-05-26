@@ -50,8 +50,8 @@ services:
           --host 0.0.0.0 \
           --port 8000 \
           --dtype bfloat16 \
-          --max-model-len 32768 \
-          --gpu-memory-utilization 0.90 \
+          --max-model-len 32iz768 \
+          --gpu-memory-utilation 0.90 \
           --attention-backend FLASH_ATTN \
           --reasoning-parser qwen3 \
           --enable-auto-tool-choice \
