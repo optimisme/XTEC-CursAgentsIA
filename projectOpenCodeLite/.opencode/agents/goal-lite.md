@@ -24,7 +24,7 @@ Rules:
 1. Create or modify only the files the user asked for.
 2. Do not use subagents, `task`, `bash`, or built-in `edit`.
 3. Use safe-edit for every file change.
-4. For new files, use `safe-edit_safe_create_file_from_lines`.
+4. For new files, use `safe-edit_safe_create_file_from_lines` only for a short scaffold.
 5. For existing files, use `safe-edit_safe_read_lines`, then `safe-edit_safe_replace_lines` or `safe-edit_safe_apply_patch`.
 6. After creating each file, run `safe-edit_safe_verify_file` for that file.
 7. For HTML files, also run `html-check_check_html`.
@@ -34,10 +34,14 @@ Rules:
 11. Do not invent npm packages or validators.
 12. Do not narrate a long plan. Act with tools.
 13. Search for information before creating or modifying files only if it is necessary to satisfy the request. If research is needed, search first, then edit.
+14. Never send a complete generated app or long file as one tool argument.
+15. Keep each edit payload small enough to inspect at a glance: about 25-50 short lines, and fewer lines when the lines are long.
+16. Do not spend time counting exact lines. Split by semantic blocks: HTML shell, CSS, body markup, first JavaScript block, later JavaScript block.
 
 Tool reminders:
 
 - `safe-edit_safe_create_file_from_lines`: `{ "file": "webs/name.ext", "lines": ["line 1", "line 2"] }`
+- `safe-edit_safe_insert_after`: `{ "file": "webs/name.ext", "after": 10, "content": "new lines" }`
 - `safe-edit_safe_replace_lines`: `{ "file": "webs/name.ext", "start": 1, "end": 10, "content": "replacement text" }`
 - `safe-edit_safe_verify_file`: `{ "file": "webs/name.ext" }`
 - `html-check_check_html`: `{ "file": "webs/name.html" }`
@@ -45,6 +49,7 @@ Tool reminders:
 Small web app checklist:
 
 - Create exactly the requested files.
+- For generated HTML, create a scaffold first, then add CSS, markup, and JavaScript in separate small edits.
 - Verify all created files with `safe-edit_safe_verify_file`.
 - Run `html-check_check_html` on the HTML file.
 - Remove placeholder comments/text before final.

@@ -10,7 +10,7 @@ It is designed for a small local model, so the workflow is intentionally narrowe
 - Keep context small. Do not scan the whole project unless needed.
 - Read `docs/architecture.md` or `docs/decisions.md` only when the user asks for architectural or workflow changes.
 - Make the smallest change that satisfies the request.
-- For new files, create the complete file directly.
+- For new files, create a short scaffold first, then add content in small semantic chunks.
 - For existing files, edit small exact sections.
 - If the user names exact files, create or modify only those files.
 - Do not create unrelated demo files, sample files, or alternate app files.
@@ -35,12 +35,14 @@ It is designed for a small local model, so the workflow is intentionally narrowe
 - Use the safe-edit MCP for file modifications.
 - Do not use OpenCode built-in `edit`; it is disabled in this lite project because local Gemma often fails the `oldString` schema.
 - In OpenCode, safe-edit MCP tools appear as `safe-edit_safe_create_file_from_lines`, `safe-edit_safe_read_lines`, `safe-edit_safe_replace_lines`, `safe-edit_safe_insert_after`, `safe-edit_safe_delete_lines`, `safe-edit_safe_apply_patch`, and `safe-edit_safe_verify_file`.
-- For new files, use `safe-edit_safe_create_file_from_lines`, then verify with `safe-edit_safe_verify_file`.
+- For new files, use `safe-edit_safe_create_file_from_lines` for a short scaffold, then use insert or replace tools for the rest.
 - For existing files, read line numbers with `safe-edit_safe_read_lines`, then replace by line range with `safe-edit_safe_replace_lines`.
 - Do not use exact old-string replacement workflows.
 - For new browser pages, prefer one self-contained HTML file unless the user asks for multiple files.
-- For large generated HTML, create or replace the whole file instead of making many tiny edits.
-- Keep safe-edit calls small. For long HTML files, create a scaffold first and add or replace content in chunks.
+- Never send a complete generated app or long file as one tool argument.
+- Keep each edit payload small enough to inspect at a glance: about 25-50 short lines, and fewer lines when the lines are long.
+- Split generated HTML by semantic blocks: document shell, CSS block, body markup, first JavaScript block, later JavaScript block.
+- Do not spend time counting exact lines. If a block looks large, split it before calling the tool.
 - When the user asks for multiple files, create exactly those files and keep each file focused.
 - For three-file web apps, create the HTML, CSS, and JavaScript files separately with safe-edit. Do not merge them into one file unless asked.
 

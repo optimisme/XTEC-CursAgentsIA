@@ -24,15 +24,19 @@
       "name": "IETI Agents",
       "options": {
         "baseURL": "https://agents.ieti.site/v1",
-        "apiKey": "{env:IETI_AGENT_KEY}"
+        "apiKey": "{env:IETI_AGENT_KEY}",
+        "timeout": 900000,
+        "chunkTimeout": 600000
       },
       "models": {
         "local-vllm": {
           "name": "Spark 25 vLLM",
           "limit": {
-            "context": 16384,
-            "output": 8192
-          }
+            "context": 4096,
+            "output": 2048
+          },
+          "tool_call": true,
+          "reasoning": false
         }
       }
     },
@@ -48,7 +52,10 @@
       "models": {
         "gemma4-8b-local": {
           "name": "Gemma 4 8B 16GB (32K)",
-          "max_tokens": 16384,
+          "limit": {
+            "context": 32768,
+            "output": 16384
+          },
           "tool_call": true,
           "reasoning": false
         }
@@ -66,7 +73,10 @@
       "models": {
         "gemma4-8b-local": {
           "name": "Gemma 4 8B Spark (32K)",
-          "max_tokens": 16384,
+          "limit": {
+            "context": 32768,
+            "output": 16384
+          },
           "tool_call": true,
           "reasoning": false
         }

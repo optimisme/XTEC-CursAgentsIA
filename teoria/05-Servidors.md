@@ -74,7 +74,7 @@ Els camps més importants són:
 | `baseURL`    | URL de l'API del servidor o proveïdor |
 | `apiKey`     | Clau d'accés; en local sovint pot ser `"local"` |
 | `models`     | Models que apareixeran dins OpenCode |
-| `max_tokens` | Màxim de tokens de sortida configurat per al model |
+| `limit`      | Límits de context i sortida configurats per al model |
 | `tool_call`  | Indica que el model pot fer crides a eines |
 | `reasoning`  | Indica que el model pot treballar amb mode de raonament |
 
@@ -476,7 +476,7 @@ Els proveïdors locals viuen en aquesta carpeta:
 | `spark-vllm` | `http://127.0.0.1:8001/v1` |
 | `vram16-vllm` | `http://127.0.0.1:8002/v1` |
 
-El límit `"max_tokens": 4096` i el plugin `.opencode/plugins/limit-local-vllm-output.js` són proteccions per a models petits. Eviten que OpenCode demani respostes massa grans i deixi poc marge per al prompt d'entrada. Aquestes proteccions no formen part de `projecteOpenCode`.
+Els blocs `limit.context` i `limit.output` són proteccions per a models petits. Eviten que OpenCode assumeixi una finestra de context o una sortida més grans que les que el servidor local pot gestionar amb fiabilitat. Aquestes proteccions no formen part de `projecteOpenCode`.
 
 `safe-edit` també pertany a aquesta variant: dona eines d'edició per línies perquè els models petits solen ser menys fiables amb edicions exactes basades en `oldString`.
 
