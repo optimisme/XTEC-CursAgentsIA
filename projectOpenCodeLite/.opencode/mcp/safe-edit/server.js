@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -40,7 +40,20 @@ function isInsideRoot(target) {
 function resolveProjectPath(file) {
   const normalized = path.normalize(file);
   const target = path.resolve(projectRoot, normalized);
-  const checkedTarget = existsSync(target) ? realpathSync(target) : target;
+  let checkedTarget = target;
+
+  if (existsSync(target)) {
+    checkedTarget = realpathSync(target);
+  } else {
+    let parent = path.dirname(target);
+    while (!existsSync(parent) && parent !== path.dirname(parent)) {
+      parent = path.dirname(parent);
+    }
+    const checkedParent = realpathSync(parent);
+    if (!isInsideRoot(checkedParent)) {
+      throw new Error(`Path escapes the project root: ${file}`);
+    }
+  }
 
   if (!isInsideRoot(checkedTarget)) {
     throw new Error(`Path escapes the project root: ${file}`);
@@ -511,7 +524,32 @@ async function main() {
     if (!selfTestContent.includes("append")) {
       throw new Error("safe_append_lines self-test failed.");
     }
+    replaceLines({ file: selfTestFile, start: 1, end: 2, content: "one\ntwo\nthree" });
+    insertAfter({ file: selfTestFile, line: 2, content: "inserted" });
+    deleteLines({ file: selfTestFile, start: 1, end: 1 });
+    const lineEditContent = readTextFile(selfTestPath);
+    if (lineEditContent !== "two\ninserted\nthree\n") {
+      throw new Error("safe line operation self-test failed.");
+    }
     rmSync(selfTestPath);
+    const outsideDir = path.resolve(projectRoot, "..", "safe-edit-outside-self-test");
+    const symlinkFile = ".opencode/mcp/safe-edit/backups/self-test-symlink";
+    const symlinkPath = resolveProjectPath(symlinkFile);
+    rmSync(symlinkPath, { force: true, recursive: true });
+    rmSync(outsideDir, { force: true, recursive: true });
+    mkdirSync(outsideDir, { recursive: true });
+    symlinkSync(outsideDir, symlinkPath, "dir");
+    try {
+      resolveProjectPath(`${symlinkFile}/escape.txt`);
+      throw new Error("Symlink path traversal check failed.");
+    } catch (error) {
+      if (!String(error.message).includes("escapes")) {
+        throw error;
+      }
+    } finally {
+      rmSync(symlinkPath, { force: true, recursive: true });
+      rmSync(outsideDir, { force: true, recursive: true });
+    }
     const htmlSelfTestFile = ".opencode/mcp/safe-edit/backups/self-test-invalid.html";
     const htmlSelfTestPath = resolveProjectPath(htmlSelfTestFile);
     if (existsSync(htmlSelfTestPath)) {

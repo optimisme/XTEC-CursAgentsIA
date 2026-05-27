@@ -201,12 +201,13 @@ Els fitxers del projecte són:
 | -------------------------------------- | --- |
 | `docker/docker-compose-gemma4-8b.yml`  | `google/gemma-4-E4B-it` |
 | `docker/docker-compose-gemma4-8b-spark.yml` | `google/gemma-4-E4B-it`, optimitzat per NVIDIA Spark / GB10 |
+| `docker/docker-compose-gemma4-26b-a4b-spark.yml` | `google/gemma-4-26B-A4B-it`, optimitzat per NVIDIA Spark / GB10 |
 | `docker/docker-compose-qwen3-8b.yml`   | `Qwen/Qwen3-8B-AWQ` |
-| `docker/docker-compose-qwen3-14b.yml`  | `Qwen/Qwen3-14B-AWQ` |
+| `docker/docker-compose-qwen3-14b-spark.yml`  | `Qwen/Qwen3-14B-AWQ`, optimitzat per NVIDIA Spark / GB10 |
 | `docker/docker-compose-qwen35-9b.yml`  | `QuantTrio/Qwen3.5-9B-AWQ` |
 | `docker/docker-compose-qwen35-9b-quanttrio.yml` | `QuantTrio/Qwen3.5-9B-AWQ`, configuració 16GB separada |
 | `docker/docker-compose-qwen35-9b-quanttrio-spark.yml` | `QuantTrio/Qwen3.5-9B-AWQ`, optimitzat per NVIDIA Spark / GB10 |
-| `docker/docker-compose-qwen36-27b.yml` | `Qwen/Qwen3.6-27B` |
+| `docker/docker-compose-qwen36-27b-spark.yml` | `Qwen/Qwen3.6-27B`, optimitzat per NVIDIA Spark / GB10 |
 
 El model de 27B està pensat per a màquines amb més VRAM. En una GPU petita, normalment no cabrà.
 
@@ -228,12 +229,12 @@ Exemples:
 ./docker/run_docker.sh
 ./docker/run_docker.sh gemma4-8b
 ./docker/run_docker.sh qwen3-8b restart
-./docker/run_docker.sh qwen3-14b logs
+./docker/run_docker.sh qwen3-14b-spark logs
 ./docker/run_docker.sh qwen3-8b stop
 ./docker/run_docker.sh qwen3-8b ps
 ```
 
-Per defecte, l'script arrenca `qwen35-9b-quanttrio-spark` i atura els altres contenidors coneguts abans d'iniciar el nou model.
+Per defecte, l'script arrenca `gemma4-26b-a4b-spark` i atura els altres contenidors coneguts abans d'iniciar el nou model.
 
 Això és important perquè diversos models poden intentar usar el mateix port `8000` o la mateixa GPU. Amb aquest script només es pot executar un model.
 

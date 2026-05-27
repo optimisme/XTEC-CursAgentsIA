@@ -122,8 +122,6 @@ npx autoskills@latest
 
 # Agents
 
-La transcripció diferencia entre **agents principals** i **subagents**.
-
 ## Agents principals
 
 OpenCode té dos agents principals visibles:
@@ -170,11 +168,13 @@ Aleshores podrem escollir el nou agent amb la tecla **TAB**. Se li pot donar un 
 Arregla els errors de validació HTML del projecte, modifica només els fitxers necessaris i verifica el resultat abans de respondre.
 ```
 
-> **Nota:** En `projecteOpenCode` ja no es defineix un agent principal `goal`; s'usen els agents principals estàndard d'OpenCode i subagents especialitzats. En `projectOpenCodeLite`, en canvi, `goal-lite` sí que és l'agent principal perquè la configuració local necessita menys eines, menys soroll i un flux més controlat.
+> **Nota:** A `projectOpenCodeLite`, hi ha l'agent `goal-lite` activat per defecte, que és l'agent principal perquè la configuració local necessita menys eines, menys soroll i un flux més controlat.
 
 ## Subagents
 
 Els **subagents** són agents secundaris especialitzats que poden treballar en una tasca concreta sense bloquejar necessàriament el fil principal.
+
+Serveixen per fer feines en paral·lel que poden produir molt soroll (logs, cerques a internet, pensament), i així no "embrutar" el context principal.
 
 | Subagent     | Ús                                        |
 | ------------ | ----------------------------------------- |

@@ -37,6 +37,9 @@ It demonstrates a richer setup with subagents, skills, commands, validation MCPs
 - For interactive pages, games, or tools, wire every requested control to its expected direct behavior before validating. Do not leave placeholder behavior, TODO comments, or comments saying the core logic still needs refinement.
 - Use subagents when they add useful review, planning, research, or verification coverage.
 - Goal-checker is available for ambiguous prompts or nontrivial implementation plans.
+- Use `web-search` for noisy external research that should be summarized before implementation.
+- Use `web-quality` for read-only HTML/CSS/JS review after nontrivial frontend changes.
+- When using the `task` tool, include `description`, `subagent_type`, and `prompt`.
 - `webfetch` requires a URL.
 - `websearch` requires a search query.
 - If the user asks to search the internet, use `websearch` first. Use `webfetch` only for a specific URL from search results or from the user.
@@ -69,6 +72,8 @@ This is a teaching project without any programming tools, ignore this section he
 
 - Agents are in `.opencode/agents/`.
 - Use the `goal-checker` subagent for ambiguous prompts or nontrivial new app plans before writing code.
+- Use the `web-search` subagent for compact sourced web research.
+- Use the `web-quality` subagent for compact read-only frontend quality review.
 - Commands are in `.opencode/commands/`.
 - MCPs are in `.opencode/mcp/`.
 - Skills are in `.opencode/skills/`.

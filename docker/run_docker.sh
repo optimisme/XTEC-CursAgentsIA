@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_PROJECT="vllm"
-DEFAULT_MODEL="qwen35-9b-quanttrio-spark"
+DEFAULT_MODEL="gemma4-26b-a4b-spark"
 MODEL="${1:-$DEFAULT_MODEL}"
 ACTION="${2:-restart}"
 
@@ -15,12 +15,13 @@ Usage:
 Models:
   qwen35-9b
   qwen35-9b-quanttrio
-  qwen35-9b-quanttrio-spark    default
+  qwen35-9b-quanttrio-spark
   qwen3-8b
-  qwen3-14b
+  qwen3-14b-spark
+  gemma4-26b-a4b-spark    default
   gemma4-8b
   gemma4-8b-spark
-  qwen3.6-27b   intended for larger GPU hosts
+  qwen3.6-27b-spark
 
 Actions:
   restart       stop all known model containers, then start selected model
@@ -32,7 +33,7 @@ Actions:
 Examples:
   ./docker/run_docker.sh
   ./docker/run_docker.sh gemma4-8b
-  ./docker/run_docker.sh qwen3-14b logs
+  ./docker/run_docker.sh qwen3-14b-spark logs
   ./docker/run_docker.sh qwen3-8b stop
 EOF
 }
@@ -50,10 +51,11 @@ compose_file_for() {
     qwen35-9b-quanttrio) printf '%s\n' "docker-compose-qwen35-9b-quanttrio.yml" ;;
     qwen35-9b-quanttrio-spark) printf '%s\n' "docker-compose-qwen35-9b-quanttrio-spark.yml" ;;
     qwen3-8b) printf '%s\n' "docker-compose-qwen3-8b.yml" ;;
-    qwen3-14b) printf '%s\n' "docker-compose-qwen3-14b.yml" ;;
+    qwen3-14b-spark) printf '%s\n' "docker-compose-qwen3-14b-spark.yml" ;;
+    gemma4-26b-a4b-spark) printf '%s\n' "docker-compose-gemma4-26b-a4b-spark.yml" ;;
     gemma4-8b) printf '%s\n' "docker-compose-gemma4-8b.yml" ;;
     gemma4-8b-spark) printf '%s\n' "docker-compose-gemma4-8b-spark.yml" ;;
-    qwen3.6-27b) printf '%s\n' "docker-compose-qwen36-27b.yml" ;;
+    qwen3.6-27b-spark) printf '%s\n' "docker-compose-qwen36-27b-spark.yml" ;;
     *)
       echo "Unknown model: $model" >&2
       echo >&2
@@ -71,10 +73,11 @@ container_for() {
     qwen35-9b-quanttrio) printf '%s\n' "qwen35_9b_quanttrio_vllm" ;;
     qwen35-9b-quanttrio-spark) printf '%s\n' "qwen35_9b_quanttrio_spark_vllm" ;;
     qwen3-8b) printf '%s\n' "qwen3_8b_awq_vllm" ;;
-    qwen3-14b) printf '%s\n' "qwen3_14b_awq_vllm" ;;
+    qwen3-14b-spark) printf '%s\n' "qwen3_14b_awq_vllm" ;;
+    gemma4-26b-a4b-spark) printf '%s\n' "gemma4_26b_a4b_spark_vllm" ;;
     gemma4-8b) printf '%s\n' "gemma4_8b_vllm" ;;
     gemma4-8b-spark) printf '%s\n' "gemma4_8b_spark_vllm" ;;
-    qwen3.6-27b) printf '%s\n' "qwen36_27b_vllm" ;;
+    qwen3.6-27b-spark) printf '%s\n' "qwen36_27b_vllm" ;;
     *)
       echo "Unknown model: $model" >&2
       echo >&2
@@ -91,10 +94,11 @@ stop_all() {
     docker-compose-qwen35-9b-quanttrio.yml \
     docker-compose-qwen35-9b-quanttrio-spark.yml \
     docker-compose-qwen3-8b.yml \
-    docker-compose-qwen3-14b.yml \
+    docker-compose-qwen3-14b-spark.yml \
+    docker-compose-gemma4-26b-a4b-spark.yml \
     docker-compose-gemma4-8b.yml \
     docker-compose-gemma4-8b-spark.yml \
-    docker-compose-qwen36-27b.yml
+    docker-compose-qwen36-27b-spark.yml
   do
     if [[ -f "$ROOT_DIR/$file" ]]; then
       docker compose -p "$COMPOSE_PROJECT" -f "$ROOT_DIR/$file" down --remove-orphans

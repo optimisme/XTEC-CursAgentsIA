@@ -9,7 +9,7 @@
     "glob": "allow",
     "bash": "deny",
     "edit": "deny",
-    "task": "deny",
+    "task": "allow",
     "todowrite": "deny",
     "webfetch": "allow",
     "websearch": "allow",
