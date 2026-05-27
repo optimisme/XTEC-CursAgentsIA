@@ -1,0 +1,11 @@
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let gameStarted = false;
+const keys = {};
+let player;
+let enemies = [];
+let bullets = [];
+let animationFrameId;
+const GAME_WIDTH = 800;
+const GAME_HEIGHT = 600;
+let screenWidth, screenHeight;

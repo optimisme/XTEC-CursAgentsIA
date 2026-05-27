@@ -5,4 +5,4 @@
 
 ## Example
 
-- [ ] Add a small HTML exercise and validate it with `html-check`.
+- [ ] Add a small HTML exercise and validate it with `web-check`.

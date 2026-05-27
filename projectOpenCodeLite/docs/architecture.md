@@ -10,4 +10,4 @@ The project keeps the workflow simple:
 - no subagents;
 - no built-in edit tool;
 - file changes through the `safe-edit` MCP;
-- HTML validation through the `html-check` MCP.
+- Web validation through the `web-check` MCP.

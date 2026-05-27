@@ -13,7 +13,7 @@ const projectRoot = realpathSync(path.resolve(serverDir, "../../.."));
 const voidTags = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
 
 const server = new McpServer({
-  name: "html-check",
+  name: "web-check",
   version: "1.0.0"
 });
 
@@ -188,10 +188,36 @@ function relativeProjectPath(filePath) {
   return path.relative(projectRoot, filePath) || ".";
 }
 
-function checkHtml({ file }) {
+function formatCheckResult(file, errors, okMessage) {
+  if (!errors.length) {
+    return `${file}: ${okMessage}`;
+  }
+
+  return `${file}: found ${errors.length} issue(s):\n${errors.map((error) => `- ${error}`).join("\n")}`;
+}
+
+function checkJsSyntax(js, filename) {
+  try {
+    new vm.Script(js, { filename });
+    return [];
+  } catch (error) {
+    return [`${filename} JavaScript syntax error: ${error.message}`];
+  }
+}
+
+function checkWeb({ file }) {
   const filePath = resolveProjectPath(file);
   if (!existsSync(filePath)) {
-    return `${file}: file does not exist. Create it first with safe-edit_safe_create_file_from_lines, then run html-check_check_html again.`;
+    return `${file}: file does not exist. Create it first, then run web-check_check_web again.`;
+  }
+
+  const ext = path.extname(filePath).toLowerCase();
+  if (ext === ".css") {
+    return formatCheckResult(file, checkCssSyntax(readFileSync(filePath, "utf8"), relativeProjectPath(filePath)), "CSS syntax looks OK.");
+  }
+
+  if (ext === ".js") {
+    return formatCheckResult(file, checkJsSyntax(readFileSync(filePath, "utf8"), relativeProjectPath(filePath)), "JavaScript syntax looks OK.");
   }
 
   const html = readFileSync(filePath, "utf8");
@@ -203,17 +229,13 @@ function checkHtml({ file }) {
     ...checkLocalStylesheets(html, filePath)
   ];
 
-  if (!errors.length) {
-    return `${file}: basic HTML structure, linked local assets, JavaScript syntax, and CSS syntax look OK.`;
-  }
-
-  return `${file}: found ${errors.length} issue(s):\n${errors.map((error) => `- ${error}`).join("\n")}`;
+  return formatCheckResult(file, errors, "basic HTML structure, linked local assets, JavaScript syntax, and CSS syntax look OK.");
 }
 
 server.registerTool(
-  "check_html",
+  "check_web",
   {
-    description: "Check a project HTML file for basic tag balance, local linked asset existence, inline/external JavaScript syntax errors, and inline/external CSS syntax errors.",
+    description: "Check a project HTML, CSS, or JavaScript file. HTML checks also follow linked local CSS and JS.",
     inputSchema: {
       file: z.string().min(1)
     }
@@ -221,7 +243,7 @@ server.registerTool(
   async (input) => {
     try {
       const parsed = z.object({ file: z.string().min(1) }).parse(input || {});
-      return textResult(checkHtml(parsed));
+      return textResult(checkWeb(parsed));
     } catch (error) {
       return textResult(formatError(error));
     }
@@ -230,23 +252,26 @@ server.registerTool(
 
 async function main() {
   if (process.argv.includes("--self-test")) {
-    const selfTestFile = ".opencode/mcp/html-check/self-test.html";
-    const selfTestScriptFile = ".opencode/mcp/html-check/self-test.js";
-    const selfTestCssFile = ".opencode/mcp/html-check/self-test.css";
+    const selfTestFile = ".opencode/mcp/web-check/self-test.html";
+    const selfTestScriptFile = ".opencode/mcp/web-check/self-test.js";
+    const selfTestCssFile = ".opencode/mcp/web-check/self-test.css";
     const selfTestPath = resolveProjectPath(selfTestFile);
     const selfTestScriptPath = resolveProjectPath(selfTestScriptFile);
     const selfTestCssPath = resolveProjectPath(selfTestCssFile);
     writeFileSync(selfTestScriptPath, "const externalOk = true;\n", "utf8");
     writeFileSync(selfTestCssPath, ".external-ok { color: rebeccapurple; }\n", "utf8");
     writeFileSync(selfTestPath, "<!DOCTYPE html><html><head><link rel=\"stylesheet\" href=\"self-test.css\"><style>.inline-ok { display: block; }</style></head><body><script>const ok = true;</script><script src=\"self-test.js\"></script></body></html>\n", "utf8");
-    const output = checkHtml({ file: selfTestFile });
+    const output = checkWeb({ file: selfTestFile });
+    const scriptOutput = checkWeb({ file: selfTestScriptFile });
+    const cssOutput = checkWeb({ file: selfTestCssFile });
     rmSync(selfTestPath);
     rmSync(selfTestScriptPath);
     rmSync(selfTestCssPath);
-    if (!output.includes("look OK")) {
-      throw new Error(output);
+    const combinedOutput = `${output}\n${scriptOutput}\n${cssOutput}`;
+    if (!combinedOutput.includes("basic HTML") || !combinedOutput.includes("JavaScript syntax looks OK") || !combinedOutput.includes("CSS syntax looks OK")) {
+      throw new Error(combinedOutput);
     }
-    console.log("html-check self-test passed");
+    console.log("web-check self-test passed");
     return;
   }
 

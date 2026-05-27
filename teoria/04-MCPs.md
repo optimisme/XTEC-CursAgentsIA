@@ -80,7 +80,7 @@ En `projecteOpenCode`, els MCPs locals principals combinen validació i memòria
 
 | MCP | Ús |
 | --- | --- |
-| `html-check` | Comprovar fitxers HTML després d'una modificació |
+| `web-check` | Comprovar pàgines web després d'una modificació |
 | `java-check` | Comprovar fitxers Java després d'una modificació |
 | `memory` | Recuperar i guardar memòria curada del projecte |
 
@@ -90,9 +90,9 @@ La configuració a `opencode.json` és:
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "html-check": {
+    "web-check": {
       "type": "local",
-      "command": ["node", ".opencode/mcp/html-check/server.js"],
+      "command": ["node", ".opencode/mcp/web-check/server.js"],
       "enabled": true
     },
     "java-check": {
@@ -123,7 +123,7 @@ Un flux habitual seria:
 Per exemple, es pot demanar a OpenCode:
 
 ```text
-Update webs/index.html and then run html-check on the changed file.
+Update webs/index.html and then run web-check on the changed file.
 ```
 
 ### MCPs per a models petits
@@ -383,7 +383,7 @@ La carpeta dels MCPs locals del projecte queda dins `.opencode/mcp/`. En el proj
 projecte/
 └── .opencode/
     └── mcp/
-        ├── html-check
+        ├── web-check
         └── java-check
 ```
 

@@ -44,11 +44,11 @@ It demonstrates a richer setup with subagents, skills, commands, validation MCPs
 - For current web data, do not invent missing values. If search snippets do not contain the needed fields, use `webfetch` on a specific result URL.
 - For ambiguous or conflicting prompts, make a short internal checklist and choose the smallest concrete interpretation that preserves explicit constraints.
 - Do not stop after `glob` finds a target file; read it, edit it, verify it, and report the result.
-- For HTML changes, run `html-check_check_html` on each changed HTML file before claiming completion.
+- For HTML/CSS/JS changes, run `web-check_check_web` before claiming completion.
 - Use the memory MCP as a source of hints, not as proof. Verify the current files before editing.
 - Do not store secrets, credentials, personal data or temporary state in memory.
 - Verify every changed file before claiming completion.
-- For HTML files, run `html-check_check_html` after editing.
+- For HTML/CSS/JS, run `web-check_check_web` after editing.
 - End with 1-2 short lines, such as `Done: changed <files>. Verified: <checks>.`
 - If blocked, end with `Stopped: <blocker>. Completed: <what changed or none>.`
 

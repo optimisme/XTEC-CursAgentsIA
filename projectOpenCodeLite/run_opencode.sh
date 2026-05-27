@@ -36,7 +36,7 @@ if [ "${1:-}" = "run" ]; then
 
   final_args=(run)
   if [ "$has_agent" -eq 0 ]; then
-    final_args+=(--agent goal)
+    final_args+=(--agent goal-lite)
   fi
   final_args+=("${args[@]}")
 

@@ -75,7 +75,7 @@ Available commands: `supercommit`, `listpng`.
 
 Available tools: `code-stats`.
 
-Available MCPs: `html-check`, `java-check`, `memory`.
+Available MCPs: `web-check`, `java-check`, `memory`.
 
 ## Rules
 

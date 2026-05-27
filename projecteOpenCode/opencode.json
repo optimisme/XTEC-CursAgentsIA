@@ -18,11 +18,11 @@
     "docs/*.md"
   ],
   "mcp": {
-    "html-check": {
+    "web-check": {
       "type": "local",
       "command": [
         "node",
-        ".opencode/mcp/html-check/server.js"
+        ".opencode/mcp/web-check/server.js"
       ],
       "enabled": true
     },

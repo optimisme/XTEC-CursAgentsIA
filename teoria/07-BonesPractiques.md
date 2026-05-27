@@ -422,7 +422,7 @@ PreToolUse sobre memory_write:
 PostToolUse sobre edit:
   llegir el fitxer modificat i executar el validador corresponent
 
-PostToolUse sobre html-check:
+PostToolUse sobre web-check:
   si falla, tornar a observar l'error abans de continuar
 ```
 

@@ -99,9 +99,9 @@ Exemple de la part de configuració que sí queda al projecte normal:
     "skill": "allow"
   },
   "mcp": {
-    "html-check": {
+    "web-check": {
       "type": "local",
-      "command": ["node", ".opencode/mcp/html-check/server.js"],
+      "command": ["node", ".opencode/mcp/web-check/server.js"],
       "enabled": true
     },
     "java-check": {
@@ -467,7 +467,7 @@ La configuració lite redueix deliberadament el context de l'agent:
 * `default_agent`: `"goal-lite"`;
 * permisos denegats: `bash`, `edit`, `task`, `todowrite`, `lsp` i `skill`;
 * instruccions carregades: només `AGENTS.md`;
-* MCPs essencials: `safe-edit` i `html-check`.
+* MCPs essencials: `safe-edit` i `web-check`.
 
 Els proveïdors locals viuen en aquesta carpeta:
 
