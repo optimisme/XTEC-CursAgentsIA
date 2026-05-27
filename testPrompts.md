@@ -1,4 +1,4 @@
-Create a new file named clock.html at webs folder that shows an analog circular watch updated every second and drawn on a canvas, make it look like a swiss trains watch search on the internet to know how it is.
+Create a new file named clock.html at webs folder that shows an analog circular watch updated every second and drawn on a canvas, make it look like a swiss trains watch, search on the internet the look of swiss train station clocks.
 
 Create a new file named snake.html at webs folder with a playable Snake game using only HTML, CSS, and JavaScript. Use canvas, keyboard arrows to control direction, the game doesn't start until user presses a direction key, the game has a score display, pause/restart buttons, and run the web checker.
 
