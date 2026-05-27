@@ -129,7 +129,7 @@ Exemple de la part de configuració que sí queda al projecte normal:
 
 ```bash
 vllm serve Qwen/Qwen3-8B-AWQ \
-  --served-model-name qwen3-8b-local \
+  --served-model-name active-model \
   --host 0.0.0.0 \
   --port 8000
 ```
@@ -137,7 +137,7 @@ vllm serve Qwen/Qwen3-8B-AWQ \
 El paràmetre més important per a OpenCode és:
 
 ```bash
---served-model-name qwen3-8b-local
+--served-model-name active-model
 ```
 
 Aquest és el nom que després s'ha de fer servir a `opencode.json`.
@@ -190,7 +190,7 @@ services:
     command:
       - |
         exec vllm serve Qwen/Qwen3-8B-AWQ \
-          --served-model-name qwen3-8b-local \
+          --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000
 ```
@@ -204,6 +204,8 @@ Els fitxers del projecte són:
 | `docker/docker-compose-qwen3-8b.yml`   | `Qwen/Qwen3-8B-AWQ` |
 | `docker/docker-compose-qwen3-14b.yml`  | `Qwen/Qwen3-14B-AWQ` |
 | `docker/docker-compose-qwen35-9b.yml`  | `QuantTrio/Qwen3.5-9B-AWQ` |
+| `docker/docker-compose-qwen35-9b-quanttrio.yml` | `QuantTrio/Qwen3.5-9B-AWQ`, configuració 16GB separada |
+| `docker/docker-compose-qwen35-9b-quanttrio-spark.yml` | `QuantTrio/Qwen3.5-9B-AWQ`, optimitzat per NVIDIA Spark / GB10 |
 | `docker/docker-compose-qwen36-27b.yml` | `Qwen/Qwen3.6-27B` |
 
 El model de 27B està pensat per a màquines amb més VRAM. En una GPU petita, normalment no cabrà.
@@ -231,7 +233,7 @@ Exemples:
 ./docker/run_docker.sh qwen3-8b ps
 ```
 
-Per defecte, l'script arrenca `gemma4-8b` i atura els altres contenidors coneguts abans d'iniciar el nou model.
+Per defecte, l'script arrenca `qwen35-9b-quanttrio-spark` i atura els altres contenidors coneguts abans d'iniciar el nou model.
 
 Això és important perquè diversos models poden intentar usar el mateix port `8000` o la mateixa GPU. Amb aquest script només es pot executar un model.
 

@@ -46,7 +46,7 @@ services:
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
         exec vllm serve Qwen/Qwen3.6-27B \
-          --served-model-name Qwen/Qwen3.6-27B \
+          --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --dtype bfloat16 \

@@ -13,6 +13,10 @@
     "lsp": "allow",
     "skill": "allow"
   },
+  "compaction": {
+    "auto": true,
+    "prune": true
+  },
   "instructions": [
     "AGENTS.md",
     "docs/*.md"

@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_PROJECT="vllm"
-DEFAULT_MODEL="gemma4-8b"
+DEFAULT_MODEL="qwen35-9b-quanttrio-spark"
 MODEL="${1:-$DEFAULT_MODEL}"
 ACTION="${2:-restart}"
 
@@ -14,9 +14,11 @@ Usage:
 
 Models:
   qwen35-9b
+  qwen35-9b-quanttrio
+  qwen35-9b-quanttrio-spark    default
   qwen3-8b
   qwen3-14b
-  gemma4-8b    default
+  gemma4-8b
   gemma4-8b-spark
   qwen3.6-27b   intended for larger GPU hosts
 
@@ -45,6 +47,8 @@ compose_file_for() {
 
   case "$model" in
     qwen35-9b) printf '%s\n' "docker-compose-qwen35-9b.yml" ;;
+    qwen35-9b-quanttrio) printf '%s\n' "docker-compose-qwen35-9b-quanttrio.yml" ;;
+    qwen35-9b-quanttrio-spark) printf '%s\n' "docker-compose-qwen35-9b-quanttrio-spark.yml" ;;
     qwen3-8b) printf '%s\n' "docker-compose-qwen3-8b.yml" ;;
     qwen3-14b) printf '%s\n' "docker-compose-qwen3-14b.yml" ;;
     gemma4-8b) printf '%s\n' "docker-compose-gemma4-8b.yml" ;;
@@ -64,6 +68,8 @@ container_for() {
 
   case "$model" in
     qwen35-9b) printf '%s\n' "qwen35_9b_vllm" ;;
+    qwen35-9b-quanttrio) printf '%s\n' "qwen35_9b_quanttrio_vllm" ;;
+    qwen35-9b-quanttrio-spark) printf '%s\n' "qwen35_9b_quanttrio_spark_vllm" ;;
     qwen3-8b) printf '%s\n' "qwen3_8b_awq_vllm" ;;
     qwen3-14b) printf '%s\n' "qwen3_14b_awq_vllm" ;;
     gemma4-8b) printf '%s\n' "gemma4_8b_vllm" ;;
@@ -82,6 +88,8 @@ stop_all() {
   echo "Stopping known vLLM compose stacks..."
   for file in \
     docker-compose-qwen35-9b.yml \
+    docker-compose-qwen35-9b-quanttrio.yml \
+    docker-compose-qwen35-9b-quanttrio-spark.yml \
     docker-compose-qwen3-8b.yml \
     docker-compose-qwen3-14b.yml \
     docker-compose-gemma4-8b.yml \
