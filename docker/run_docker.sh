@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_PROJECT="vllm"
-DEFAULT_MODEL="gemma4-26b-a4b-spark"
+DEFAULT_MODEL="gemma4-31b-spark"
 MODEL="${1:-$DEFAULT_MODEL}"
 ACTION="${2:-restart}"
 
@@ -18,7 +18,8 @@ Models:
   qwen35-9b-quanttrio-spark
   qwen3-8b
   qwen3-14b-spark
-  gemma4-26b-a4b-spark    default
+  gemma4-31b-spark         default
+  gemma4-26b-a4b-spark
   gemma4-8b
   gemma4-8b-spark
   qwen3.6-27b-spark
@@ -52,6 +53,7 @@ compose_file_for() {
     qwen35-9b-quanttrio-spark) printf '%s\n' "docker-compose-qwen35-9b-quanttrio-spark.yml" ;;
     qwen3-8b) printf '%s\n' "docker-compose-qwen3-8b.yml" ;;
     qwen3-14b-spark) printf '%s\n' "docker-compose-qwen3-14b-spark.yml" ;;
+    gemma4-31b-spark) printf '%s\n' "docker-compose-gemma4-31b-spark.yml" ;;
     gemma4-26b-a4b-spark) printf '%s\n' "docker-compose-gemma4-26b-a4b-spark.yml" ;;
     gemma4-8b) printf '%s\n' "docker-compose-gemma4-8b.yml" ;;
     gemma4-8b-spark) printf '%s\n' "docker-compose-gemma4-8b-spark.yml" ;;
@@ -74,6 +76,7 @@ container_for() {
     qwen35-9b-quanttrio-spark) printf '%s\n' "qwen35_9b_quanttrio_spark_vllm" ;;
     qwen3-8b) printf '%s\n' "qwen3_8b_awq_vllm" ;;
     qwen3-14b-spark) printf '%s\n' "qwen3_14b_awq_vllm" ;;
+    gemma4-31b-spark) printf '%s\n' "gemma4_31b_spark_vllm" ;;
     gemma4-26b-a4b-spark) printf '%s\n' "gemma4_26b_a4b_spark_vllm" ;;
     gemma4-8b) printf '%s\n' "gemma4_8b_vllm" ;;
     gemma4-8b-spark) printf '%s\n' "gemma4_8b_spark_vllm" ;;
@@ -95,6 +98,7 @@ stop_all() {
     docker-compose-qwen35-9b-quanttrio-spark.yml \
     docker-compose-qwen3-8b.yml \
     docker-compose-qwen3-14b-spark.yml \
+    docker-compose-gemma4-31b-spark.yml \
     docker-compose-gemma4-26b-a4b-spark.yml \
     docker-compose-gemma4-8b.yml \
     docker-compose-gemma4-8b-spark.yml \

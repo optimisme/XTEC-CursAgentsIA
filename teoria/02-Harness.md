@@ -93,6 +93,46 @@ Keep the project simple. Do not add external dependencies. Ask before changing t
 
 <img src="assets/02-dgrm-components-harness.svg" alt="Components del harness" class="images">
 
+## Carpetes del projecte i comportament de l'agent
+
+Les carpetes pròpies del projecte no són només arxius per a persones. També poden orientar el comportament de l'agent si `AGENTS.md`, els agents o els subagents les mencionen explícitament.
+
+Per exemple, una carpeta `docs/` pot contenir arquitectura, decisions tècniques o guies d'ús. Aleshores `AGENTS.md` pot indicar:
+
+```md
+Before changing architecture, read docs/architecture.md.
+When adding a new feature, update the related documentation in docs/.
+When changing an existing feature, check whether docs/ needs to be updated.
+```
+
+Una carpeta `tests/` o `test/` pot definir com es valida el projecte. Aleshores `AGENTS.md` pot indicar:
+
+```md
+When adding a new feature, add or update tests that validate it.
+When modifying a feature, run the related tests before reporting completion.
+Do not mark a task as complete if relevant tests fail.
+```
+
+Els subagents també poden aprofitar aquesta separació:
+
+| Subagent | Relació amb carpetes del projecte |
+| --- | --- |
+| `docs-reviewer` | Revisa si els canvis de codi exigeixen actualitzar `docs/` |
+| `tester` | Busca i executa els tests relacionats dins `tests/` |
+| `architect` | Consulta `docs/architecture.md` abans de proposar canvis grans |
+
+La regla pràctica és:
+
+| Carpeta | Què conté | Com afecta el harness |
+| --- | --- | --- |
+| `docs/` | Coneixement estable del projecte | `AGENTS.md` pot obligar l'agent a llegir o actualitzar documentació |
+| `tests/` / `test/` | Validacions del projecte | `AGENTS.md` pot exigir afegir o executar tests segons el canvi |
+| `.opencode/agents/` | Perfils d'agents | Pot definir subagents especialitzats en docs, tests o revisió |
+| `.opencode/commands/` | Prompts reutilitzables | Pot tenir comandes com `/docs`, `/tests` o `/fix-tests` |
+| `.opencode/tools/` | Accions executables | Pot tenir eines per validar docs, executar tests o buscar cobertura |
+
+Per tant, `docs/` i `tests/` no formen part del harness en sentit estricte, però el harness pot convertir-les en part del workflow de l'agent.
+
 # Skills (habilitats)
 
 Una **skill** serveix per donar a l’agent més experiència en una tasca específica. Normalment és contingut en Markdown amb instruccions, criteris i bones pràctiques.
