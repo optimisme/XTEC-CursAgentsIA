@@ -24,18 +24,21 @@ Rules:
 3. Use subagents only for focused web research, read-only web quality review, or one-file safe-edit patches.
 4. Use safe-edit for every file change, either directly or through the `safe-editor` subagent.
 5. New files: create a short scaffold, verify it, then add small chunks.
-6. Existing files: read lines, edit one small range, verify, then re-read before the next edit.
-7. Edit complete units in any language: element, selector, statement, function, handler, property, or block.
-8. Treat line numbers as stale after every write.
-9. Verify every changed file with `safe-edit_safe_verify_file` before final.
-10. For HTML/CSS/JS, also run `web-check_check_web` on the HTML entry file before final.
-11. For nontrivial HTML/CSS/JS work, ask the `web-quality` subagent for a read-only review before final.
-12. If the prompt requires internet research, ask the `web-search` subagent for compact sourced facts before editing.
-13. For isolated one-file changes, you may ask the `safe-editor` subagent to apply the patch after you decide the exact file and change.
-14. Re-read and verify the changed file yourself after `safe-editor` returns.
-15. In `lines`, put one physical file line per item. Do not place `\n` inside a `lines` item.
-16. For JS longer than about 80 lines, create a small scaffold first, then add functions in chunks of about 25-50 short lines.
-17. No placeholders, npm installs, invented validators, or long plans.
+6. Existing files with one edit: read lines, edit one complete unit, verify, then stop or re-read before any next edit.
+7. Existing files with multiple edits: prefer one `safe-edit_safe_apply_patch` patch with context instead of several line-number edits.
+8. If using line-number edit tools more than once, call `safe-edit_safe_verify_file` or `safe-edit_safe_read_lines` after every write and base the next edit only on the returned line numbers.
+9. Never use line numbers remembered from before a write.
+10. Edit complete units in any language: element, selector, statement, function, handler, property, or block.
+11. Verify every changed file with `safe-edit_safe_verify_file` before final.
+12. Check the verified content against the requested change before saying done.
+13. For HTML/CSS/JS, also run `web-check_check_web` on the HTML entry file before final.
+14. For nontrivial HTML/CSS/JS work, ask the `web-quality` subagent for a read-only review before final.
+15. If the prompt requires internet research, ask the `web-search` subagent for compact sourced facts before editing.
+16. For isolated one-file changes, you may ask the `safe-editor` subagent to apply the patch after you decide the exact file and change.
+17. Re-read and verify the changed file yourself after `safe-editor` returns.
+18. In `lines`, put one physical file line per item. Do not place `\n` inside a `lines` item.
+19. For JS longer than about 80 lines, create a small scaffold first, then add functions in chunks of about 25-50 short lines.
+20. No placeholders, npm installs, invented validators, or long plans.
 
 Tool reminders:
 
@@ -45,6 +48,7 @@ Tool reminders:
 - `safe-edit_safe_read_lines`: `{ "file": "webs/name.ext", "start": 1, "end": 20 }`
 - `safe-edit_safe_insert_after`: `{ "file": "webs/name.ext", "line": 10, "content": "new lines" }`
 - `safe-edit_safe_replace_lines`: `{ "file": "webs/name.ext", "start": 1, "end": 10, "content": "replacement text" }`
+- `safe-edit_safe_apply_patch`: `{ "patch": "diff --git a/webs/name.ext b/webs/name.ext\n..." }`
 - `safe-edit_safe_verify_file`: `{ "file": "webs/name.ext" }`
 - `web-check_check_web`: `{ "file": "webs/name.ext" }`
 

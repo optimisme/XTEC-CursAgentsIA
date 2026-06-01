@@ -10,6 +10,7 @@ import { z } from "zod";
 const serverDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = realpathSync(path.resolve(serverDir, "../../.."));
 const backupDir = path.join(serverDir, "backups");
+const filesNeedingFreshRead = new Set();
 
 const fileRangeSchema = {
   file: z.string().min(1),
@@ -64,6 +65,25 @@ function resolveProjectPath(file) {
 
 function relativeProjectPath(filePath) {
   return path.relative(projectRoot, filePath) || ".";
+}
+
+function staleReadKey(filePath) {
+  return relativeProjectPath(filePath);
+}
+
+function requireFreshRead(filePath) {
+  const key = staleReadKey(filePath);
+  if (filesNeedingFreshRead.has(key)) {
+    throw new Error(`Line numbers for ${key} are stale after the previous write. Call safe_read_lines or safe_verify_file on this file before editing it again.`);
+  }
+}
+
+function markNeedsFreshRead(filePath) {
+  filesNeedingFreshRead.add(staleReadKey(filePath));
+}
+
+function markFreshRead(filePath) {
+  filesNeedingFreshRead.delete(staleReadKey(filePath));
 }
 
 function readTextFile(filePath) {
@@ -152,6 +172,7 @@ function createFile({ file, content }) {
   validateHtmlForWrite(filePath, content);
   mkdirSync(path.dirname(filePath), { recursive: true });
   writeFileSync(filePath, content, "utf8");
+  markNeedsFreshRead(filePath);
 
   return [
     `Created ${relativeProjectPath(filePath)}.`,
@@ -178,6 +199,7 @@ function appendLines({ file, lines }) {
   if (!existsSync(filePath)) {
     throw new Error(`File does not exist: ${relativeProjectPath(filePath)}. Create it first with safe_create_file or safe_create_file_from_lines.`);
   }
+  requireFreshRead(filePath);
 
   const original = readTextFile(filePath);
   const { lines: existing, newline, hasFinalNewline } = splitLines(original);
@@ -186,6 +208,7 @@ function appendLines({ file, lines }) {
   validateHtmlForWrite(filePath, joinLines(existing, newline, hasFinalNewline || physicalLines.length > 0));
   const backupPath = createBackup(filePath);
   writeEditedFile(filePath, existing, newline, hasFinalNewline || physicalLines.length > 0);
+  markNeedsFreshRead(filePath);
 
   const start = existing.length - physicalLines.length + 1;
   return [
@@ -200,12 +223,14 @@ function readRange({ file, start, end }) {
   const { lines } = splitLines(readTextFile(filePath));
   const adjustedEnd = Math.min(end, lines.length);
   assertRange(start, adjustedEnd, lines.length);
+  markFreshRead(filePath);
   const prefix = adjustedEnd === end ? "" : `Requested end ${end} adjusted to file end ${lines.length}.\n`;
   return `${prefix}${numberLines(lines.slice(start - 1, adjustedEnd), start)}`;
 }
 
 function replaceLines({ file, start, end, content }) {
   const filePath = resolveProjectPath(file);
+  requireFreshRead(filePath);
   const original = readTextFile(filePath);
   const { lines, newline, hasFinalNewline } = splitLines(original);
   assertRange(start, end, lines.length);
@@ -215,6 +240,7 @@ function replaceLines({ file, start, end, content }) {
   validateHtmlForWrite(filePath, joinLines(lines, newline, hasFinalNewline));
   const backupPath = createBackup(filePath);
   writeEditedFile(filePath, lines, newline, hasFinalNewline);
+  markNeedsFreshRead(filePath);
 
   const newEnd = start + replacement.length - 1;
   const range = replacement.length ? `${start}-${newEnd}` : `${start - 1}`;
@@ -227,6 +253,7 @@ function replaceLines({ file, start, end, content }) {
 
 function insertAfter({ file, line, content }) {
   const filePath = resolveProjectPath(file);
+  requireFreshRead(filePath);
   const original = readTextFile(filePath);
   const { lines, newline, hasFinalNewline } = splitLines(original);
 
@@ -239,6 +266,7 @@ function insertAfter({ file, line, content }) {
   validateHtmlForWrite(filePath, joinLines(lines, newline, hasFinalNewline || inserted.length > 0));
   const backupPath = createBackup(filePath);
   writeEditedFile(filePath, lines, newline, hasFinalNewline || inserted.length > 0);
+  markNeedsFreshRead(filePath);
 
   const start = line + 1;
   const end = line + inserted.length;
@@ -251,6 +279,7 @@ function insertAfter({ file, line, content }) {
 
 function deleteLines({ file, start, end }) {
   const filePath = resolveProjectPath(file);
+  requireFreshRead(filePath);
   const original = readTextFile(filePath);
   const { lines, newline, hasFinalNewline } = splitLines(original);
   assertRange(start, end, lines.length);
@@ -259,6 +288,7 @@ function deleteLines({ file, start, end }) {
   validateHtmlForWrite(filePath, joinLines(lines, newline, hasFinalNewline && lines.length > 0));
   const backupPath = createBackup(filePath);
   writeEditedFile(filePath, lines, newline, hasFinalNewline && lines.length > 0);
+  markNeedsFreshRead(filePath);
 
   return [
     `Deleted ${end - start + 1} line(s) from ${relativeProjectPath(filePath)}.`,
@@ -296,6 +326,9 @@ function applyPatch({ patch }) {
   if (!files.length) {
     throw new Error("No file paths found in patch.");
   }
+  for (const file of files) {
+    requireFreshRead(resolveProjectPath(file));
+  }
 
   try {
     execFileSync("git", ["apply", "--check", "-"], {
@@ -323,6 +356,9 @@ function applyPatch({ patch }) {
     encoding: "utf8",
     stdio: ["pipe", "pipe", "pipe"]
   });
+  for (const file of files) {
+    markNeedsFreshRead(resolveProjectPath(file));
+  }
 
   return [
     `Applied patch to ${files.length} file(s): ${files.join(", ")}`,
@@ -343,6 +379,7 @@ function verifyFile({ file, start, end }) {
   }
 
   assertRange(first, last, lines.length);
+  markFreshRead(filePath);
   return numberLines(lines.slice(first - 1, last), first);
 }
 
@@ -453,7 +490,7 @@ registerTool(
 
 registerTool(
   "safe_replace_lines",
-  "Replace an inclusive 1-based line range after creating a backup.",
+  "Replace an inclusive 1-based line range after creating a backup. Line numbers become stale after every write. If you need more than one edit in a file, prefer safe_apply_patch, or verify/read the file again after this tool before using another line-number edit.",
   {
     ...fileRangeSchema,
     content: z.string()
@@ -463,7 +500,7 @@ registerTool(
 
 registerTool(
   "safe_insert_after",
-  "Insert content after the given 1-based line number after creating a backup. Use line 0 to insert at the top.",
+  "Insert content after the given 1-based line number after creating a backup. Use line 0 to insert at the top. Line numbers become stale after this write. If you need another edit in the same file, verify/read the file again before choosing the next line number.",
   {
     file: z.string().min(1),
     line: z.number().int().min(0),
@@ -474,14 +511,14 @@ registerTool(
 
 registerTool(
   "safe_delete_lines",
-  "Delete an inclusive 1-based line range after creating a backup.",
+  "Delete an inclusive 1-based line range after creating a backup. Use only line numbers from the current file state. If any previous write happened, verify/read the file again before deleting. For multi-edit changes, prefer safe_apply_patch.",
   fileRangeSchema,
   deleteLines
 );
 
 registerTool(
   "safe_apply_patch",
-  "Validate a unified diff with git apply --check, then apply it and back up touched existing files.",
+  "Validate a unified diff with git apply --check, then apply it and back up touched existing files. Prefer this for multiple edits in one file because context lines prevent stale-line-number mistakes.",
   {
     patch: z.string().min(1)
   },
@@ -519,13 +556,25 @@ async function main() {
     if (!existsSync(selfTestPath)) {
       throw new Error("safe_create_file self-test failed.");
     }
+    verifyFile({ file: selfTestFile });
     appendLines({ file: selfTestFile, lines: ["append"] });
     const selfTestContent = readTextFile(selfTestPath);
     if (!selfTestContent.includes("append")) {
       throw new Error("safe_append_lines self-test failed.");
     }
+    verifyFile({ file: selfTestFile });
     replaceLines({ file: selfTestFile, start: 1, end: 2, content: "one\ntwo\nthree" });
+    try {
+      insertAfter({ file: selfTestFile, line: 2, content: "must fail before fresh read" });
+      throw new Error("stale line-number guard self-test failed.");
+    } catch (error) {
+      if (!String(error.message).includes("Line numbers") || !String(error.message).includes("stale")) {
+        throw error;
+      }
+    }
+    verifyFile({ file: selfTestFile });
     insertAfter({ file: selfTestFile, line: 2, content: "inserted" });
+    verifyFile({ file: selfTestFile });
     deleteLines({ file: selfTestFile, start: 1, end: 1 });
     const lineEditContent = readTextFile(selfTestPath);
     if (lineEditContent !== "two\ninserted\nthree\n") {

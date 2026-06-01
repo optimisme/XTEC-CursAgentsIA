@@ -8,6 +8,7 @@ Inventari dels models configurats a `docker/docker-compose-*.yml`.
 | `gemma4-26b-a4b-spark` | `google/gemma-4-26B-A4B-it` | 26B total, A4B actius | 96.20 GB | Spark BF16, `gemma4-cu130` | BF16, MoE/A4B | 4 seq / 4096 tokens |
 | `gemma4-8b-spark` | `google/gemma-4-E4B-it` | E4B | 29.85 GB | Spark BF16, `gemma4-cu130` | BF16 | 8 seq / 4096 tokens |
 | `gemma4-8b` | `google/gemma-4-E4B-it` | E4B | 29.85 GB | Local BitsAndBytes, `vllm-openai:latest` | BnB quantitzat en carrega | 2 seq / 2048 tokens |
+| `qwopus35-4b-coder` | `Jackrong/Qwopus3.5-4B-Coder` | 4B | n/d | Local/Spark BF16, `cu130-nightly` | BF16, no quantitzat | 8 seq / 4096 tokens |
 | `qwen3-8b` | `Qwen/Qwen3-8B-AWQ` | 8B | 5.69 GB | Local AWQ | AWQ | 2 seq / 2048 tokens |
 | `qwen3-14b-spark` | `Qwen/Qwen3-14B-AWQ` | 14B | 9.31 GB | Spark AWQ | AWQ | 2 seq / 2048 tokens |
 | `qwen35-9b` | `QuantTrio/Qwen3.5-9B-AWQ` | 9B | 11.55 GB | Local AWQ | AWQ | 2 seq / 2048 tokens |
@@ -35,4 +36,5 @@ Inventari dels models configurats a `docker/docker-compose-*.yml`.
 
 - Els Gemma 4 usen `--reasoning-parser gemma4`, `--tool-call-parser gemma4` i `examples/tool_chat_template_gemma4.jinja`.
 - Els Qwen usen parsers `qwen3`, `qwen3_coder` o `hermes` segons el compose.
+- `qwopus35-4b-coder` usa el checkpoint BF16 de `Jackrong/Qwopus3.5-4B-Coder`, un fine-tune Qwen3.5-family orientat a coding i tool-use. La configuracio prova tool calling amb `--tool-call-parser qwen3_coder`.
 - Els models Spark grans fan servir `--kv-cache-dtype fp8` per reduir memoria de KV cache.

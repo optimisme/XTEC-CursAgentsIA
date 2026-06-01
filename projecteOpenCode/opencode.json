@@ -1,53 +1,69 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "model": "ieti-agents/active-model",
+  "enabled_providers": ["ieti-agents"],
   "permission": {
     "read": "allow",
     "grep": "allow",
     "glob": "allow",
+    "bash": "deny",
+    "edit": "deny",
+    "task": "allow",
+    "todowrite": "deny",
     "webfetch": "allow",
     "websearch": "allow",
-    "bash": "allow",
-    "edit": "allow",
-    "task": "allow",
-    "todowrite": "allow",
-    "lsp": "allow",
-    "skill": "allow"
+    "lsp": "deny",
+    "skill": "deny"
   },
   "compaction": {
     "auto": true,
-    "prune": true
+    "prune": true,
+    "reserved": 4096
   },
+  "snapshot": false,
   "instructions": [
-    "AGENTS.md",
-    "docs/*.md"
+    "AGENTS.md"
   ],
+  "provider": {
+    "ieti-agents": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "IETI Agents",
+      "options": {
+        "baseURL": "https://agents.ieti.site/v1",
+        "apiKey": "{env:IETI_AGENT_KEY}",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          },
+          "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": false
+        }
+      }
+    }
+  },
   "mcp": {
+    "safe-edit": {
+      "type": "local",
+      "command": [
+        "node",
+        ".opencode/mcp/safe-edit/server.js"
+      ],
+      "enabled": false
+    },
     "web-check": {
       "type": "local",
       "command": [
         "node",
         ".opencode/mcp/web-check/server.js"
       ],
-      "enabled": true
-    },
-    "java-check": {
-      "type": "local",
-      "command": [
-        "node",
-        ".opencode/mcp/java-check/server.js"
-      ],
-      "enabled": true
-    },
-    "memory": {
-      "type": "local",
-      "command": [
-        "node",
-        ".opencode/mcp/memory/server.js"
-      ],
-      "enabled": true,
-      "environment": {
-        "MEMORY_DIR": "memory"
-      }
+      "enabled": false
     }
   }
 }

@@ -22,25 +22,7 @@ source "$KEYS_FILE"
 set +a
 
 if [ "${1:-}" = "run" ]; then
-  args=("${@:2}")
-  has_agent=0
-
-  for arg in "${args[@]}"; do
-    if [ "$arg" = "--agent" ]; then
-      has_agent=1
-    fi
-    case "$arg" in
-      --agent=*) has_agent=1 ;;
-    esac
-  done
-
-  final_args=(run)
-  if [ "$has_agent" -eq 0 ]; then
-    final_args+=(--agent goal-lite)
-  fi
-  final_args+=("${args[@]}")
-
-  exec opencode "${final_args[@]}"
+  exec opencode "$@"
 fi
 
 exec opencode "$@"

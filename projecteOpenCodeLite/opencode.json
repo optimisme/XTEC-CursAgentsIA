@@ -21,6 +21,7 @@
     "prune": true,
     "reserved": 4096
   },
+  "snapshot": false,
   "instructions": [
     "AGENTS.md"
   ],

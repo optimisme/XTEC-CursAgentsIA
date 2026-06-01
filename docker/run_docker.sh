@@ -22,6 +22,7 @@ Models:
   gemma4-26b-a4b-spark
   gemma4-8b
   gemma4-8b-spark
+  qwopus35-4b-coder
   qwen3.6-27b-spark
 
 Actions:
@@ -57,6 +58,7 @@ compose_file_for() {
     gemma4-26b-a4b-spark) printf '%s\n' "docker-compose-gemma4-26b-a4b-spark.yml" ;;
     gemma4-8b) printf '%s\n' "docker-compose-gemma4-8b.yml" ;;
     gemma4-8b-spark) printf '%s\n' "docker-compose-gemma4-8b-spark.yml" ;;
+    qwopus35-4b-coder) printf '%s\n' "docker-compose-qwopus35-4b-coder.yml" ;;
     qwen3.6-27b-spark) printf '%s\n' "docker-compose-qwen36-27b-spark.yml" ;;
     *)
       echo "Unknown model: $model" >&2
@@ -80,6 +82,7 @@ container_for() {
     gemma4-26b-a4b-spark) printf '%s\n' "gemma4_26b_a4b_spark_vllm" ;;
     gemma4-8b) printf '%s\n' "gemma4_8b_vllm" ;;
     gemma4-8b-spark) printf '%s\n' "gemma4_8b_spark_vllm" ;;
+    qwopus35-4b-coder) printf '%s\n' "qwopus35_4b_coder_vllm" ;;
     qwen3.6-27b-spark) printf '%s\n' "qwen36_27b_vllm" ;;
     *)
       echo "Unknown model: $model" >&2
@@ -102,6 +105,7 @@ stop_all() {
     docker-compose-gemma4-26b-a4b-spark.yml \
     docker-compose-gemma4-8b.yml \
     docker-compose-gemma4-8b-spark.yml \
+    docker-compose-qwopus35-4b-coder.yml \
     docker-compose-qwen36-27b-spark.yml
   do
     if [[ -f "$ROOT_DIR/$file" ]]; then
