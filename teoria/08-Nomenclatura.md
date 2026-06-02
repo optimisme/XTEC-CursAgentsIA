@@ -4,9 +4,17 @@ Definicions a conèixer:
 
 ---
 
+## Programació amb IA
+
+| Terme | Significat |
+| --- | --- | --- |
+| **Vibe coding** | Programar amb IA fiant-se del resultat que ha deixat el model. |
+| **Agentinc Engineering** | Spervisar la feina dels agents, entenent el resultat. |
+
+
 ## Conceptes d'agents
 
-| Terme | Significat curt | Exemple al curs |
+| Terme | Significat | Exemple al curs |
 | --- | --- | --- |
 | **Agent** | Sistema que usa un model, context i eines per avançar cap a un objectiu. | OpenCode modificant codi i executant tests. |
 | **Subagent** | Agent secundari especialitzat en una part de la tasca. | Un subagent revisor o explorador. |
@@ -25,7 +33,7 @@ Definicions a conèixer:
 
 ## Peces d'OpenCode
 
-| Terme | Significat curt | Exemple al curs |
+| Terme | Significat | Exemple al curs |
 | --- | --- | --- |
 | **OpenCode** | Eina per treballar amb agents de programació. | Sessió de terminal dins d'un projecte. |
 | **Mode Build** | Mode pensat per aplicar canvis reals. | Editar fitxers i executar ordres. |
@@ -44,7 +52,7 @@ Definicions a conèixer:
 
 ## Models i servidors
 
-| Terme | Significat curt | Exemple al curs |
+| Terme | Significat | Exemple al curs |
 | --- | --- | --- |
 | **Model** | Xarxa neuronal que genera text o decisions. | Gemma, Qwen o Qwopus. |
 | **LLM** | Model de llenguatge gran. | Un model capaç de respondre i programar. |
@@ -68,7 +76,7 @@ Definicions a conèixer:
 
 ## Nomenclatura dels models
 
-| Sigla o marca | Significat curt | Exemple al curs |
+| Sigla o marca | Significat | Exemple al curs |
 | --- | --- | --- |
 | **B** | Milers de milions de paràmetres del model. | `31B`, `14B`, `8B`, `4B`. |
 | **A4B** | En un MoE, uns 4B paràmetres actius per token. | `gemma-4-26B-A4B-it`. |
