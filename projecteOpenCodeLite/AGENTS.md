@@ -17,21 +17,21 @@ Lite OpenCode setup for small local models.
 ## Editing
 
 - Use the safe_edit MCP only; built-in `edit` is disabled.
-- Use underscore tool names such as `safe_edit_safe_create_file` and `safe_edit_safe_create_file_from_lines`.
+- Use underscore tool names such as `safe_edit_safe_create_file`, `safe_edit_safe_create_file_from_lines`, and `safe_edit_safe_overwrite_file`.
 - For file changes, delegate to `safe_editor` with the `task` tool; `safe_editor` verifies its own file with safe_edit.
 - The `safe_editor` subagent applies one-file changes with safe_edit.
 - For multi-file HTML/CSS/JS apps, call `safe_editor` once per file in this order: HTML, CSS, JS.
 - The main agent still decides the change, re-reads the file, and performs final verification.
 - New self-contained HTML files: create the complete requested file in one `safe_edit_safe_create_file` call, then verify it. Do not create a scaffold first.
 - New simple text files: create the complete file in one `safe_edit_safe_create_file_from_lines` call, then verify it.
-- Existing files with one edit: read lines, replace/insert/delete one complete unit, verify, then stop or re-read before the next edit.
-- Existing files with multiple edits: prefer one `safe_edit_safe_apply_patch` patch with context instead of several line-number edits.
-- If using line-number edit tools more than once, call `safe_edit_safe_verify_file` or `safe_edit_safe_read_lines` after every write and base the next edit only on the returned line numbers.
+- Existing files: inspect the current file, write the complete replacement content with `safe_edit_safe_overwrite_file`, verify, then stop.
+- For very long existing files or explicitly surgical edits, use only `safe_edit_safe_insert_lines` and `safe_edit_safe_delete_lines`.
+- Do not use replace, append, patch, or built-in edit tools in Lite.
+- If using insert/delete lines, call `safe_edit_safe_verify_file` first and base the edit only on those returned line numbers.
+- Verify again after every insert/delete write before doing another line-number edit.
 - Never use line numbers remembered from before a write.
-- Replace complete units in any language: markup element, selector rule, statement, function, handler, object property, or small block.
-- Keep edit payloads small, about 25-50 short lines.
 - In `safe_edit_safe_create_file_from_lines`, each `lines` item must be one physical file line. Do not put embedded newlines inside one array item.
-- For larger existing files, use small semantic chunks only when a single complete patch would be too risky.
+- For larger existing files, prefer complete overwrite when practical; otherwise use current-line add/delete operations.
 
 ## Verification
 

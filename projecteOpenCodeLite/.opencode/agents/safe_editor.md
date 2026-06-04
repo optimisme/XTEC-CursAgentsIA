@@ -13,11 +13,10 @@ permission:
   websearch: deny
   safe_edit_safe_create_file: allow
   safe_edit_safe_create_file_from_lines: allow
-  safe_edit_safe_read_lines: allow
-  safe_edit_safe_insert_after: allow
-  safe_edit_safe_replace_lines: allow
+  safe_edit_safe_overwrite_file: allow
+  safe_edit_safe_overwrite_file_from_lines: allow
+  safe_edit_safe_insert_lines: allow
   safe_edit_safe_delete_lines: allow
-  safe_edit_safe_apply_patch: allow
   safe_edit_safe_verify_file: allow
   lsp: deny
   skill: deny
@@ -39,22 +38,23 @@ Rules:
 3. Do not inspect broad project context.
 4. Do not use built-in `edit`, shell commands, web tools, nested tasks, or validators other than `safe_edit`.
 5. For new files, call `safe_edit_safe_create_file` directly unless the caller explicitly asks for a tiny line-array file.
-6. For existing files, read only the relevant lines before editing.
-7. For existing files, apply one small semantic change at a time: element, selector rule, statement, function, handler, object property, or small block.
-8. Keep existing-file edit payloads small, about 25-50 short lines.
-9. Treat line numbers as stale after every write.
-10. Verify the changed file with `safe_edit_safe_verify_file` before returning.
-11. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and return `ok: true` if the requested content is already present.
-12. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, or `Stop`, stop immediately and return the blocker.
-13. If the change requires more than one file, broad search, or external research, stop and report the blocker.
+6. For normal existing files, inspect the current file, then call `safe_edit_safe_overwrite_file` once with the complete replacement content.
+7. For very long existing files or explicitly surgical edits, use only `safe_edit_safe_insert_lines` and `safe_edit_safe_delete_lines`.
+8. Do not use line replacement, append, patch, or built-in edit tools.
+9. Use line-number tools only with current line numbers from `safe_edit_safe_verify_file`, and verify again after each write.
+10. Treat line numbers as stale after every write.
+11. Verify the changed file with `safe_edit_safe_verify_file` before returning.
+12. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and return `ok: true` if the requested content is already present.
+13. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, or `Stop`, stop immediately and return the blocker.
+14. If the change requires more than one file, broad search, or external research, stop and report the blocker.
 
 Tool reminders:
 
 - `safe_edit_safe_create_file`: `{ "file": "webs/name.ext", "content": "complete file content" }`
 - `safe_edit_safe_create_file_from_lines`: `{ "file": "webs/name.ext", "lines": ["line 1", "line 2"] }`
-- `safe_edit_safe_read_lines`: `{ "file": "webs/name.ext", "start": 1, "end": 20 }`
-- `safe_edit_safe_insert_after`: `{ "file": "webs/name.ext", "line": 10, "content": "new lines" }`
-- `safe_edit_safe_replace_lines`: `{ "file": "webs/name.ext", "start": 1, "end": 10, "content": "replacement text" }`
+- `safe_edit_safe_overwrite_file`: `{ "file": "webs/name.ext", "content": "complete replacement file content" }`
+- `safe_edit_safe_overwrite_file_from_lines`: `{ "file": "webs/name.ext", "lines": ["line 1", "line 2"] }`
+- `safe_edit_safe_insert_lines`: `{ "file": "webs/name.ext", "after": 10, "lines": ["new line 1", "new line 2"] }`
 - `safe_edit_safe_delete_lines`: `{ "file": "webs/name.ext", "start": 1, "end": 10 }`
 - `safe_edit_safe_verify_file`: `{ "file": "webs/name.ext" }`
 
