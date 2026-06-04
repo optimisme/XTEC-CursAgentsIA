@@ -6,7 +6,7 @@ Create a new file named slider.html at webs folder with a slider puzle 3x3 that 
 
 ---
 
-Create a new todo website at webs folder (todo.html, todo.css and todo.js) with a polished todo app using localStorage. Include add, edit, complete, delete, filters, clear completed, keyboard support, responsive layout
+Create a new todo website at webs folder (todo.html, todo.css and todo.js) with a polished todo app using localStorage. Include add, edit, complete, delete, filters, clear completed, keyboard support, responsive layout. 
 
 Create a new weather-card website at webs folder (weather.html, weather.css, weather.js) with a polished weather card UI. Search the web for the current weather in Barcelona, then build a static HTML page showing the city, temperature, condition, humidity, wind, and update time. Use only HTML, CSS, and JavaScript, cite the source visibly in the page
 
@@ -14,14 +14,15 @@ Create a new travel-guide website at webs folder (travel.html, travel.css, trave
 
 Create a new museum-guide website at webs folder (museum.html, museum.css, museum.js). Search the web for 5 museums in Barcelona, including official websites, opening hours when available, location, and short descriptions. Build a responsive card-based guide with category filters and visible citations. Use only HTML, CSS, and JavaScript
 
-Create a new pixel-art editor website at webs folder (pixel.html, pixel.css, pixel.js). Build a 16x16 pixel art editor using only HTML, CSS, and JavaScript. Each pixel must be a `<button>` or `<div>`, not canvas. Include color picker, eraser, clear button
 
 Create a new paint-like editor website at webs folder (paint.html, paint.css, paint.js). Build a canvas editor using only HTML, CSS, and JavaScript. Include color picker, eraser, line size, clear button. User must draw "free hand" when mouse is pressed and moved on the canvas, capturing movement points and joining those points with lines.
 
 Create a new website at webs folder (calculator.html, calculator.css, calculator.js) with a polished calculator app using only HTML, CSS, and JavaScript. Include basic operations, decimal numbers, keyboard support, clear/delete buttons, error handling for invalid operations, responsive layout. Make it look like the calculator from image @calculator.png with the light red display and rounded keys.
 
-Create a new website at webs folder (kanban.html, kanban.css, kanban.js) with a simple Kanban board using only HTML, CSS, and JavaScript. Include three columns: Todo, Doing, Done. Allow adding cards, editing text, deleting cards, dragging cards between columns, saving state with localStorage, responsive layout
+Create a new website at webs folder (kanban.html, kanban.css, kanban.js) with a simple Kanban board using only HTML, CSS, and JavaScript. Include three columns: Todo, Doing, Done. Allow adding cards, editing text, deleting cards, dragging cards between columns, saving state with localStorage, responsive layout. Ensure cards can be moved from one status to another, for example from Todo to Doing, or from Doing back to Todo.
+
+Create a new website at webs folder (mines.html, mines.css, mines.js) with a minesweeper like windows 95 game. search on the internet the mechanics and look and feel of the game, then reproduce it on a web. 
 
 Create a new website at webs folder (galaxy.html, galaxy.css, galaxy.js) with a galaxyan like retro game from the 80s. search on the internet the mechanics and look and feel of the game, then reproduce it on a canvas. user will control the game with the keys "space, arrow left, arrow right". at the begining the game won't start until user presses one key. Player must be able to shot with space and aliens must atack the player.
 
-Create a new website in the webs folder named asteroid.html, asteroid.css, and asteroid.js. Build a polished 1980s arcade-style Asteroids-like canvas game with vector graphics. The game must start only after the first key press. Controls: ArrowLeft and ArrowRight rotate the ship, ArrowUp thrusts, Space shoots. Include screen wrapping, drifting asteroids that split into smaller asteroids, enemy saucers that occasionally appear and shoot, player lives, score, localStorage high score, pause with P, restart after game over with Enter, and a clear HUD. Use only canvas and plain JavaScript. Verify the files
+Create a new website in the webs folder named asteroid.html, asteroid.css, and asteroid.js. Build a polished 1980s arcade-style Asteroids-like canvas game with vector graphics. The game must start only after the first key press. Controls: ArrowLeft and ArrowRight rotate the ship, ArrowUp thrusts, Space shoots. Include screen wrapping, drifting asteroids that split into smaller asteroids, enemy saucers that occasionally appear and shoot, player lives, score, localStorage high score, pause with P, restart after game over with Enter, and a clear HUD. Use only canvas and plain JavaScript. Verify the files. This is a 2d plain game, don't make 3d calculations in it.

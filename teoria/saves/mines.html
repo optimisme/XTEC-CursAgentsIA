@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper - Windows 95 Edition</title>
+    <link rel="stylesheet" href="mines.css">
+</head>
+<body>
+    <div class="desktop">
+        <div class="window">
+            <div class="title-bar">
+                <div class="title-text">Minesweeper</div>
+                <div class="title-controls">
+                    <button aria-label="Minimize">_</button>
+                    <button aria-label="Maximize">[]</button>
+                    <button aria-label="Close">X</button>
+                </div>
+            </div>
+            <div class="content">
+                <div class="game-header">
+                    <div class="status-box">
+                        <span class="label">Mines:</span>
+                        <span id="mine-count">10</span>
+                    </div>
+                    <div class="status-box">
+                        <span class="label">Time:</span>
+                        <span id="timer">000</span>
+                    </div>
+                </div>
+                <div id="grid" class="grid"></div>
+                <div class="game-footer">
+                    <button id="face-happy">🙂</button>
+                    <button id="face-sad">☹️</button>
+                    <button id="face-bomb">💣</button>
+                    <button id="reset-btn">Reset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="mines.js"></script>
+</body>
+</html>
