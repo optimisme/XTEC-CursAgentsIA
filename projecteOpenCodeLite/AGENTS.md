@@ -18,7 +18,7 @@ Lite OpenCode setup for small local models.
 
 - Use the safe_edit MCP only; built-in `edit` is disabled.
 - Use underscore tool names such as `safe_edit_safe_create_file` and `safe_edit_safe_create_file_from_lines`.
-- For file changes, delegate to `safe_editor` with the `task` tool, then verify or validate the result as needed.
+- For file changes, delegate to `safe_editor` with the `task` tool; `safe_editor` verifies its own file with safe_edit.
 - The `safe_editor` subagent applies one-file changes with safe_edit.
 - For multi-file HTML/CSS/JS apps, call `safe_editor` once per file in this order: HTML, CSS, JS.
 - The main agent still decides the change, re-reads the file, and performs final verification.
@@ -35,13 +35,14 @@ Lite OpenCode setup for small local models.
 
 ## Verification
 
-- Run `safe_edit_safe_verify_file` on changed files.
-- Compare the verified content against the requested change before reporting completion.
+- Do not call `safe_edit_safe_verify_file` from the main coordinator; `safe_editor` handles safe verification.
+- Compare the `safe_editor` result against the requested change before reporting completion.
 - For HTML/CSS/JS, run `web_check_check_web` with `{"file":"webs/name.ext"}` after safe verification.
 - For nontrivial HTML/CSS/JS work, ask the `web_quality` subagent for a read-only review before final.
 - If the prompt requires internet research and also asks for a new file, ask the `web_search` subagent for compact sourced facts, then ask `safe_editor` to create the requested file. Do not call web or safe_edit tools directly in the main implementation agent.
 - When using the `task` tool, include `description`, `subagent_type`, and `prompt`.
 - Use `safe_editor` only when the prompt names one file; it may create a complete new self-contained HTML file or apply a scoped one-file edit.
+- Do not call `safe_editor` twice for the same file in one user request unless the user explicitly asks for a second edit.
 - Do not report completion until all changed files have been verified.
 
 ## Final Response

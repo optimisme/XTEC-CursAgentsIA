@@ -12,6 +12,7 @@ const projectRoot = realpathSync(path.resolve(serverDir, "../../.."));
 const backupDir = path.join(serverDir, "backups");
 const filesNeedingFreshRead = new Set();
 const noOpEditCounts = new Map();
+const suspiciousPathCounts = new Map();
 
 const fileRangeSchema = {
   file: z.string().min(1),
@@ -58,7 +59,12 @@ function validateRequestedFile(file) {
   ];
 
   if (suspiciousPatterns.some((pattern) => pattern.test(file))) {
-    throw new Error(`Rejected suspicious file path: ${file}`);
+    const count = (suspiciousPathCounts.get(file) || 0) + 1;
+    suspiciousPathCounts.set(file, count);
+    if (count >= 2) {
+      throw new Error(`Repeated corrupt tool-call path detected: ${file}. Stop immediately. Do not call safe_edit again. Return a blocker saying the model produced malformed tool syntax.`);
+    }
+    throw new Error(`Rejected suspicious file path: ${file}. This looks like malformed tool-call syntax, not a real file path. Stop and return a blocker if this happens again.`);
   }
 }
 
@@ -521,6 +527,9 @@ function registerTool(name, description, inputSchema, handler) {
   server.registerTool(name, { description, inputSchema }, async (input) => {
     try {
       const parsed = z.object(inputSchema).parse(input || {});
+      if (typeof parsed.file === "string") {
+        validateRequestedFile(parsed.file);
+      }
       return textResult(handler(parsed));
     } catch (error) {
       return textResult(formatError(error));

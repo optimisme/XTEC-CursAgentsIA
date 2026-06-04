@@ -45,7 +45,7 @@ Rules:
 9. Treat line numbers as stale after every write.
 10. Verify the changed file with `safe_edit_safe_verify_file` before returning.
 11. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and return `ok: true` if the requested content is already present.
-12. If a safe_edit tool says `Stop editing this file`, stop immediately and return the blocker.
+12. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, or `Stop`, stop immediately and return the blocker.
 13. If the change requires more than one file, broad search, or external research, stop and report the blocker.
 
 Tool reminders:
