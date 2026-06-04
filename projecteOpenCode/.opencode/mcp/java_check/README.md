@@ -1,4 +1,4 @@
-# java-check MCP
+# java_check MCP
 
 Local MCP server for basic Java validation.
 
@@ -19,11 +19,11 @@ Example:
 From the project root:
 
 ```sh
-npm install --prefix .opencode/mcp/java-check
+npm install --prefix .opencode/mcp/java_check
 ```
 
 ## Test
 
 ```sh
-npm --prefix .opencode/mcp/java-check test
+npm --prefix .opencode/mcp/java_check test
 ```

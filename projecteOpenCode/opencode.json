@@ -1,13 +1,15 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "ieti-agents/active-model",
-  "enabled_providers": ["ieti-agents"],
+  "model": "vram16-vllm/active-model",
+  "default_agent": "build",
+  "enabled_providers": ["ieti-agents", "vram16-vllm", "spark-vllm"],
   "permission": {
     "read": "allow",
     "grep": "allow",
     "glob": "allow",
-    "bash": "deny",
-    "edit": "deny",
+    "bash": "allow",
+    "edit": "allow",
+    "write": "deny",
     "task": "allow",
     "todowrite": "deny",
     "webfetch": "allow",
@@ -46,24 +48,60 @@
           "reasoning": false
         }
       }
+    },
+    "vram16-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "16GB vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8002/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          },
+          "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": false
+        }
+      }
+    },
+    "spark-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Spark vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8001/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 32768,
+            "output": 8192
+          },
+          "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": false
+        }
+      }
     }
   },
   "mcp": {
-    "safe-edit": {
+    "web_check": {
       "type": "local",
       "command": [
         "node",
-        ".opencode/mcp/safe-edit/server.js"
+        ".opencode/mcp/web_check/server.js"
       ],
-      "enabled": false
-    },
-    "web-check": {
-      "type": "local",
-      "command": [
-        "node",
-        ".opencode/mcp/web-check/server.js"
-      ],
-      "enabled": false
+      "enabled": true
     }
   }
 }

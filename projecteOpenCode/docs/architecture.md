@@ -6,7 +6,7 @@ The project demonstrates:
 
 - project-level instructions in `AGENTS.md`;
 - agents in `.opencode/agents/`;
-- web research and frontend quality subagents in `.opencode/agents/web-search.md` and `.opencode/agents/web-quality.md`;
+- web research and frontend quality subagents in `.opencode/agents/web_search.md` and `.opencode/agents/web_quality.md`;
 - reusable commands in `.opencode/commands/`;
 - skills in `.opencode/skills/`;
 - local MCP servers in `.opencode/mcp/`;

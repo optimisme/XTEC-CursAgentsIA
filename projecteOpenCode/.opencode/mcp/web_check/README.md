@@ -1,4 +1,4 @@
-# web-check MCP
+# web_check MCP
 
 Checks HTML, CSS, and JS files.
 
@@ -9,5 +9,5 @@ Tool:
 Test:
 
 ```sh
-npm --prefix .opencode/mcp/web-check test
+npm --prefix .opencode/mcp/web_check test
 ```

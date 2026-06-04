@@ -11,6 +11,7 @@ const serverDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = realpathSync(path.resolve(serverDir, "../../.."));
 const backupDir = path.join(serverDir, "backups");
 const filesNeedingFreshRead = new Set();
+const noOpEditCounts = new Map();
 
 const fileRangeSchema = {
   file: z.string().min(1),
@@ -19,7 +20,7 @@ const fileRangeSchema = {
 };
 
 const server = new McpServer({
-  name: "safe-edit",
+  name: "safe_edit",
   version: "1.0.0"
 });
 
@@ -38,7 +39,31 @@ function isInsideRoot(target) {
   return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
 }
 
+function validateRequestedFile(file) {
+  if (typeof file !== "string" || file.trim() === "") {
+    throw new Error("File path must be a non-empty string.");
+  }
+
+  const suspiciousPatterns = [
+    /<\|/,
+    /\|>/,
+    /<channel\|/,
+    /<tool_call/,
+    /tool_call/i,
+    /\bcall:/i,
+    /\{|\}/,
+    /\[|\]/,
+    /["']/,
+    /[\r\n\t]/
+  ];
+
+  if (suspiciousPatterns.some((pattern) => pattern.test(file))) {
+    throw new Error(`Rejected suspicious file path: ${file}`);
+  }
+}
+
 function resolveProjectPath(file) {
+  validateRequestedFile(file);
   const normalized = path.normalize(file);
   const target = path.resolve(projectRoot, normalized);
   let checkedTarget = target;
@@ -118,14 +143,11 @@ function normalizeContent(content, newline) {
 }
 
 function normalizePhysicalLines(lines) {
-  return lines.flatMap((line) => {
-    const normalized = line.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-    if (!normalized.includes("\n")) {
-      return [normalized];
+  return lines.map((line, index) => {
+    if (/\r|\n/.test(line)) {
+      throw new Error(`Invalid physical line at index ${index}: lines must not contain embedded newline characters. Put each file line in a separate array item.`);
     }
-
-    const parts = normalized.split("\n");
-    return normalized.endsWith("\n") ? parts.slice(0, -1) : parts;
+    return line;
   });
 }
 
@@ -160,6 +182,27 @@ function createBackup(filePath) {
 
 function writeEditedFile(filePath, lines, newline, hasFinalNewline) {
   writeFileSync(filePath, joinLines(lines, newline, hasFinalNewline), "utf8");
+}
+
+function editSignature(action, filePath, details) {
+  return JSON.stringify({
+    action,
+    file: relativeProjectPath(filePath),
+    ...details
+  });
+}
+
+function recordNoOpEdit(signature, message) {
+  const count = (noOpEditCounts.get(signature) || 0) + 1;
+  noOpEditCounts.set(signature, count);
+  if (count >= 2) {
+    throw new Error(`${message} This exact no-op edit was requested ${count} times. Stop editing this file, verify the file, and return a final result.`);
+  }
+  return `${message} No file was changed. Verify the file and return a final result if the requested content is already present.`;
+}
+
+function clearNoOpEdit(signature) {
+  noOpEditCounts.delete(signature);
 }
 
 function createFile({ file, content }) {
@@ -205,9 +248,15 @@ function appendLines({ file, lines }) {
   const { lines: existing, newline, hasFinalNewline } = splitLines(original);
   const physicalLines = normalizePhysicalLines(lines);
   existing.push(...physicalLines);
-  validateHtmlForWrite(filePath, joinLines(existing, newline, hasFinalNewline || physicalLines.length > 0));
+  const nextContent = joinLines(existing, newline, hasFinalNewline || physicalLines.length > 0);
+  const signature = editSignature("append_lines", filePath, { lines: physicalLines });
+  if (nextContent === original) {
+    return recordNoOpEdit(signature, `No-op append in ${relativeProjectPath(filePath)}: requested content is already present or empty.`);
+  }
+  clearNoOpEdit(signature);
+  validateHtmlForWrite(filePath, nextContent);
   const backupPath = createBackup(filePath);
-  writeEditedFile(filePath, existing, newline, hasFinalNewline || physicalLines.length > 0);
+  writeFileSync(filePath, nextContent, "utf8");
   markNeedsFreshRead(filePath);
 
   const start = existing.length - physicalLines.length + 1;
@@ -237,9 +286,15 @@ function replaceLines({ file, start, end, content }) {
 
   const replacement = normalizeContent(content, newline);
   lines.splice(start - 1, end - start + 1, ...replacement);
-  validateHtmlForWrite(filePath, joinLines(lines, newline, hasFinalNewline));
+  const nextContent = joinLines(lines, newline, hasFinalNewline);
+  const signature = editSignature("replace_lines", filePath, { start, end, content });
+  if (nextContent === original) {
+    return recordNoOpEdit(signature, `No-op replace in ${relativeProjectPath(filePath)} lines ${start}-${end}: replacement is identical to the current content.`);
+  }
+  clearNoOpEdit(signature);
+  validateHtmlForWrite(filePath, nextContent);
   const backupPath = createBackup(filePath);
-  writeEditedFile(filePath, lines, newline, hasFinalNewline);
+  writeFileSync(filePath, nextContent, "utf8");
   markNeedsFreshRead(filePath);
 
   const newEnd = start + replacement.length - 1;
@@ -263,9 +318,15 @@ function insertAfter({ file, line, content }) {
 
   const inserted = normalizeContent(content, newline);
   lines.splice(line, 0, ...inserted);
-  validateHtmlForWrite(filePath, joinLines(lines, newline, hasFinalNewline || inserted.length > 0));
+  const nextContent = joinLines(lines, newline, hasFinalNewline || inserted.length > 0);
+  const signature = editSignature("insert_after", filePath, { line, content });
+  if (nextContent === original) {
+    return recordNoOpEdit(signature, `No-op insert in ${relativeProjectPath(filePath)} after line ${line}: requested insertion is empty.`);
+  }
+  clearNoOpEdit(signature);
+  validateHtmlForWrite(filePath, nextContent);
   const backupPath = createBackup(filePath);
-  writeEditedFile(filePath, lines, newline, hasFinalNewline || inserted.length > 0);
+  writeFileSync(filePath, nextContent, "utf8");
   markNeedsFreshRead(filePath);
 
   const start = line + 1;
@@ -285,9 +346,15 @@ function deleteLines({ file, start, end }) {
   assertRange(start, end, lines.length);
 
   lines.splice(start - 1, end - start + 1);
-  validateHtmlForWrite(filePath, joinLines(lines, newline, hasFinalNewline && lines.length > 0));
+  const nextContent = joinLines(lines, newline, hasFinalNewline && lines.length > 0);
+  const signature = editSignature("delete_lines", filePath, { start, end });
+  if (nextContent === original) {
+    return recordNoOpEdit(signature, `No-op delete in ${relativeProjectPath(filePath)} lines ${start}-${end}: no content would be removed.`);
+  }
+  clearNoOpEdit(signature);
+  validateHtmlForWrite(filePath, nextContent);
   const backupPath = createBackup(filePath);
-  writeEditedFile(filePath, lines, newline, hasFinalNewline && lines.length > 0);
+  writeFileSync(filePath, nextContent, "utf8");
   markNeedsFreshRead(filePath);
 
   return [
@@ -463,12 +530,22 @@ function registerTool(name, description, inputSchema, handler) {
 
 registerTool(
   "safe_create_file_from_lines",
-  "Create a new UTF-8 text file from an array of physical file lines. Use this for small files or scaffolds; for nontrivial HTML/JS/CSS apps, create a small scaffold first and add 25-50 line chunks with insert/replace tools. Fails if the file already exists.",
+  "Create a new UTF-8 text file from an array of physical file lines. Use this for short files. For longer files, prefer safe_create_file with a single content string. Fails if the file already exists.",
   {
     file: z.string().min(1),
     lines: z.array(z.string())
   },
   createFileFromLines
+);
+
+registerTool(
+  "safe_create_file",
+  "Create a new UTF-8 text file from one complete content string. Prefer this for new self-contained HTML/CSS/JS files. Fails if the file already exists.",
+  {
+    file: z.string().min(1),
+    content: z.string()
+  },
+  createFile
 );
 
 registerTool(
@@ -547,12 +624,12 @@ async function main() {
         throw error;
       }
     }
-    const selfTestFile = ".opencode/mcp/safe-edit/backups/self-test-create.txt";
+    const selfTestFile = ".opencode/mcp/safe_edit/backups/self-test-create.txt";
     const selfTestPath = resolveProjectPath(selfTestFile);
     if (existsSync(selfTestPath)) {
       rmSync(selfTestPath);
     }
-    createFile({ file: selfTestFile, content: "safe-edit create self-test\n" });
+    createFile({ file: selfTestFile, content: "safe_edit create self-test\n" });
     if (!existsSync(selfTestPath)) {
       throw new Error("safe_create_file self-test failed.");
     }
@@ -581,8 +658,8 @@ async function main() {
       throw new Error("safe line operation self-test failed.");
     }
     rmSync(selfTestPath);
-    const outsideDir = path.resolve(projectRoot, "..", "safe-edit-outside-self-test");
-    const symlinkFile = ".opencode/mcp/safe-edit/backups/self-test-symlink";
+    const outsideDir = path.resolve(projectRoot, "..", "safe_edit-outside-self-test");
+    const symlinkFile = ".opencode/mcp/safe_edit/backups/self-test-symlink";
     const symlinkPath = resolveProjectPath(symlinkFile);
     rmSync(symlinkPath, { force: true, recursive: true });
     rmSync(outsideDir, { force: true, recursive: true });
@@ -599,7 +676,7 @@ async function main() {
       rmSync(symlinkPath, { force: true, recursive: true });
       rmSync(outsideDir, { force: true, recursive: true });
     }
-    const htmlSelfTestFile = ".opencode/mcp/safe-edit/backups/self-test-invalid.html";
+    const htmlSelfTestFile = ".opencode/mcp/safe_edit/backups/self-test-invalid.html";
     const htmlSelfTestPath = resolveProjectPath(htmlSelfTestFile);
     if (existsSync(htmlSelfTestPath)) {
       rmSync(htmlSelfTestPath);
@@ -607,7 +684,18 @@ async function main() {
     try {
       createFileFromLines({
         file: htmlSelfTestFile,
-        lines: ["<!doctype html>\n<html>\n<body>ok</body>\n</html>\n<div>extra</div>"]
+        lines: ["<!doctype html>\n<html>"]
+      });
+      throw new Error("safe_create_file_from_lines physical line self-test failed.");
+    } catch (error) {
+      if (!String(error.message).includes("Invalid physical line")) {
+        throw error;
+      }
+    }
+    try {
+      createFileFromLines({
+        file: htmlSelfTestFile,
+        lines: ["<!doctype html>", "<html>", "<body>ok</body>", "</html>", "<div>extra</div>"]
       });
       throw new Error("safe_create_file_from_lines HTML sanity self-test failed.");
     } catch (error) {
@@ -662,7 +750,7 @@ async function main() {
     } finally {
       rmSync(htmlSelfTestPath);
     }
-    console.log("safe-edit self-test passed");
+    console.log("safe_edit self-test passed");
     return;
   }
 

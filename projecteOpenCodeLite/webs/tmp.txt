@@ -1,0 +1,1 @@
+veig que hi ha un model "assistant" que és l'mtp de només 400 milions de paràmetres

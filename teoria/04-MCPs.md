@@ -80,8 +80,8 @@ En `projecteOpenCode`, els MCPs locals principals combinen validació i memòria
 
 | MCP | Ús |
 | --- | --- |
-| `web-check` | Comprovar pàgines web després d'una modificació |
-| `java-check` | Comprovar fitxers Java després d'una modificació |
+| `web_check` | Comprovar pàgines web després d'una modificació |
+| `java_check` | Comprovar fitxers Java després d'una modificació |
 | `memory` | Recuperar i guardar memòria curada del projecte |
 
 La configuració a `opencode.json` és:
@@ -90,14 +90,14 @@ La configuració a `opencode.json` és:
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "web-check": {
+    "web_check": {
       "type": "local",
-      "command": ["node", ".opencode/mcp/web-check/server.js"],
+      "command": ["node", ".opencode/mcp/web_check/server.js"],
       "enabled": true
     },
-    "java-check": {
+    "java_check": {
       "type": "local",
-      "command": ["node", ".opencode/mcp/java-check/server.js"],
+      "command": ["node", ".opencode/mcp/java_check/server.js"],
       "enabled": true
     },
     "memory": {
@@ -123,12 +123,12 @@ Un flux habitual seria:
 Per exemple, es pot demanar a OpenCode:
 
 ```text
-Update webs/index.html and then run web-check on the changed file.
+Update webs/index.html and then run web_check on the changed file.
 ```
 
 ### MCPs per a models petits
 
-`projectOpenCodeLite` sí que inclou un MCP local anomenat `safe-edit`. Serveix per modificar fitxers de manera controlada quan es fan servir models petits: llegir línies concretes, aplicar canvis petits i verificar el resultat després de cada edició.
+`projectOpenCodeLite` sí que inclou un MCP local anomenat `safe_edit`. Serveix per modificar fitxers de manera controlada quan es fan servir models petits: llegir línies concretes, aplicar canvis petits i verificar el resultat després de cada edició.
 
 Aquest servidor exposa eines com:
 
@@ -142,7 +142,7 @@ Aquest servidor exposa eines com:
 Exemple de prompt per a la variant lite:
 
 ```text
-Use the safe-edit MCP to update app.js. First read the target lines with safe_read_lines, apply only the needed change, then verify the changed section with safe_verify_file.
+Use the safe_edit MCP to update app.js. First read the target lines with safe_read_lines, apply only the needed change, then verify the changed section with safe_verify_file.
 ```
 
 La configuració completa d'aquesta variant es resumeix a la secció final de `05-Servidors.md`.
@@ -222,7 +222,7 @@ En `projectOpenCodeLite`, que està pensat per a models petits i edicions contro
 Per a models petits, sovint és millor:
 
 * `AGENTS.md` curt i molt explícit;
-* tools concretes com `safe-edit`;
+* tools concretes com `safe_edit`;
 * memòria mínima i molt curada;
 * validació després de cada pas.
 
@@ -383,8 +383,8 @@ La carpeta dels MCPs locals del projecte queda dins `.opencode/mcp/`. En el proj
 projecte/
 └── .opencode/
     └── mcp/
-        ├── web-check
-        └── java-check
+        ├── web_check
+        └── java_check
 ```
 
-En `projectOpenCodeLite` també hi ha `safe-edit`, que és específic de la configuració per a models petits.
+En `projectOpenCodeLite` també hi ha `safe_edit`, que és específic de la configuració per a models petits.

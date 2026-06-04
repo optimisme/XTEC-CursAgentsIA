@@ -13,7 +13,7 @@ const projectRoot = realpathSync(path.resolve(serverDir, "../../.."));
 const voidTags = new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"]);
 
 const server = new McpServer({
-  name: "web-check",
+  name: "web_check",
   version: "1.0.0"
 });
 
@@ -208,7 +208,7 @@ function checkJsSyntax(js, filename) {
 function checkWeb({ file }) {
   const filePath = resolveProjectPath(file);
   if (!existsSync(filePath)) {
-    return `${file}: file does not exist. Create it first, then run web-check_check_web again.`;
+    return `${file}: file does not exist. Create it first, then run web_check_check_web again.`;
   }
 
   const ext = path.extname(filePath).toLowerCase();
@@ -252,9 +252,9 @@ server.registerTool(
 
 async function main() {
   if (process.argv.includes("--self-test")) {
-    const selfTestFile = ".opencode/mcp/web-check/self-test.html";
-    const selfTestScriptFile = ".opencode/mcp/web-check/self-test.js";
-    const selfTestCssFile = ".opencode/mcp/web-check/self-test.css";
+    const selfTestFile = ".opencode/mcp/web_check/self-test.html";
+    const selfTestScriptFile = ".opencode/mcp/web_check/self-test.js";
+    const selfTestCssFile = ".opencode/mcp/web_check/self-test.css";
     const selfTestPath = resolveProjectPath(selfTestFile);
     const selfTestScriptPath = resolveProjectPath(selfTestScriptFile);
     const selfTestCssPath = resolveProjectPath(selfTestCssFile);
@@ -271,7 +271,7 @@ async function main() {
     if (!combinedOutput.includes("basic HTML") || !combinedOutput.includes("JavaScript syntax looks OK") || !combinedOutput.includes("CSS syntax looks OK")) {
       throw new Error(combinedOutput);
     }
-    console.log("web-check self-test passed");
+    console.log("web_check self-test passed");
     return;
   }
 

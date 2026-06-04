@@ -1,0 +1,69 @@
+# Stop:    docker compose -f docker-compose-lfm25-8b-a1b.yml down
+# Restart: docker compose -f docker-compose-lfm25-8b-a1b.yml up -d
+# Logs:    docker logs -f --tail 20 lfm25_8b_a1b_vllm
+# Note:    optimized for RTX 4060 Ti 16GB. Stop any other vLLM service using port 8000 before starting this one.
+services:
+  lfm-vllm:
+    image: vllm/vllm-openai:latest
+    container_name: lfm25_8b_a1b_vllm
+    environment:
+      - HF_HOME=/root/.cache/huggingface
+      - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
+      - VLLM_CACHE_ROOT=/root/.cache/vllm
+      - PYTORCH_ALLOC_CONF=expandable_segments:True
+      - HF_HUB_DISABLE_XET=1
+    volumes:
+      - ./tokens.env:/run/secrets/tokens.env:ro
+      - vllm-hf-cache:/root/.cache/huggingface
+      - vllm-runtime-cache:/root/.cache/vllm
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/v1/models"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 20m
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: unless-stopped
+    entrypoint:
+      - /bin/bash
+      - -lc
+    command:
+      - |
+        set -a
+        . /run/secrets/tokens.env
+        set +a
+        if [ -n "$${HUGGINGFACE:-}" ]; then
+          export HF_TOKEN="$${HUGGINGFACE}"
+          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
+        fi
+        exec vllm serve LiquidAI/LFM2.5-8B-A1B \
+          --served-model-name active-model \
+          --host 0.0.0.0 \
+          --port 8000 \
+          --max-model-len 32768 \
+          --gpu-memory-utilization 0.85 \
+          --load-format bitsandbytes \
+          --quantization bitsandbytes \
+          --kv-cache-dtype fp8 \
+          --max-num-seqs 2 \
+          --max-num-batched-tokens 2048 \
+          --enable-prefix-caching \
+          --enable-chunked-prefill \
+          --enforce-eager \
+          --trust-remote-code \
+          --reasoning-parser deepseek_r1 \
+          --enable-auto-tool-choice \
+          --tool-call-parser lfm2
+
+volumes:
+  vllm-hf-cache:
+  vllm-runtime-cache:

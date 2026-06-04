@@ -12,7 +12,7 @@ const serverDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = realpathSync(path.resolve(serverDir, "../../.."));
 
 const server = new McpServer({
-  name: "java-check",
+  name: "java_check",
   version: "1.0.0"
 });
 
@@ -65,7 +65,7 @@ function checkJava({ files }) {
     throw new Error("javac is not available on PATH. Install a JDK or run Java validation in an environment with javac.");
   }
 
-  const outputDir = mkdtempSync(path.join(os.tmpdir(), "java-check-"));
+  const outputDir = mkdtempSync(path.join(os.tmpdir(), "java_check-"));
   try {
     mkdirSync(outputDir, { recursive: true });
     execFileSync("javac", ["-d", outputDir, ...resolvedFiles], {
@@ -102,7 +102,7 @@ server.registerTool(
 
 async function main() {
   if (process.argv.includes("--self-test")) {
-    const selfTestFile = ".opencode/mcp/java-check/SelfTest.java";
+    const selfTestFile = ".opencode/mcp/java_check/SelfTest.java";
     const selfTestPath = resolveProjectPath(selfTestFile);
     writeFileSync(selfTestPath, "class SelfTest { public static void main(String[] args) { System.out.println(\"ok\"); } }\n", "utf8");
     try {
@@ -113,7 +113,7 @@ async function main() {
     } finally {
       rmSync(selfTestPath, { force: true });
     }
-    console.log("java-check self-test passed");
+    console.log("java_check self-test passed");
     return;
   }
 

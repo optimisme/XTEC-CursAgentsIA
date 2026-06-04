@@ -4,4 +4,4 @@ Record recurring errors here only after they have happened more than once or are
 
 ## Example
 
-- Web exercises should be checked with `web-check_check_web` before reporting completion.
+- Web exercises should be checked with `web_check_check_web` before reporting completion.

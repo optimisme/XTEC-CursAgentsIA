@@ -1,12 +1,13 @@
-# safe-edit MCP
+# safe_edit MCP
 
 Small line-based file editor for OpenCode agents.
 
-Backups go to `.opencode/mcp/safe-edit/backups`.
+Backups go to `.opencode/mcp/safe_edit/backups`.
 
 ## Tools
 
-- `safe_create_file_from_lines`: create a file from `lines`.
+- `safe_create_file`: create a file from one complete `content` string.
+- `safe_create_file_from_lines`: create a short file from `lines`.
 - `safe_read_lines`: read inclusive 1-based `start`-`end`.
 - `safe_replace_lines`: replace inclusive 1-based `start`-`end`.
 - `safe_insert_after`: insert after `line`; use `0` for top.
@@ -27,5 +28,5 @@ Prefer complete language units: HTML element, CSS rule, JS statement/function, o
 ## Test
 
 ```sh
-npm --prefix .opencode/mcp/safe-edit test
+npm --prefix .opencode/mcp/safe_edit test
 ```

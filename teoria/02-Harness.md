@@ -67,7 +67,7 @@ Use `bun run dev` to start the development server. Do not use `node` unless expl
 - Commands are in `.opencode/commands/`.
 - Tools are in `.opencode/tools/`.
 
-Available agents: `explorer`, `goal-checker`, `reviewer`, `responsive`, `performance`, `teacher`.
+Available agents: `explorer`, `goal_checker`, `reviewer`, `responsive`, `performance`, `teacher`.
 
 Available skills: `code-review`, `frontend-design`, `accessibility`, `security`, `seo`.
 
@@ -75,7 +75,7 @@ Available commands: `supercommit`, `listpng`.
 
 Available tools: `code-stats`.
 
-Available MCPs: `web-check`, `java-check`, `memory`.
+Available MCPs: `web_check`, `java_check`, `memory`.
 
 ## Rules
 
@@ -178,19 +178,19 @@ OpenCode té dos agents principals visibles:
 
 Es poden definir més agents principals a la carpeta *"./opencode/agents"* amb la capçalera **"mode: primary"**.
 
-La variant local d'aquest curs defineix un agent principal anomenat `goal-lite`, pensat per a models petits i edicions controlades:
+La variant local d'aquest curs defineix un agent principal anomenat `goal_lite`, pensat per a models petits i edicions controlades:
 
 ```bash
 # .opencode/agents/<nom-agent>.md
 projecte/
 └── .opencode/
     └── agents/
-        └── goal-lite.md
+        └── goal_lite.md
 ```
 
 ```text
 ---
-description: Complete one implementation request with safe-edit and one verification/fix pass.
+description: Complete one implementation request with safe_edit and one verification/fix pass.
 mode: primary
 permission:
   read: allow
@@ -208,7 +208,7 @@ Aleshores podrem escollir el nou agent amb la tecla **TAB**. Se li pot donar un 
 Arregla els errors de validació HTML del projecte, modifica només els fitxers necessaris i verifica el resultat abans de respondre.
 ```
 
-> **Nota:** A `projectOpenCodeLite`, hi ha l'agent `goal-lite` activat per defecte, que és l'agent principal perquè la configuració local necessita menys eines, menys soroll i un flux més controlat.
+> **Nota:** A `projectOpenCodeLite`, hi ha l'agent `goal_lite` activat per defecte, que és l'agent principal perquè la configuració local necessita menys eines, menys soroll i un flux més controlat.
 
 ## Subagents
 

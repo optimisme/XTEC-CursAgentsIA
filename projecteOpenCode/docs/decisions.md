@@ -14,5 +14,5 @@ The `memory/` folder stores curated notes that can help future sessions. Memory 
 
 ## Use narrow subagents for noisy web work
 
-Use `web-search` to gather compact sourced facts before implementation when internet research is needed.
-Use `web-quality` to review generated HTML/CSS/JS without mixing noisy inspection into the main goal context.
+Use `web_search` to gather compact sourced facts before implementation when internet research is needed.
+Use `web_quality` to review generated HTML/CSS/JS without mixing noisy inspection into the main goal context.

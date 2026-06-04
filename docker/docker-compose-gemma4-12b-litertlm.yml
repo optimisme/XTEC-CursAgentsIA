@@ -1,0 +1,72 @@
+# Stop:    docker compose -f docker-compose-gemma4-12b-litertlm.yml down
+# Restart: docker compose -f docker-compose-gemma4-12b-litertlm.yml up -d
+# Logs:    docker logs -f --tail 20 gemma4_12b_litertlm
+# Note:    experimental Google-recommended LiteRT-LM route for RTX 4060 Ti 16GB.
+services:
+  gemma-litertlm:
+    build:
+      context: .
+      dockerfile: Dockerfile.litert-lm
+    image: litert-lm-openai:latest
+    container_name: gemma4_12b_litertlm
+    environment:
+      - HOME=/home/litert
+      - HF_HOME=/home/litert/.cache/huggingface
+      - HF_HUB_DISABLE_XET=1
+      - LITERT_MODEL_NAME=gemma4-12b
+      - LITERT_MODEL_FILE=gemma-4-12B-it.litertlm
+      - LITERT_MODEL_REPO=litert-community/gemma-4-12B-it-litert-lm
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - VK_ICD_FILENAMES=/etc/vulkan/icd.d/nvidia_icd.x86_64.json
+      - __NV_PRIME_RENDER_OFFLOAD=1
+      - __GLX_VENDOR_LIBRARY_NAME=nvidia
+    volumes:
+      - ./tokens.env:/run/secrets/tokens.env:ro
+      - litertlm-cache:/home/litert/.cache
+      - litertlm-models:/models
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/v1/models >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 10
+      start_period: 20m
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu, compute, utility, graphics]
+    ipc: host
+    runtime: nvidia
+    restart: unless-stopped
+    entrypoint:
+      - /bin/sh
+      - -lc
+    command:
+      - |
+        set -a
+        . /run/secrets/tokens.env
+        set +a
+        if [ -n "$${HUGGINGFACE:-}" ]; then
+          export HF_TOKEN="$${HUGGINGFACE}"
+          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
+        fi
+        if [ ! -f "/models/$${LITERT_MODEL_FILE}" ]; then
+          curl -L -C - --fail --progress-bar \
+            -o "/models/$${LITERT_MODEL_FILE}" \
+            "https://huggingface.co/$${LITERT_MODEL_REPO}/resolve/main/$${LITERT_MODEL_FILE}"
+        fi
+        if ! litert-lm list | grep -q "^$${LITERT_MODEL_NAME}[[:space:]]"; then
+          litert-lm import "/models/$${LITERT_MODEL_FILE}" "$${LITERT_MODEL_NAME}"
+        fi
+        exec litert-lm serve \
+          --host 0.0.0.0 \
+          --port 8000
+
+volumes:
+  litertlm-cache:
+  litertlm-models:

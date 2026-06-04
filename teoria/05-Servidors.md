@@ -99,14 +99,14 @@ Exemple de la part de configuració que sí queda al projecte normal:
     "skill": "allow"
   },
   "mcp": {
-    "web-check": {
+    "web_check": {
       "type": "local",
-      "command": ["node", ".opencode/mcp/web-check/server.js"],
+      "command": ["node", ".opencode/mcp/web_check/server.js"],
       "enabled": true
     },
-    "java-check": {
+    "java_check": {
       "type": "local",
-      "command": ["node", ".opencode/mcp/java-check/server.js"],
+      "command": ["node", ".opencode/mcp/java_check/server.js"],
       "enabled": true
     },
     "memory": {
@@ -467,10 +467,10 @@ El seu punt fort és la portabilitat. El seu punt feble és que no tots els flux
 
 La configuració lite redueix deliberadament el context de l'agent:
 
-* `default_agent`: `"goal-lite"`;
+* `default_agent`: `"goal_lite"`;
 * permisos denegats: `bash`, `edit`, `task`, `todowrite`, `lsp` i `skill`;
 * instruccions carregades: només `AGENTS.md`;
-* MCPs essencials: `safe-edit` i `web-check`.
+* MCPs essencials: `safe_edit` i `web_check`.
 
 Els proveïdors locals viuen en aquesta carpeta:
 
@@ -481,6 +481,6 @@ Els proveïdors locals viuen en aquesta carpeta:
 
 Els blocs `limit.context` i `limit.output` són proteccions per a models petits. Eviten que OpenCode assumeixi una finestra de context o una sortida més grans que les que el servidor local pot gestionar amb fiabilitat. Aquestes proteccions no formen part de `projecteOpenCode`.
 
-`safe-edit` també pertany a aquesta variant: dona eines d'edició per línies perquè els models petits solen ser menys fiables amb edicions exactes basades en `oldString`.
+`safe_edit` també pertany a aquesta variant: dona eines d'edició per línies perquè els models petits solen ser menys fiables amb edicions exactes basades en `oldString`.
 
 La documentació humana de `projectOpenCodeLite` no s'inclou automàticament al context de l'agent: `opencode.json` només carrega `AGENTS.md` dins `instructions`.

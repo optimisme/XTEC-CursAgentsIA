@@ -8,9 +8,15 @@ Inventari dels models configurats a `docker/docker-compose-*.yml`.
 | `gemma4-26b-a4b-spark` | `google/gemma-4-26B-A4B-it` | 26B total, A4B actius | 96.20 GB | Spark BF16, `gemma4-cu130` | BF16, MoE/A4B | 4 seq / 4096 tokens |
 | `gemma4-8b-spark` | `google/gemma-4-E4B-it` | E4B | 29.85 GB | Spark BF16, `gemma4-cu130` | BF16 | 8 seq / 4096 tokens |
 | `gemma4-8b` | `google/gemma-4-E4B-it` | E4B | 29.85 GB | Local BitsAndBytes, `vllm-openai:latest` | BnB quantitzat en carrega | 2 seq / 2048 tokens |
+| `gemma4-12b-llamacpp` | `unsloth/gemma-4-12b-it-GGUF:Q4_K_M` | 12B | 7.1 GB GGUF | Local llama.cpp CUDA, text-only | GGUF Q4_K_M | 1 server / 32768 ctx |
+| `gemma4-12b-litertlm` | `litert-community/gemma-4-12B-it-litert-lm` | 12B | 6.1 GB importat | Local LiteRT-LM, experimental | `.litertlm` | 1 server / OpenAI-compatible parcial |
 | `qwopus35-4b-coder` | `Jackrong/Qwopus3.5-4B-Coder` | 4B | n/d | Local/Spark BF16, `cu130-nightly` | BF16, no quantitzat | 8 seq / 4096 tokens |
+| `mellum2-12b-a25b-thinking` | `JetBrains/Mellum2-12B-A2.5B-Thinking` | 12B total, A2.5B actius | 22.63 GiB | Local/Spark BF16 CPU offload, `cu130-nightly` | BF16, MoE/A2.5B | 2 seq / 2048 tokens |
+| `mellum2-12b-a25b-thinking-spark` | `JetBrains/Mellum2-12B-A2.5B-Thinking` | 12B total, A2.5B actius | 22.63 GiB | Spark BF16, `cu130-nightly` | BF16, MoE/A2.5B | 4 seq / 4096 tokens |
+| `mellum2-12b-a25b-thinking-awq-spark` | local `../quantized/Mellum2-12B-A2.5B-Thinking-AWQ-W4A16` | 12B total, A2.5B actius | 22 GiB | Spark prova AWQ parcial | W4 atencio, experts BF16 | 4 seq / 4096 tokens |
 | `qwen3-8b` | `Qwen/Qwen3-8B-AWQ` | 8B | 5.69 GB | Local AWQ | AWQ | 2 seq / 2048 tokens |
 | `qwen3-14b-spark` | `Qwen/Qwen3-14B-AWQ` | 14B | 9.31 GB | Spark AWQ | AWQ | 2 seq / 2048 tokens |
+| `lfm25-8b-a1b` | `LiquidAI/LFM2.5-8B-A1B` | 8.3B total, A1.5B actius | n/d | Local BitsAndBytes, `vllm-openai:latest` | BnB quantitzat en carrega, MoE/A1.5B | 2 seq / 2048 tokens |
 | `qwen35-9b` | `QuantTrio/Qwen3.5-9B-AWQ` | 9B | 11.55 GB | Local AWQ | AWQ | 2 seq / 2048 tokens |
 | `qwen35-9b-quanttrio` | `QuantTrio/Qwen3.5-9B-AWQ` | 9B | 11.55 GB | Local AWQ | AWQ | 2 seq / 2048 tokens |
 | `qwen35-9b-quanttrio-spark` | `QuantTrio/Qwen3.5-9B-AWQ` | 9B | 11.55 GB | Spark AWQ | AWQ | 8 seq / 4096 tokens |
@@ -25,6 +31,9 @@ Inventari dels models configurats a `docker/docker-compose-*.yml`.
 - Les mides Gemma provenen de la cache Hugging Face del contenidor Spark actiu; les mides Qwen provenen de la suma de fitxers publicada per l'API de Hugging Face.
 - Atencio: `qwen3.6-27b-spark` te `--max-model-len 32iz768` al compose, que sembla un typo i probablement hauria de ser `32768`.
 - `gemma4-8b` i `gemma4-8b-spark` carreguen el mateix model (`google/gemma-4-E4B-it`), pero el local usa BitsAndBytes i menys concurrencia per cabre en 16 GB VRAM.
+- `gemma4-12b-llamacpp` usa el GGUF Q4_K_M d'Unsloth amb `llama.cpp` CUDA i `--alias active-model`, de manera que encaixa amb la configuracio OpenCode existent. En prova real a la RTX 4060 Ti 16 GB ha carregat amb context 32768, uns 9.6 GB de VRAM, resposta de text neta i `tool_calls` OpenAI-compatible. Es passa `--no-mmproj` per evitar el projector multimodal, que aquesta imatge encara rebutja amb `unknown projector type: gemma4uv`.
+- `gemma4-12b-litertlm` prova la ruta recomanada per Google per executar Gemma 4 12B en equips locals de 16 GB amb LiteRT-LM. En la RTX 4060 Ti 16 GB remota, `litert-lm run --backend gpu --max-num-tokens 128` genera text coherent, pero `litert-lm serve` no exposa aquest limit i l'endpoint OpenAI-compatible retorna `<pad>`; no es recomanat per OpenCode fins que LiteRT-LM permeti limitar el KV cache al servidor o es faci un wrapper estable.
+- `lfm25-8b-a1b` serveix `LiquidAI/LFM2.5-8B-A1B` com `active-model` per reutilitzar la configuracio OpenCode local (`vram16-vllm`, port local 8002 cap al 8000 remot).
 
 ## Observacions de concurrencia
 
@@ -35,6 +44,10 @@ Inventari dels models configurats a `docker/docker-compose-*.yml`.
 ## Notes de configuracio
 
 - Els Gemma 4 usen `--reasoning-parser gemma4`, `--tool-call-parser gemma4` i `examples/tool_chat_template_gemma4.jinja`.
+- `lfm25-8b-a1b` usa `--reasoning-parser deepseek_r1` per separar blocs `<think>...</think>` i `--tool-call-parser lfm2` per interpretar les crides d'eina natives de LFM2/LFM2.5 entre `<|tool_call_start|>` i `<|tool_call_end|>`. Requereix una imatge vLLM recent; `vllm/vllm-openai:latest` actualitzada el 2026-05-29 ho exposa com a vLLM 0.22.0.
 - Els Qwen usen parsers `qwen3`, `qwen3_coder` o `hermes` segons el compose.
 - `qwopus35-4b-coder` usa el checkpoint BF16 de `Jackrong/Qwopus3.5-4B-Coder`, un fine-tune Qwen3.5-family orientat a coding i tool-use. La configuracio prova tool calling amb `--tool-call-parser qwen3_coder`.
+- `mellum2-12b-a25b-thinking` usa el checkpoint BF16 MoE de JetBrains amb `--cpu-offload-gb 10` per intentar cabre en GPU de 16 GB. La fitxa oficial dona context de 131072 tokens, pero aquest compose el limita a 32768 per memoria. Usa `--reasoning-parser qwen3` i tool calling `hermes`.
+- `mellum2-12b-a25b-thinking-spark` usa el checkpoint BF16 MoE de JetBrains amb context de 65536 tokens per provar-lo en NVIDIA Spark / GB10 abans de decidir si val la pena quantitzar-lo en AWQ. La prova amb `--quantization fp8` dinamic carregava, pero degradava la sortida.
+- `mellum2-12b-a25b-thinking-awq-spark` documenta la prova AWQ W4A16 feta amb `llmcompressor`: les capes d'atencio queden empaquetades en W4, pero `MellumExperts` es desa en BF16. La mida final es 22 GiB i vLLM rebutja el config asimetric per MoE, de manera que no es candidat per moure a una RTX 4060 Ti amb context 64k.
 - Els models Spark grans fan servir `--kv-cache-dtype fp8` per reduir memoria de KV cache.

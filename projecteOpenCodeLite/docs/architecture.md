@@ -6,9 +6,9 @@ It is designed for small local models with limited reasoning and output budget.
 
 The project keeps the workflow simple:
 
-- one primary agent: `goal-lite`;
-- two narrow read-only subagents: `web-search` and `web-quality`;
-- one narrow write-capable subagent: `safe-editor` for one-file safe-edit patches;
+- one primary agent: `goal_lite`;
+- two narrow read-only subagents: `web_search` and `web_quality`;
+- one narrow write-capable subagent: `safe_editor` for one-file safe_edit patches;
 - no built-in edit tool;
-- file changes through the `safe-edit` MCP;
-- Web validation through the `web-check` MCP.
+- file changes through the `safe_edit` MCP;
+- Web validation through the `web_check` MCP.
