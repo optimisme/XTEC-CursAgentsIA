@@ -18,7 +18,7 @@ Create a new pixel-art editor website at webs folder (pixel.html, pixel.css, pix
 
 Create a new paint-like editor website at webs folder (paint.html, paint.css, paint.js). Build a canvas editor using only HTML, CSS, and JavaScript. Include color picker, eraser, line size, clear button. User must draw "free hand" when mouse is pressed and moved on the canvas, capturing movement points and joining those points with lines.
 
-Create a new website at webs folder (calculator.html, calculator.css, calculator.js) with a polished calculator app using only HTML, CSS, and JavaScript. Include basic operations, decimal numbers, keyboard support, clear/delete buttons, error handling for invalid operations, responsive layout
+Create a new website at webs folder (calculator.html, calculator.css, calculator.js) with a polished calculator app using only HTML, CSS, and JavaScript. Include basic operations, decimal numbers, keyboard support, clear/delete buttons, error handling for invalid operations, responsive layout. Make it look like the calculator from image @calculator.png with the light red display and rounded keys.
 
 Create a new website at webs folder (kanban.html, kanban.css, kanban.js) with a simple Kanban board using only HTML, CSS, and JavaScript. Include three columns: Todo, Doing, Done. Allow adding cards, editing text, deleting cards, dragging cards between columns, saving state with localStorage, responsive layout
 

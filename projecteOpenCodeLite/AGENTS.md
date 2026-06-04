@@ -8,7 +8,7 @@ Lite OpenCode setup for small local models.
 - Keep context small; do not scan the whole project unless needed.
 - Make the smallest change that satisfies the request.
 - Create or modify only the requested files.
-- Use subagents only for focused web research, read-only web quality review, or one-file safe_edit patches.
+- Use subagents only for focused web research, read-only web quality review, image inspection, or scoped safe_edit file changes.
 - If you say you will use a tool or subagent, the next assistant action must be the actual tool call. Do not narrate intended tool calls as plain text.
 - Do not use broad shell access, memory workflows, npm installs, or invented validators.
 - Verify changed files before reporting completion.
@@ -20,6 +20,7 @@ Lite OpenCode setup for small local models.
 - Use underscore tool names such as `safe_edit_safe_create_file` and `safe_edit_safe_create_file_from_lines`.
 - For file changes, delegate to `safe_editor` with the `task` tool, then verify or validate the result as needed.
 - The `safe_editor` subagent applies one-file changes with safe_edit.
+- For multi-file HTML/CSS/JS apps, call `safe_editor` once per file in this order: HTML, CSS, JS.
 - The main agent still decides the change, re-reads the file, and performs final verification.
 - New self-contained HTML files: create the complete requested file in one `safe_edit_safe_create_file` call, then verify it. Do not create a scaffold first.
 - New simple text files: create the complete file in one `safe_edit_safe_create_file_from_lines` call, then verify it.

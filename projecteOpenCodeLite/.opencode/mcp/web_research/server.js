@@ -12,6 +12,8 @@ const USER_AGENT = "Mozilla/5.0 (compatible; OpenCodeWebResearch/1.0; +https://o
 const DEFAULT_TIMEOUT_MS = 12000;
 const MAX_RESULTS = 8;
 const MAX_SUMMARY_CHARS = 1800;
+const MAX_SEARCHES_PER_SESSION = 3;
+const searchHistory = [];
 
 function textResult(text) {
   return { content: [{ type: "text", text }] };
@@ -29,6 +31,45 @@ function clampInteger(value, fallback, min, max) {
   const parsed = Number.parseInt(value, 10);
   if (!Number.isFinite(parsed)) return fallback;
   return Math.max(min, Math.min(max, parsed));
+}
+
+function normalizeQuery(query) {
+  const stopWords = new Set(["and", "or", "the", "a", "an", "of", "for", "to", "summary", "description"]);
+  return String(query || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word && !stopWords.has(word))
+    .sort()
+    .join(" ");
+}
+
+function jaccardSimilarity(left, right) {
+  const a = new Set(left.split(/\s+/).filter(Boolean));
+  const b = new Set(right.split(/\s+/).filter(Boolean));
+  if (!a.size || !b.size) return 0;
+  let intersection = 0;
+  for (const item of a) {
+    if (b.has(item)) intersection += 1;
+  }
+  return intersection / (a.size + b.size - intersection);
+}
+
+function guardSearchLoop(query) {
+  const normalized = normalizeQuery(query);
+  if (!normalized) return;
+
+  const similar = searchHistory.find((entry) => jaccardSimilarity(normalized, entry.normalized) >= 0.5);
+  if (similar) {
+    throw new Error(`Repeated similar web search detected. Previous query: "${similar.query}". New query: "${query}". Stop searching and use the previous results to answer or continue the requested task.`);
+  }
+
+  if (searchHistory.length >= MAX_SEARCHES_PER_SESSION) {
+    throw new Error(`Search limit reached (${MAX_SEARCHES_PER_SESSION} searches in this session). Stop searching and use the results already returned.`);
+  }
+
+  searchHistory.push({ query, normalized });
 }
 
 function decodeHtml(text) {
@@ -192,7 +233,9 @@ async function searchWeb({ query, site, freshness, locale, max_results }) {
   const siteText = site ? `site:${site} ` : "";
   const freshnessText = freshness === "today" ? ` ${todayIso()}` : freshness && freshness !== "any" ? ` ${freshness}` : "";
   const localeText = locale ? ` ${locale}` : "";
-  const search = await searchDuckDuckGo(`${siteText}${query}${freshnessText}${localeText}`.trim(), maxResults);
+  const searchQuery = `${siteText}${query}${freshnessText}${localeText}`.trim();
+  guardSearchLoop(searchQuery);
+  const search = await searchDuckDuckGo(searchQuery, maxResults);
   return {
     ok: true,
     tool: "search",
@@ -246,8 +289,10 @@ registerJsonTool(
 
 async function main() {
   if (process.argv.includes("--self-test")) {
-    const summary = await fetchSummary({ url: "https://example.com", max_chars: 500 });
-    if (!summary.title || !summary.summary) throw new Error("fetch_summary self-test did not return title and summary");
+    const normalized = normalizeQuery("Galaxian arcade game mechanics and visual style summary");
+    if (!normalized.includes("galaxian") || normalized.includes("summary")) {
+      throw new Error(`normalizeQuery self-test failed: ${normalized}`);
+    }
     console.log("web_research self-test passed");
     return;
   }

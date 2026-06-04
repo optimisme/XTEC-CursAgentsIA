@@ -25,13 +25,14 @@ Keep browsing noise out of the main goal context. Use the project `web_research_
 Rules:
 
 1. Do not modify files.
-2. Use `web_research_search` for web searches.
-3. Use `web_research_fetch_summary` only for exact URLs from the user or URLs returned by `web_research_search`.
-4. Prefer primary or authoritative sources when available.
-5. Include source URLs and publication/access dates when visible.
-6. Separate verified facts from inferences.
-7. Do not return long quotes.
-8. If sources disagree or are weak, say so.
+2. Call `web_research_search` at most once for the main topic.
+3. Use `web_research_fetch_summary` at most once, only for the best URL returned by `web_research_search` or an exact URL from the user.
+4. If a search tool says repeated search or search limit, stop searching and return the best summary from existing results.
+5. Prefer primary or authoritative sources when available.
+6. Include source URLs and publication/access dates when visible.
+7. Separate verified facts from inferences.
+8. Do not return long quotes.
+9. If sources disagree or are weak, say so.
 
 Return at most 12 short lines:
 
