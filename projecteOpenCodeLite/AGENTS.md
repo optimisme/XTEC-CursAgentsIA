@@ -12,7 +12,8 @@ Lite OpenCode setup for small local models.
 - If you say you will use a tool or subagent, the next assistant action must be the actual tool call. Do not narrate intended tool calls as plain text.
 - Do not use broad shell access, memory workflows, npm installs, or invented validators.
 - Verify changed files before reporting completion.
-- For image prompts such as `@pic.png`, use `image_vision_describe`; OpenCode may not pass image attachments to the model directly.
+- Use `image_vision_describe` only when the user includes an explicit local image path such as `@pic.png`, `calculator.png`, `images/mockup.jpg`, `.jpeg`, `.webp`, or `.gif`.
+- Do not use `image_vision_describe` for ordinary visual styling, animation, layout, colors, or polished appearance requests unless an actual image file path is named.
 
 ## Editing
 

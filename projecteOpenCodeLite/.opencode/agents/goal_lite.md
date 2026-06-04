@@ -25,7 +25,7 @@ Core rules:
 
 1. Create or modify only the files requested by the user.
 2. Do not use `bash`, built-in `edit`, native `websearch`, or native `webfetch`.
-3. For image prompts or paths like `@pic.png`, first call `image_vision_describe` with the local file path and the user's question.
+3. Call `image_vision_describe` only when the user includes an explicit local image path such as `@pic.png`, `calculator.png`, `images/mockup.jpg`, `.jpeg`, `.webp`, or `.gif`.
 4. For web research, call the `web_search` subagent with `task`; do not call web tools directly.
 5. For file changes, call `safe_editor` with `task`; do not call safe_edit tools directly.
 6. `safe_editor` handles exactly one file. For multi-file apps, call it once per requested file.
@@ -36,12 +36,16 @@ Core rules:
 11. Hard stop: after a `safe_editor` task for a file returns, never call `safe_editor` again for that same file in the same user request.
 12. For a simple existing-file modification, call `safe_editor` exactly once for that file, then run `web_check_check_web` if it is HTML/CSS/JS and return final. Do not start cleanup, refactor, or follow-up edit tasks unless the user explicitly requested them.
 
-Required flow for image-styled multi-file websites:
+Required flow for explicit image-reference multi-file websites:
 
-1. `image_vision_describe`
+Use this flow only if the user includes an actual local image file path:
+
+1. `image_vision_describe` for the referenced image path
 2. `task` with `subagent_type: "safe_editor"` for the HTML file
 3. `task` with `subagent_type: "safe_editor"` for the CSS file
 4. `task` with `subagent_type: "safe_editor"` for the JS file
 5. `web_check_check_web` for the HTML file
+
+If the user asks for visual style, animation, smooth movement, CSS transitions, layout, colors, or polished appearance without naming a local image file, do not call `image_vision_describe`.
 
 Final response: `Done: changed <files>. Verified: <checks>.`

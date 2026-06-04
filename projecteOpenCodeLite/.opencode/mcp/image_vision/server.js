@@ -2,6 +2,7 @@
 import { existsSync, readFileSync, realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { deflateSync } from "node:zlib";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -10,6 +11,9 @@ const serverDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = realpathSync(path.resolve(serverDir, "../../.."));
 const endpoint = process.env.IMAGE_VISION_BASE_URL || "http://127.0.0.1:8002/v1/chat/completions";
 const model = process.env.IMAGE_VISION_MODEL || "active-model";
+const requireMultimodal = process.env.IMAGE_VISION_REQUIRE_MULTIMODAL !== "false";
+const probeTimeoutMs = Number(process.env.IMAGE_VISION_PROBE_TIMEOUT_MS || 6000);
+const greenProbePng = createSolidColorPngBase64(64, 64, [0, 255, 0]);
 
 const mimeByExtension = new Map([
   [".png", "image/png"],
@@ -76,7 +80,20 @@ async function describeImage({ file, prompt, max_tokens }) {
   const image = resolveProjectImage(file);
   const data = readFileSync(image.path).toString("base64");
   const userPrompt = prompt?.trim() || "Describe this image briefly.";
+  const answer = await askVisionModel({
+    prompt: userPrompt,
+    imageDataUrl: `data:${image.mime};base64,${data}`,
+    maxTokens: max_tokens ?? 200
+  });
 
+  return [
+    `file: ${path.relative(projectRoot, image.path)}`,
+    `model: ${model}`,
+    `answer: ${answer.trim()}`
+  ].join("\n");
+}
+
+async function askVisionModel({ prompt, imageDataUrl, maxTokens, signal }) {
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
@@ -89,14 +106,15 @@ async function describeImage({ file, prompt, max_tokens }) {
         {
           role: "user",
           content: [
-            { type: "text", text: userPrompt },
-            { type: "image_url", image_url: { url: `data:${image.mime};base64,${data}` } }
+            { type: "text", text: prompt },
+            { type: "image_url", image_url: { url: imageDataUrl } }
           ]
         }
       ],
-      max_tokens: max_tokens ?? 200,
+      max_tokens: maxTokens,
       temperature: 0
-    })
+    }),
+    signal
   });
 
   const text = await response.text();
@@ -116,42 +134,124 @@ async function describeImage({ file, prompt, max_tokens }) {
     throw new Error(`Vision response did not contain assistant content: ${text.slice(0, 1000)}`);
   }
 
-  return [
-    `file: ${path.relative(projectRoot, image.path)}`,
-    `model: ${model}`,
-    `answer: ${answer.trim()}`
-  ].join("\n");
+  if (looksLikeVisionUnsupported(answer)) {
+    throw new Error(`The configured model responded like a text-only model: ${answer.trim().slice(0, 300)}`);
+  }
+
+  return answer.trim();
 }
 
-server.registerTool(
-  "describe",
-  {
-    description: "Describe or answer a question about one project-local image using the local multimodal model. Use this when the user references an image path such as @pic.png.",
-    inputSchema: {
-      file: z.string().min(1),
-      prompt: z.string().optional(),
-      max_tokens: z.number().int().min(16).max(1024).optional()
+function looksLikeVisionUnsupported(text) {
+  return /cannot\s+(see|view|process|analy[sz]e)\s+images?|do not\s+(have|support)\s+(image|vision)|model does not support image|text-only/i.test(text);
+}
+
+function crc32(buffer) {
+  let crc = 0xffffffff;
+  for (const byte of buffer) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) {
+      crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
     }
-  },
-  async (input) => {
-    try {
-      const parsed = z.object({
+  }
+  const result = Buffer.alloc(4);
+  result.writeUInt32BE((~crc) >>> 0);
+  return result;
+}
+
+function pngChunk(type, data) {
+  const name = Buffer.from(type, "ascii");
+  const length = Buffer.alloc(4);
+  length.writeUInt32BE(data.length);
+  return Buffer.concat([length, name, data, crc32(Buffer.concat([name, data]))]);
+}
+
+function createSolidColorPngBase64(width, height, [red, green, blue]) {
+  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 2;
+
+  const rows = [];
+  for (let y = 0; y < height; y += 1) {
+    const row = Buffer.alloc(1 + width * 3);
+    row[0] = 0;
+    for (let x = 0; x < width; x += 1) {
+      const offset = 1 + x * 3;
+      row[offset] = red;
+      row[offset + 1] = green;
+      row[offset + 2] = blue;
+    }
+    rows.push(row);
+  }
+
+  return Buffer.concat([
+    signature,
+    pngChunk("IHDR", ihdr),
+    pngChunk("IDAT", deflateSync(Buffer.concat(rows))),
+    pngChunk("IEND", Buffer.alloc(0))
+  ]).toString("base64");
+}
+
+async function probeVisionSupport() {
+  if (!requireMultimodal) {
+    return true;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), probeTimeoutMs);
+  try {
+    const answer = await askVisionModel({
+      prompt: "Inspect the attached solid-color image and answer with exactly one English color word. If you cannot inspect images, answer exactly NO_VISION.",
+      imageDataUrl: `data:image/png;base64,${greenProbePng}`,
+      maxTokens: 16,
+      signal: controller.signal
+    });
+    return /\bGREEN\b/i.test(answer) && !/\bNO_VISION\b/i.test(answer);
+  } catch (error) {
+    console.error(`image_vision disabled: ${error?.message || String(error)}`);
+    return false;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function registerDescribeTool() {
+  server.registerTool(
+    "describe",
+    {
+      description: "Describe or answer a question about one project-local image using the local multimodal model. Use this only when the user references an explicit image path such as @pic.png.",
+      inputSchema: {
         file: z.string().min(1),
         prompt: z.string().optional(),
         max_tokens: z.number().int().min(16).max(1024).optional()
-      }).parse(input || {});
-      return textResult(await describeImage(parsed));
-    } catch (error) {
-      return textResult(formatError(error));
+      }
+    },
+    async (input) => {
+      try {
+        const parsed = z.object({
+          file: z.string().min(1),
+          prompt: z.string().optional(),
+          max_tokens: z.number().int().min(16).max(1024).optional()
+        }).parse(input || {});
+        return textResult(await describeImage(parsed));
+      } catch (error) {
+        return textResult(formatError(error));
+      }
     }
-  }
-);
+  );
+}
 
 async function main() {
   if (process.argv.includes("--self-test")) {
+    const supportsVision = await probeVisionSupport();
+    if (!supportsVision) {
+      throw new Error("image_vision self-test failed: configured model did not pass the multimodal probe.");
+    }
     const testFile = path.join(projectRoot, "pic.png");
     if (!existsSync(testFile)) {
-      console.log("image_vision self-test skipped: pic.png not found");
+      console.log("image_vision self-test passed: multimodal probe succeeded; pic.png not found, file-description test skipped");
       return;
     }
     const output = await describeImage({
@@ -164,6 +264,12 @@ async function main() {
     }
     console.log("image_vision self-test passed");
     return;
+  }
+
+  if (await probeVisionSupport()) {
+    registerDescribeTool();
+  } else {
+    console.error("image_vision disabled: configured model did not pass the multimodal probe.");
   }
 
   await server.connect(new StdioServerTransport());
