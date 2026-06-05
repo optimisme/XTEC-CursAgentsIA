@@ -1,17 +1,12 @@
-# Stop:    docker compose -f docker-compose-gemma4-12b-llamacpp.yml down
-# Restart: docker compose -f docker-compose-gemma4-12b-llamacpp.yml up -d
-# Logs:    docker logs -f --tail 20 gemma4_12b_llamacpp
-# Note:    Gemma 4 12B GGUF path for RTX 4060 Ti 16GB.
-#          Download first:
-#          mkdir -p models/gemma4-12b-llamacpp
-#          curl -L -C - -o models/gemma4-12b-llamacpp/gemma-4-12b-it-Q4_K_M.gguf \
-#            https://huggingface.co/unsloth/gemma-4-12b-it-GGUF/resolve/main/gemma-4-12b-it-Q4_K_M.gguf
+# Stop:    docker compose -f docker-compose-gemma4-12b-q8-llamacpp.yml down
+# Restart: docker compose -f docker-compose-gemma4-12b-q8-llamacpp.yml up -d
+# Logs:    docker logs -f --tail 20 gemma4_12b_q8_llamacpp
+# Note:    Gemma 4 12B Q8 GGUF path for RTX 4060 Ti 16GB. Keeps OpenAI model alias as active-model.
 services:
   gemma-llamacpp:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
-    container_name: gemma4_12b_llamacpp
+    container_name: gemma4_12b_q8_llamacpp
     volumes:
-      - ../models/gemma4-12b-llamacpp:/models/gemma4-12b-llamacpp:ro,z
       - llama-cpp-cache:/root/.cache/llama.cpp
       - llama-hf-cache:/root/.cache/huggingface
     ports:
@@ -31,8 +26,8 @@ services:
               capabilities: [gpu]
     restart: unless-stopped
     command:
-      - -m
-      - /models/gemma4-12b-llamacpp/gemma-4-12b-it-Q4_K_M.gguf
+      - -hf
+      - unsloth/gemma-4-12b-it-GGUF:Q8_0
       - -ngl
       - "99"
       - -c
@@ -45,7 +40,7 @@ services:
       - "8000"
       - --jinja
       - --reasoning
-      - "on"
+      - "off"
 
 volumes:
   llama-cpp-cache:

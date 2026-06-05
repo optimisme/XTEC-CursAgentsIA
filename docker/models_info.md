@@ -9,7 +9,9 @@ Inventari dels models configurats a `docker/docker-compose-*.yml`.
 | `gemma4-8b-spark` | `google/gemma-4-E4B-it` | E4B | 29.85 GB | Spark BF16, `gemma4-cu130` | BF16 | 8 seq / 4096 tokens |
 | `gemma4-8b` | `google/gemma-4-E4B-it` | E4B | 29.85 GB | Local BitsAndBytes, `vllm-openai:latest` | BnB quantitzat en carrega | 2 seq / 2048 tokens |
 | `gemma4-12b-llamacpp` | `unsloth/gemma-4-12b-it-GGUF:Q4_K_M` | 12B | 7.1 GB GGUF | Local llama.cpp CUDA, multimodal | GGUF Q4_K_M | 1 server / 32768 ctx |
+| `gemma4-12b-q8-llamacpp` | `unsloth/gemma-4-12b-it-GGUF:Q8_0` | 12B | 12.7 GB GGUF | Local llama.cpp CUDA, prova Q8 | GGUF Q8_0 | 1 server / 32768 ctx |
 | `gemma4-12b-litertlm` | `litert-community/gemma-4-12B-it-litert-lm` | 12B | 6.1 GB importat | Local LiteRT-LM, experimental | `.litertlm` | 1 server / OpenAI-compatible parcial |
+| `qwopus35-9b-moq-llamacpp` | `w-ahmad/Qwopus3.5-9B-Coder-MTP-GGUF-MoQ`, `MoQ-Quants/MoQ-4.2.gguf` | 9B | 4.89 GB GGUF | Local llama.cpp CUDA, prova MoQ | GGUF MoQ 4.2 BPW | 1 server / 32768 ctx |
 | `qwopus35-4b-coder` | `Jackrong/Qwopus3.5-4B-Coder` | 4B | n/d | Local/Spark BF16, `cu130-nightly` | BF16, no quantitzat | 8 seq / 4096 tokens |
 | `mellum2-12b-a25b-thinking` | `JetBrains/Mellum2-12B-A2.5B-Thinking` | 12B total, A2.5B actius | 22.63 GiB | Local/Spark BF16 CPU offload, `cu130-nightly` | BF16, MoE/A2.5B | 2 seq / 2048 tokens |
 | `mellum2-12b-a25b-thinking-spark` | `JetBrains/Mellum2-12B-A2.5B-Thinking` | 12B total, A2.5B actius | 22.63 GiB | Spark BF16, `cu130-nightly` | BF16, MoE/A2.5B | 4 seq / 4096 tokens |
@@ -32,6 +34,8 @@ Inventari dels models configurats a `docker/docker-compose-*.yml`.
 - Atencio: `qwen3.6-27b-spark` te `--max-model-len 32iz768` al compose, que sembla un typo i probablement hauria de ser `32768`.
 - `gemma4-8b` i `gemma4-8b-spark` carreguen el mateix model (`google/gemma-4-E4B-it`), pero el local usa BitsAndBytes i menys concurrencia per cabre en 16 GB VRAM.
 - `gemma4-12b-llamacpp` usa el GGUF Q4_K_M d'Unsloth amb `llama.cpp` CUDA i `--alias active-model`, de manera que encaixa amb la configuracio OpenCode existent. En prova real a la RTX 4060 Ti 16 GB ha carregat amb context 32768, uns 9.6 GB de VRAM, resposta de text neta i `tool_calls` OpenAI-compatible. El servei actual publica `capabilities:["completion","multimodal"]` i accepta imatges via `image_url` data URL; `dog.png` i `calculator.png` s'han descrit correctament. Els probes d'imatge massa petits poden fallar amb `failed to decode image bytes`, per aixo `image_vision` usa un PNG 32x32 com a prova de capacitat.
+- `gemma4-12b-q8-llamacpp` conserva el mateix alias OpenAI-compatible `active-model` i el mateix context 32768 que la configuracio Q4, pero carrega `Q8_0`. En RTX 4060 Ti 16 GB pot anar just de VRAM; si falla, baixar context a 16384 o 8192.
+- `qwopus35-9b-moq-llamacpp` prova el GGUF MoQ 4.2 de Qwopus3.5 9B Coder amb `llama.cpp`, alias `active-model` i context 32768. Es una ruta mes natural que vLLM per a aquest repo GGUF; cal validar tool calling amb OpenCode abans de considerar-lo estable.
 - `gemma4-12b-litertlm` prova la ruta recomanada per Google per executar Gemma 4 12B en equips locals de 16 GB amb LiteRT-LM. En la RTX 4060 Ti 16 GB remota, `litert-lm run --backend gpu --max-num-tokens 128` genera text coherent, pero `litert-lm serve` no exposa aquest limit i l'endpoint OpenAI-compatible retorna `<pad>`; no es recomanat per OpenCode fins que LiteRT-LM permeti limitar el KV cache al servidor o es faci un wrapper estable.
 - `lfm25-8b-a1b` serveix `LiquidAI/LFM2.5-8B-A1B` com `active-model` per reutilitzar la configuracio OpenCode local (`vram16-vllm`, port local 8002 cap al 8000 remot).
 

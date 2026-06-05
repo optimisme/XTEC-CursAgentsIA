@@ -82,7 +82,7 @@ Definicions a conèixer:
 | **A4B** | En un MoE, uns 4B paràmetres actius per token. | `gemma-4-26B-A4B-it`. |
 | **E4B** | Variant Gemma amb escala efectiva de 4B. | `gemma-4-E4B-it`. |
 | **MoE** | *Mixture of Experts*: només s'activen alguns experts per token. | Model amb molts paràmetres totals però menys paràmetres actius. |
-| **MOQ / MoQ** | Al curs, ho usem com a abreviatura de quantització mixta si cal parlar-ne. | Barrejar precisions o tècniques per reduir memòria. |
+| **MoQ** | *Mixture of Quants*: barreja de quantitzacions amb diferents bits per pes segons la importància de cada part del model. | `Qwopus3.5-9B-Coder-MTP-GGUF-MoQ`. |
 | **BF16** | Format numèric de 16 bits, sense quantització agressiva. | Models Spark grans en BF16. |
 | **FP8** | Format de 8 bits per reduir memòria. | KV cache en `fp8`. |
 | **AWQ** | Quantització pensada per executar models grans amb menys memòria. | `Qwen3-8B-AWQ`. |

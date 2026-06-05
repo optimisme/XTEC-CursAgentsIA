@@ -15,8 +15,11 @@ The Lite project keeps the main implementation agent small, but allows narrow su
 - `web_search` gathers compact sourced facts from the web.
 - `web_quality` reviews generated HTML/CSS/JS and returns short blocking findings.
 - `safe_editor` applies one pre-decided change to one file with `safe_edit`, verifies the file, and returns a compact result.
+- `code_planner` analyzes existing code without editing and returns explicit local edit tasks.
+- `function_editor` applies one existing-function or small-block change.
+- `code_editor` applies 2-4 coordinated changes in one existing file, such as a CSS selector plus a JavaScript function in one HTML file.
 
-The `safe_editor` subagent is not a second implementation agent. The main agent still decides what to change, re-reads the file after the edit, and performs final verification.
+The editing subagents are not second implementation agents. The main agent or `code_planner` still decides what to change, and the main agent performs final verification.
 
 ## Do not add memory MCP by default
 

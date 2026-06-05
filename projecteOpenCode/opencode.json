@@ -2,20 +2,15 @@
   "$schema": "https://opencode.ai/config.json",
   "model": "vram16-vllm/active-model",
   "default_agent": "build",
-  "enabled_providers": ["ieti-agents", "vram16-vllm", "spark-vllm"],
+  "enabled_providers": ["ieti-agents", "vram16-vllm", "spark-vllm", "opencode"],
   "permission": {
     "read": "allow",
     "grep": "allow",
     "glob": "allow",
     "bash": "allow",
     "edit": "allow",
-    "write": "deny",
-    "task": "allow",
-    "todowrite": "deny",
-    "webfetch": "allow",
-    "websearch": "allow",
-    "lsp": "deny",
-    "skill": "deny"
+    "write": "allow",
+    "task": "allow"
   },
   "compaction": {
     "auto": true,
@@ -92,16 +87,6 @@
           "reasoning": false
         }
       }
-    }
-  },
-  "mcp": {
-    "web_check": {
-      "type": "local",
-      "command": [
-        "node",
-        ".opencode/mcp/web_check/server.js"
-      ],
-      "enabled": true
     }
   }
 }

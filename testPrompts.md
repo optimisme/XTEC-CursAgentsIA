@@ -2,7 +2,7 @@ Create a new file named clock.html at webs folder that shows an analog circular 
 
 Create a new file named snake.html at webs folder with a playable Snake game using only HTML, CSS, and JavaScript. Use canvas, keyboard arrows to control direction, the game doesn't start until user presses a direction key, the game has a score display, pause/restart buttons, and run the web checker.
 
-Create a new file named slider.html at webs folder with a slider puzle 3x3 that moves the clicked piece to the empty space, make the pieces with big numbers from 1 to 8 and making it solved when all numbers are properly sorted and the empty space is at bottom right corner. Don't use canvas, each piece must be a `<div>`.
+Create a new file named slider.html at webs folder with a slider puzle 3x3 that moves the clicked piece to the empty space, make the pieces with big numbers from 1 to 8 and making it solved when all numbers are properly sorted and the empty space is at bottom right corner. Don't use canvas, each piece must be a `<div>`. Ensure pieces animate smoothly, don't make them jump from begin position to end one.
 
 Search on the internet the look and feel and mechanics of 1024 game, then implement it into webs folder naming the main file as game1024.html using canvas, add other files if necessary. Ensure animations move at 30fps with requestanimationframe.
 

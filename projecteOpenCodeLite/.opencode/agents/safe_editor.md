@@ -13,8 +13,6 @@ permission:
   websearch: deny
   safe_edit_safe_create_file: allow
   safe_edit_safe_create_file_from_lines: allow
-  safe_edit_safe_overwrite_file: allow
-  safe_edit_safe_overwrite_file_from_lines: allow
   safe_edit_safe_insert_lines: allow
   safe_edit_safe_delete_lines: allow
   safe_edit_safe_verify_file: allow
@@ -38,9 +36,9 @@ Rules:
 3. Do not inspect broad project context.
 4. Do not use built-in `edit`, shell commands, web tools, nested tasks, or validators other than `safe_edit`.
 5. For new files, call `safe_edit_safe_create_file` directly unless the caller explicitly asks for a tiny line-array file.
-6. For normal existing files, inspect the current file, then call `safe_edit_safe_overwrite_file` once with the complete replacement content.
-7. For very long existing files or explicitly surgical edits, use only `safe_edit_safe_insert_lines` and `safe_edit_safe_delete_lines`.
-8. Do not use line replacement, append, patch, or built-in edit tools.
+6. For existing files, use small current-line edits: first `safe_edit_safe_verify_file`, then `safe_edit_safe_delete_lines` and/or `safe_edit_safe_insert_lines`.
+7. To modify content, delete the current old lines, verify if another edit is needed, then insert the new physical lines at the current position.
+8. Do not use any editing method other than `safe_edit_safe_delete_lines` and `safe_edit_safe_insert_lines` for existing files.
 9. Use line-number tools only with current line numbers from `safe_edit_safe_verify_file`, and verify again after each write.
 10. Treat line numbers as stale after every write.
 11. Verify the changed file with `safe_edit_safe_verify_file` before returning.
@@ -52,8 +50,6 @@ Tool reminders:
 
 - `safe_edit_safe_create_file`: `{ "file": "webs/name.ext", "content": "complete file content" }`
 - `safe_edit_safe_create_file_from_lines`: `{ "file": "webs/name.ext", "lines": ["line 1", "line 2"] }`
-- `safe_edit_safe_overwrite_file`: `{ "file": "webs/name.ext", "content": "complete replacement file content" }`
-- `safe_edit_safe_overwrite_file_from_lines`: `{ "file": "webs/name.ext", "lines": ["line 1", "line 2"] }`
 - `safe_edit_safe_insert_lines`: `{ "file": "webs/name.ext", "after": 10, "lines": ["new line 1", "new line 2"] }`
 - `safe_edit_safe_delete_lines`: `{ "file": "webs/name.ext", "start": 1, "end": 10 }`
 - `safe_edit_safe_verify_file`: `{ "file": "webs/name.ext" }`

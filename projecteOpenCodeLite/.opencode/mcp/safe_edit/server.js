@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, renameSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -12,6 +12,9 @@ const backupDir = path.join(serverDir, "backups");
 const filesNeedingFreshRead = new Set();
 const noOpEditCounts = new Map();
 const suspiciousPathCounts = new Map();
+const MAX_INSERT_LINES = 120;
+const MAX_DELETE_LINES = 180;
+const MAX_VERIFY_LINES = 220;
 
 const fileRangeSchema = {
   file: z.string().min(1),
@@ -199,7 +202,7 @@ function createFile({ file, content }) {
   const filePath = resolveProjectPath(file);
 
   if (existsSync(filePath)) {
-    throw new Error(`File already exists: ${relativeProjectPath(filePath)}. Use safe_overwrite_file for existing files.`);
+    throw new Error(`File already exists: ${relativeProjectPath(filePath)}. For existing files, use safe_verify_file, then safe_delete_lines and safe_insert_lines with current line numbers.`);
   }
 
   validateHtmlForWrite(filePath, content);
@@ -226,49 +229,6 @@ function createFileFromLines({ file, lines }) {
   return result;
 }
 
-function overwriteFile({ file, content }) {
-  const filePath = resolveProjectPath(file);
-
-  if (!existsSync(filePath)) {
-    throw new Error(`File does not exist: ${relativeProjectPath(filePath)}. Use safe_create_file or safe_create_file_from_lines for new files.`);
-  }
-
-  const original = readTextFile(filePath);
-  const signature = editSignature("overwrite_file", filePath, { content });
-  if (content === original) {
-    return recordNoOpEdit(signature, `No-op overwrite in ${relativeProjectPath(filePath)}: replacement content is identical to the current content.`);
-  }
-  clearNoOpEdit(signature);
-
-  const backupPath = createBackup(filePath);
-  mkdirSync(backupDir, { recursive: true });
-  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const safeName = relativeProjectPath(filePath).replace(/[^a-zA-Z0-9._-]+/g, "__");
-  const tempPath = path.join(backupDir, `${stamp}__${safeName}.tmp${path.extname(filePath)}`);
-  writeFileSync(tempPath, content, "utf8");
-
-  try {
-    verifyHtmlStructure(filePath, readTextFile(tempPath));
-    renameSync(tempPath, filePath);
-  } catch (error) {
-    rmSync(tempPath, { force: true });
-    throw error;
-  }
-
-  markNeedsFreshRead(filePath);
-
-  return [
-    `Overwrote ${relativeProjectPath(filePath)}.`,
-    `Backup: ${relativeProjectPath(backupPath)}`,
-    "Validation: replacement file passed safe_edit validation before commit."
-  ].join("\n");
-}
-
-function overwriteFileFromLines({ file, lines }) {
-  const physicalLines = normalizePhysicalLines(lines);
-  return overwriteFile({ file, content: `${physicalLines.join("\n")}\n` });
-}
-
 function insertLines({ file, after, lines }) {
   const filePath = resolveProjectPath(file);
   requireFreshRead(filePath);
@@ -280,6 +240,9 @@ function insertLines({ file, after, lines }) {
   }
 
   const inserted = normalizePhysicalLines(lines);
+  if (inserted.length > MAX_INSERT_LINES) {
+    throw new Error(`Insert too large: ${inserted.length} lines. Limit is ${MAX_INSERT_LINES}. Split the request or return a blocker instead of emitting a huge edit.`);
+  }
   existing.splice(after, 0, ...inserted);
   const nextContent = joinLines(existing, newline, hasFinalNewline || inserted.length > 0);
   const signature = editSignature("insert_lines", filePath, { after, lines: inserted });
@@ -307,6 +270,9 @@ function deleteLines({ file, start, end }) {
   const original = readTextFile(filePath);
   const { lines, newline, hasFinalNewline } = splitLines(original);
   assertRange(start, end, lines.length);
+  if (end - start + 1 > MAX_DELETE_LINES) {
+    throw new Error(`Delete too large: ${end - start + 1} lines. Limit is ${MAX_DELETE_LINES}. Split the request or return a blocker instead of emitting a huge edit.`);
+  }
 
   lines.splice(start - 1, end - start + 1);
   const nextContent = joinLines(lines, newline, hasFinalNewline && lines.length > 0);
@@ -333,15 +299,23 @@ function verifyFile({ file, start, end }) {
   verifyHtmlStructure(filePath, text);
   const { lines } = splitLines(text);
   const first = start ?? 1;
-  const last = end ?? lines.length;
+  const requestedLast = end ?? lines.length;
+  const last = Math.min(requestedLast, first + MAX_VERIFY_LINES - 1);
 
   if (!lines.length) {
     return "";
   }
 
-  assertRange(first, last, lines.length);
+  assertRange(first, requestedLast, lines.length);
   markFreshRead(filePath);
-  return numberLines(lines.slice(first - 1, last), first);
+  const body = numberLines(lines.slice(first - 1, last), first);
+  if (last < requestedLast) {
+    return [
+      `Showing lines ${first}-${last} of ${lines.length}. Output capped at ${MAX_VERIFY_LINES} lines; request a smaller explicit range for more.`,
+      body
+    ].join("\n");
+  }
+  return body;
 }
 
 function countMatches(text, pattern) {
@@ -446,28 +420,8 @@ registerTool(
 );
 
 registerTool(
-  "safe_overwrite_file_from_lines",
-  "Overwrite an existing UTF-8 text file from an array of physical file lines. Creates a backup, validates the replacement, writes to a temporary copy, then replaces the original only if validation passes.",
-  {
-    file: z.string().min(1),
-    lines: z.array(z.string())
-  },
-  overwriteFileFromLines
-);
-
-registerTool(
-  "safe_overwrite_file",
-  "Overwrite an existing UTF-8 text file from one complete content string. Creates a backup, validates the replacement, writes to a temporary copy, then replaces the original only if validation passes.",
-  {
-    file: z.string().min(1),
-    content: z.string()
-  },
-  overwriteFile
-);
-
-registerTool(
   "safe_insert_lines",
-  "Insert physical lines after a current 1-based line number after creating a backup. Use after=0 to insert at the top. Verify the file first, and verify again before any next line-number edit.",
+  `Insert up to ${MAX_INSERT_LINES} physical lines after a current 1-based line number after creating a backup. Use after=0 to insert at the top. Verify the file first, and verify again before any next line-number edit.`,
   {
     file: z.string().min(1),
     after: z.number().int().min(0),
@@ -478,7 +432,7 @@ registerTool(
 
 registerTool(
   "safe_delete_lines",
-  "Delete an inclusive 1-based line range after creating a backup. Use only line numbers from the current file state. If any previous write happened, verify the file again before deleting.",
+  `Delete up to ${MAX_DELETE_LINES} lines in an inclusive 1-based line range after creating a backup. Use only line numbers from the current file state. If any previous write happened, verify the file again before deleting.`,
   fileRangeSchema,
   deleteLines
 );
@@ -510,20 +464,14 @@ async function main() {
     if (existsSync(selfTestPath)) {
       rmSync(selfTestPath);
     }
-    createFile({ file: selfTestFile, content: "safe_edit create self-test\n" });
+    createFile({ file: selfTestFile, content: "one\ntwo\nthree\n" });
     if (!existsSync(selfTestPath)) {
       throw new Error("safe_create_file self-test failed.");
     }
     verifyFile({ file: selfTestFile });
-    insertLines({ file: selfTestFile, after: 1, lines: ["inserted by line add"] });
-    const selfTestContent = readTextFile(selfTestPath);
-    if (!selfTestContent.includes("inserted by line add")) {
-      throw new Error("safe_insert_lines self-test failed.");
-    }
-    verifyFile({ file: selfTestFile });
-    overwriteFile({ file: selfTestFile, content: "one\ntwo\nthree\n" });
+    deleteLines({ file: selfTestFile, start: 2, end: 2 });
     try {
-      insertLines({ file: selfTestFile, after: 2, lines: ["must fail before fresh read"] });
+      insertLines({ file: selfTestFile, after: 1, lines: ["must fail before fresh read"] });
       throw new Error("stale line-number guard self-test failed.");
     } catch (error) {
       if (!String(error.message).includes("Line numbers") || !String(error.message).includes("stale")) {
@@ -531,28 +479,23 @@ async function main() {
       }
     }
     verifyFile({ file: selfTestFile });
-    insertLines({ file: selfTestFile, after: 2, lines: ["inserted"] });
+    insertLines({ file: selfTestFile, after: 1, lines: ["inserted"] });
     verifyFile({ file: selfTestFile });
-    deleteLines({ file: selfTestFile, start: 1, end: 1 });
     const lineEditContent = readTextFile(selfTestPath);
-    if (lineEditContent !== "two\ninserted\nthree\n") {
+    if (lineEditContent !== "one\ninserted\nthree\n") {
       throw new Error("safe line operation self-test failed.");
     }
-    verifyFile({ file: selfTestFile });
-    overwriteFileFromLines({ file: selfTestFile, lines: ["alpha", "beta"] });
-    const overwriteLinesContent = readTextFile(selfTestPath);
-    if (overwriteLinesContent !== "alpha\nbeta\n") {
-      throw new Error("safe_overwrite_file_from_lines self-test failed.");
-    }
     try {
-      overwriteFile({ file: selfTestFile, content: "alpha\nbeta\n" });
-      overwriteFile({ file: selfTestFile, content: "alpha\nbeta\n" });
-      throw new Error("safe_overwrite_file no-op guard self-test failed.");
+      insertLines({ file: selfTestFile, after: 2, lines: [] });
+      insertLines({ file: selfTestFile, after: 2, lines: [] });
+      throw new Error("safe_insert_lines no-op guard self-test failed.");
     } catch (error) {
       if (!String(error.message).includes("no-op edit")) {
         throw error;
       }
     }
+    insertLines({ file: selfTestFile, after: 2, lines: ["extra write"] });
+    verifyFile({ file: selfTestFile });
     rmSync(selfTestPath);
     const outsideDir = path.resolve(projectRoot, "..", "safe_edit-outside-self-test");
     const symlinkFile = ".opencode/mcp/safe_edit/backups/self-test-symlink";
