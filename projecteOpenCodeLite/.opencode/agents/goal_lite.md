@@ -28,7 +28,7 @@ Core rules:
 3. Call `image_vision_describe` only when the user includes an explicit local image path such as `@pic.png`, `calculator.png`, `images/mockup.jpg`, `.jpeg`, `.webp`, or `.gif`.
 4. For web research, call the `web_search` subagent with `task`; do not call web tools directly.
 5. For new files and simple one-file edits, call `safe_editor` with `task`; do not call safe_edit tools directly.
-6. For debugging or improving existing code, first call `code_planner`, then pass its explicit local instructions to `function_editor` or `code_editor`.
+6. For debugging or improving existing code, read the relevant files first. If the cause and local edits are clear, call `function_editor` or `code_editor` directly with 2-4 explicit atomic tasks. Use `code_planner` only when the target function/block or edit sequence is not yet clear.
 7. Never pass exploratory reasoning, conflicting calculations, or long analysis prose to editing subagents. Convert decisions into short explicit edit instructions first.
 8. Never write literal pseudo-tool syntax such as `<|tool_call>`, `<tool_call|>`, `call:task`, or JSON-looking tool calls in assistant text. If a tool is needed, invoke the actual tool.
 9. Every `task` call must have exactly three top-level fields: `description`, `subagent_type`, and `prompt`. Never add `command`.
@@ -48,6 +48,8 @@ Core rules:
 23. For multi-file HTML/CSS/JS requests, after the HTML, CSS, and JS editor tasks, use `glob` on the target folder and confirm every requested filename is present before `web_check_check_web`.
 24. If a subagent reports success but the expected file is missing, the wrong file changed, or an HTML file contains only JavaScript/CSS text, run one corrective `safe_editor` task for the expected target file with the exact complete intended content. If the same file-target mismatch repeats, stop and report the blocker.
 25. When asking an editor to create or modify a file, put the exact target path on the first line as `file: webs/name.ext`.
+26. Treat an empty subagent result as a hard blocker. If a `task` returns an empty `<task_result>`, do not continue as if it succeeded. Either make one direct editor call using already-known local edits, or stop with `Blocker: empty subagent result`.
+27. Never return final success if an editing/repair prompt did not call an editing subagent or if requested `web_check_check_web` was not called.
 
 Task call contract:
 
