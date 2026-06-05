@@ -112,7 +112,8 @@ async function askVisionModel({ prompt, imageDataUrl, maxTokens, signal }) {
         }
       ],
       max_tokens: maxTokens,
-      temperature: 0
+      temperature: 0,
+      chat_template_kwargs: { enable_thinking: false }
     }),
     signal
   });

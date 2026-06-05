@@ -20,6 +20,7 @@ Models:
   qwen3-14b-spark
   lfm25-8b-a1b
   gemma4-12b-llamacpp
+  gemma4-12b-qat-llamacpp
   gemma4-12b-q8-llamacpp
   qwopus35-9b-moq-llamacpp
   gemma4-12b-litertlm
@@ -64,6 +65,7 @@ compose_file_for() {
     qwen3-14b-spark) printf '%s\n' "docker-compose-qwen3-14b-spark.yml" ;;
     lfm25-8b-a1b) printf '%s\n' "docker-compose-lfm25-8b-a1b.yml" ;;
     gemma4-12b-llamacpp) printf '%s\n' "docker-compose-gemma4-12b-llamacpp.yml" ;;
+    gemma4-12b-qat-llamacpp) printf '%s\n' "docker-compose-gemma4-12b-qat-llamacpp.yml" ;;
     gemma4-12b-q8-llamacpp) printf '%s\n' "docker-compose-gemma4-12b-q8-llamacpp.yml" ;;
     qwopus35-9b-moq-llamacpp) printf '%s\n' "docker-compose-qwopus35-9b-moq-llamacpp.yml" ;;
     gemma4-12b-litertlm) printf '%s\n' "docker-compose-gemma4-12b-litertlm.yml" ;;
@@ -96,6 +98,7 @@ container_for() {
     qwen3-14b-spark) printf '%s\n' "qwen3_14b_awq_vllm" ;;
     lfm25-8b-a1b) printf '%s\n' "lfm25_8b_a1b_vllm" ;;
     gemma4-12b-llamacpp) printf '%s\n' "gemma4_12b_llamacpp" ;;
+    gemma4-12b-qat-llamacpp) printf '%s\n' "gemma4_12b_qat_llamacpp" ;;
     gemma4-12b-q8-llamacpp) printf '%s\n' "gemma4_12b_q8_llamacpp" ;;
     qwopus35-9b-moq-llamacpp) printf '%s\n' "qwopus35_9b_moq_llamacpp" ;;
     gemma4-12b-litertlm) printf '%s\n' "gemma4_12b_litertlm" ;;
@@ -127,6 +130,7 @@ stop_all() {
     docker-compose-qwen3-14b-spark.yml \
     docker-compose-lfm25-8b-a1b.yml \
     docker-compose-gemma4-12b-llamacpp.yml \
+    docker-compose-gemma4-12b-qat-llamacpp.yml \
     docker-compose-gemma4-12b-q8-llamacpp.yml \
     docker-compose-qwopus35-9b-moq-llamacpp.yml \
     docker-compose-gemma4-12b-litertlm.yml \
