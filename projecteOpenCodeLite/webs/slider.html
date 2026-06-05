@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slider Puzzle</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --primary-color: #4a90e2;
+            --piece-bg: #ffffff;
+            --piece-text: #333;
+            --empty-bg: #cbd5e0;
+            --win-color: #48bb78;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .game-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            background-color: #a0aec0;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .piece {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background-color: var(--piece-bg);
+            color: var(--piece-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            z-index: 1;
+        }
+
+        .piece:hover {
+            background-color: #edf2f7;
+            transform: scale(1.02);
+        }
+
+        .piece.empty {
+            background-color: var(--empty-bg);
+            cursor: default;
+            box-shadow: none;
+        }
+
+        .piece.empty:hover {
+            transform: none;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--win-color);
+            height: 2rem;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="title">Slider Puzzle</h1>
+    <div class="game-container" id="game-board">
+        <!-- Pieces will be injected here -->
+    </div>
+    <div id="message"></div>
+    <div class="controls">
+        <button onclick="initGame()">Reset Game</button>
+    </div>
+
+    <script>
+        const boardElement = document.getElementById('game-board');
+        const messageElement = document.getElementById('message');
+        const titleElement = document.getElementById('title');
+        const size = 3;
+        let pieces = []; // Array of objects: { id, element }
+
+        function initGame() {
+            messageElement.textContent = '';
+            boardElement.innerHTML = '';
+            pieces = [];
+            
+            let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+            
+            // Shuffle until solvable
+            do {
+                for (let i = numbers.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+                }
+            } while (!isSolvable(numbers) || isWon(numbers));
+
+            for (let i = 0; i < 9; i++) {
+                const div = document.createElement('div');
+                div.className = 'piece' + (numbers[i] === 0 ? ' empty' : '');
+                div.textContent = numbers[i] === 0 ? '' : numbers[i];
+                div.style.transform = `translate(${Math.floor(i / size) * 100}px, ${(i % size) * 100}px)`;
+                
+                div.addEventListener('click', () => handleMove(i));
+                
+                boardElement.appendChild(div);
+                pieces.push({ id: numbers[i], element: div });
+            }
+        }
+
+        function isSolvable(arr) {
+            let inversions = 0;
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[i] > arr[j] && arr[i] !== 0 && arr[j] !== 0) {
+                        inversions++;
+                    }
+                }
+            }
+            return inversions % 2 === 0;
+        }
+
+        function isWon(arr) {
+            for (let i = 0; i < 8; i++) {
+                if (arr[i] !== i + 1) return false;
+            }
+            return arr[8] === 0;
+        }
+
+        function handleMove(index) {
+            const currentPiece = pieces[index];
+            if (currentPiece.id === 0) return;
+
+            const emptyIndex = pieces.findIndex(p => p.id === 0);
+            
+            const row = Math.floor(index / size);
+            const col = index % size;
+            const emptyRow = Math.floor(emptyIndex / size);
+            const emptyCol = emptyIndex % size;
+
+            const rowDiff = Math.abs(row - emptyRow);
+            const colDiff = Math.abs(col - emptyCol);
+
+            if ((rowDiff === 1 && colDiff === 0) || (rowDiff === 0 && colDiff === 1)) {
+                const temp = pieces[index];
+                pieces[index] = pieces[emptyIndex];
+                pieces[emptyIndex] = temp;
+
+                updatePositions();
+                checkWin();
+            }
+        }
+
+        function updatePositions() {
+            pieces.forEach((p, i) => {
+                const row = Math.floor(i / size);
+                const col = i % size;
+                const x = col * 100;
+                const y = row * 100;
+                p.element.style.transform = `translate(${x}px, ${y}px)`;
+                
+                if (p.id === 0) {
+                    p.element.classList.add('empty');
+                    p.element.textContent = '';
+                } else {
+                    p.element.classList.remove('empty');
+                    p.element.textContent = p.id;
+                }
+            });
+        }
+
+        function checkWin() {
+            const currentArr = pieces.map(p => p.id);
+            if (isWon(currentArr)) {
+                messageElement.textContent = 'You Win!';
+                titleElement.textContent = 'Puzzle Solved!';
+            }
+        }
+
+        initGame();
+    </script>
+</body>
+</html>

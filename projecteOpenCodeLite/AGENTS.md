@@ -20,7 +20,7 @@ Lite OpenCode setup for small local models.
 ## Editing
 
 - Use the safe_edit MCP only; built-in `edit` is disabled.
-- Use underscore tool names such as `safe_edit_safe_create_file`, `safe_edit_safe_create_file_from_lines`, `safe_edit_safe_insert_lines`, and `safe_edit_safe_delete_lines`.
+- Use underscore tool names such as `safe_edit_safe_create_file`, `safe_edit_safe_create_file_from_lines`, `safe_edit_safe_replace_lines`, `safe_edit_safe_insert_lines`, and `safe_edit_safe_delete_lines`.
 - For new files and simple one-file edits, delegate to `safe_editor` with the `task` tool; `safe_editor` verifies its own file with safe_edit.
 - For debugging or improving existing code, first call `code_planner`, then pass its explicit local instructions to `function_editor` or `code_editor`.
 - The `code_planner` subagent is read-only and proposes the smallest scoped fix.
@@ -32,9 +32,9 @@ Lite OpenCode setup for small local models.
 - Before calling an editing subagent, compress the request to file, target unit, exact edits, preserved behavior, and verification. Do not include abandoned alternatives.
 - New self-contained HTML files: create the complete requested file in one `safe_edit_safe_create_file` call, then verify it. Do not create a scaffold first.
 - New simple text files: create the complete file in one `safe_edit_safe_create_file_from_lines` call, then verify it.
-- Existing files: use only small current-line edits with `safe_edit_safe_delete_lines` and `safe_edit_safe_insert_lines`.
+- Existing files: use small current-line edits. Prefer `safe_edit_safe_replace_lines` for replacements; use `safe_edit_safe_delete_lines` or `safe_edit_safe_insert_lines` only for pure deletion or pure insertion.
 - To modify content, delete the current old lines, verify if another edit is needed, then insert the new physical lines at the current position.
-- For existing files, do not use any editing method other than `safe_edit_safe_delete_lines` and `safe_edit_safe_insert_lines`.
+- For existing files, do not use any editing method other than `safe_edit_safe_replace_lines`, `safe_edit_safe_delete_lines`, and `safe_edit_safe_insert_lines`.
 - If using insert/delete lines, call `safe_edit_safe_verify_file` first and base the edit only on those returned line numbers.
 - Verify again after every insert/delete write before doing another line-number edit.
 - Never use line numbers remembered from before a write.
@@ -46,7 +46,7 @@ Lite OpenCode setup for small local models.
 - Do not call `safe_edit_safe_verify_file` from the main coordinator; editing subagents handle safe verification.
 - Compare the editing subagent result against the requested change before reporting completion.
 - For HTML/CSS/JS, run `web_check_check_web` with `{"file":"webs/name.ext"}` after safe verification.
-- For nontrivial HTML/CSS/JS work, ask the `web_quality` subagent for a read-only review before final.
+- For HTML/CSS/JS work, run `web_check_check_web` on the HTML entry file before final. Do not call `web_quality` unless the user explicitly asks for an extra syntax-only review.
 - If the prompt requires internet research and also asks for a new file, ask the `web_search` subagent for compact sourced facts, then ask `safe_editor` to create the requested file. Do not call web or safe_edit tools directly in the main implementation agent.
 - When using the `task` tool, include `description`, `subagent_type`, and `prompt`.
 - Use `safe_editor` only when the prompt names one file; it may create a complete new self-contained HTML file or apply a simple scoped one-file edit.

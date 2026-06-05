@@ -2,6 +2,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import vm from "node:vm";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
@@ -14,6 +15,7 @@ const noOpEditCounts = new Map();
 const suspiciousPathCounts = new Map();
 const MAX_INSERT_LINES = 120;
 const MAX_DELETE_LINES = 180;
+const MAX_REPLACE_LINES = 220;
 const MAX_VERIFY_LINES = 220;
 
 const fileRangeSchema = {
@@ -205,7 +207,7 @@ function createFile({ file, content }) {
     throw new Error(`File already exists: ${relativeProjectPath(filePath)}. For existing files, use safe_verify_file, then safe_delete_lines and safe_insert_lines with current line numbers.`);
   }
 
-  validateHtmlForWrite(filePath, content);
+  validateTextForWrite(filePath, content);
   mkdirSync(path.dirname(filePath), { recursive: true });
   writeFileSync(filePath, content, "utf8");
   markNeedsFreshRead(filePath);
@@ -250,7 +252,7 @@ function insertLines({ file, after, lines }) {
     return recordNoOpEdit(signature, `No-op insert in ${relativeProjectPath(filePath)} after line ${after}: requested insertion is empty.`);
   }
   clearNoOpEdit(signature);
-  validateHtmlForWrite(filePath, nextContent);
+  validateTextForWrite(filePath, nextContent);
   const backupPath = createBackup(filePath);
   writeFileSync(filePath, nextContent, "utf8");
   markNeedsFreshRead(filePath);
@@ -281,7 +283,7 @@ function deleteLines({ file, start, end }) {
     return recordNoOpEdit(signature, `No-op delete in ${relativeProjectPath(filePath)} lines ${start}-${end}: no content would be removed.`);
   }
   clearNoOpEdit(signature);
-  validateHtmlForWrite(filePath, nextContent);
+  validateTextForWrite(filePath, nextContent);
   const backupPath = createBackup(filePath);
   writeFileSync(filePath, nextContent, "utf8");
   markNeedsFreshRead(filePath);
@@ -289,6 +291,40 @@ function deleteLines({ file, start, end }) {
   return [
     `Deleted ${end - start + 1} line(s) from ${relativeProjectPath(filePath)}.`,
     `Modified range: ${start}-${Math.max(start, lines.length)}.`,
+    `Backup: ${relativeProjectPath(backupPath)}`
+  ].join("\n");
+}
+
+function replaceLines({ file, start, end, lines: replacementLines }) {
+  const filePath = resolveProjectPath(file);
+  requireFreshRead(filePath);
+  const original = readTextFile(filePath);
+  const { lines, newline, hasFinalNewline } = splitLines(original);
+  assertRange(start, end, lines.length);
+
+  const replacement = normalizePhysicalLines(replacementLines);
+  if (replacement.length > MAX_REPLACE_LINES) {
+    throw new Error(`Replace too large: ${replacement.length} lines. Limit is ${MAX_REPLACE_LINES}. Split the request or return a blocker instead of emitting a huge edit.`);
+  }
+
+  const nextLines = [...lines];
+  nextLines.splice(start - 1, end - start + 1, ...replacement);
+  const nextContent = joinLines(nextLines, newline, hasFinalNewline || replacement.length > 0);
+  const signature = editSignature("replace_lines", filePath, { start, end, lines: replacement });
+  if (nextContent === original) {
+    return recordNoOpEdit(signature, `No-op replace in ${relativeProjectPath(filePath)} lines ${start}-${end}: replacement is identical to the current content.`);
+  }
+  clearNoOpEdit(signature);
+
+  validateTextForWrite(filePath, nextContent);
+  const backupPath = createBackup(filePath);
+  writeFileSync(filePath, nextContent, "utf8");
+  markNeedsFreshRead(filePath);
+
+  const modifiedEnd = start + Math.max(replacement.length, 1) - 1;
+  return [
+    `Replaced line(s) ${start}-${end} in ${relativeProjectPath(filePath)} with ${replacement.length} line(s).`,
+    `Modified range: ${start}-${modifiedEnd}.`,
     `Backup: ${relativeProjectPath(backupPath)}`
   ].join("\n");
 }
@@ -362,6 +398,23 @@ function validateHtmlForWrite(filePath, text) {
   verifyBalancedHtmlTag(text, "style");
   verifyBalancedHtmlTag(text, "script");
   verifyHeadContent(text);
+}
+
+function validateJsForWrite(filePath, text) {
+  if (!/\.m?js$/i.test(filePath)) {
+    return;
+  }
+
+  try {
+    new vm.Script(text, { filename: relativeProjectPath(filePath) });
+  } catch (error) {
+    throw new Error(`JavaScript sanity check failed: ${error.message}`);
+  }
+}
+
+function validateTextForWrite(filePath, text) {
+  validateHtmlForWrite(filePath, text);
+  validateJsForWrite(filePath, text);
 }
 
 function verifyHeadContent(text) {
@@ -438,6 +491,18 @@ registerTool(
 );
 
 registerTool(
+  "safe_replace_lines",
+  `Replace one current inclusive 1-based line range with up to ${MAX_REPLACE_LINES} physical lines in one transactional write after creating a backup. This tool does not take or match old line text; use only start/end from safe_verify_file. JavaScript writes are syntax-checked before the file is changed.`,
+  {
+    file: z.string().min(1),
+    start: z.number().int().min(1),
+    end: z.number().int().min(1),
+    lines: z.array(z.string())
+  },
+  replaceLines
+);
+
+registerTool(
   "safe_verify_file",
   "Read a full file or selected range after modification and return line-numbered text.",
   {
@@ -485,18 +550,45 @@ async function main() {
     if (lineEditContent !== "one\ninserted\nthree\n") {
       throw new Error("safe line operation self-test failed.");
     }
+    replaceLines({ file: selfTestFile, start: 2, end: 2, lines: ["two-a", "two-b"] });
+    verifyFile({ file: selfTestFile });
+    const replaceContent = readTextFile(selfTestPath);
+    if (replaceContent !== "one\ntwo-a\ntwo-b\nthree\n") {
+      throw new Error("safe_replace_lines self-test failed.");
+    }
     try {
-      insertLines({ file: selfTestFile, after: 2, lines: [] });
-      insertLines({ file: selfTestFile, after: 2, lines: [] });
+      insertLines({ file: selfTestFile, after: 3, lines: [] });
+      insertLines({ file: selfTestFile, after: 3, lines: [] });
       throw new Error("safe_insert_lines no-op guard self-test failed.");
     } catch (error) {
       if (!String(error.message).includes("no-op edit")) {
         throw error;
       }
     }
+    verifyFile({ file: selfTestFile });
     insertLines({ file: selfTestFile, after: 2, lines: ["extra write"] });
     verifyFile({ file: selfTestFile });
     rmSync(selfTestPath);
+    const jsSelfTestFile = ".opencode/mcp/safe_edit/backups/self-test-replace.js";
+    const jsSelfTestPath = resolveProjectPath(jsSelfTestFile);
+    writeFileSync(jsSelfTestPath, "function ok() {\n  return 1;\n}\n", "utf8");
+    verifyFile({ file: jsSelfTestFile });
+    replaceLines({ file: jsSelfTestFile, start: 2, end: 2, lines: ["  return 2;"] });
+    verifyFile({ file: jsSelfTestFile });
+    try {
+      replaceLines({ file: jsSelfTestFile, start: 1, end: 3, lines: ["function broken("] });
+      throw new Error("safe_replace_lines JS validation self-test failed.");
+    } catch (error) {
+      if (!String(error.message).includes("JavaScript sanity check failed")) {
+        throw error;
+      }
+      const unchanged = readTextFile(jsSelfTestPath);
+      if (unchanged !== "function ok() {\n  return 2;\n}\n") {
+        throw new Error("safe_replace_lines wrote invalid JavaScript before failing.");
+      }
+    } finally {
+      rmSync(jsSelfTestPath);
+    }
     const outsideDir = path.resolve(projectRoot, "..", "safe_edit-outside-self-test");
     const symlinkFile = ".opencode/mcp/safe_edit/backups/self-test-symlink";
     const symlinkPath = resolveProjectPath(symlinkFile);

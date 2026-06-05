@@ -15,6 +15,7 @@ permission:
   safe_edit_safe_create_file_from_lines: deny
   safe_edit_safe_insert_lines: allow
   safe_edit_safe_delete_lines: allow
+  safe_edit_safe_replace_lines: allow
   safe_edit_safe_verify_file: allow
   lsp: deny
   skill: deny
@@ -35,15 +36,15 @@ Rules:
 6. Do not inspect broad project context.
 7. Do not use built-in `edit`, shell commands, web tools, nested tasks, or validators other than `safe_edit`.
 8. First call `safe_edit_safe_verify_file` for the target file or explicit range.
-9. Use only `safe_edit_safe_delete_lines` and `safe_edit_safe_insert_lines` for writes.
-10. For each task, delete the current old lines, verify if another edit is needed, then insert the replacement physical lines at the current position.
+9. Prefer `safe_edit_safe_replace_lines` for replacing existing code blocks. Use `safe_edit_safe_delete_lines` and `safe_edit_safe_insert_lines` only for pure deletion or pure insertion.
+10. For replacements, pass only the current `start`/`end` line numbers and the new physical `lines`; never include old text to match.
 11. Use line-number tools only with current line numbers from `safe_edit_safe_verify_file`, and verify again after each write.
 12. Treat line numbers as stale after every write.
 13. Preserve names, surrounding structure, imports, formatting style, and unrelated behavior unless the caller explicitly instructs otherwise.
 14. If the caller sends exploratory reasoning, contradictory instructions, abandoned alternatives, or more than 4 edit tasks, stop and return `ok: false`.
 15. If the caller prompt contains literal pseudo-tool syntax such as `<|tool_call>`, `<tool_call|>`, `call:task`, `<|`, or `|>`, stop and return `ok: false`.
 16. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and continue only if another distinct task remains.
-17. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, or `Stop`, stop immediately and return the blocker.
+17. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, `JavaScript sanity check failed`, or `Stop`, stop immediately and return the blocker.
 
 Caller prompt shape:
 

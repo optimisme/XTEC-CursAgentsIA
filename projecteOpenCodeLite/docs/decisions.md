@@ -13,7 +13,7 @@ Do not load broad project context unless the task requires it.
 The Lite project keeps the main implementation agent small, but allows narrow subagents for isolated noisy work:
 
 - `web_search` gathers compact sourced facts from the web.
-- `web_quality` reviews generated HTML/CSS/JS and returns short blocking findings.
+- `web_quality` is syntax-only and is not part of the default generation flow; default HTML/CSS/JS verification uses `web_check_check_web`.
 - `safe_editor` applies one pre-decided change to one file with `safe_edit`, verifies the file, and returns a compact result.
 - `code_planner` analyzes existing code without editing and returns explicit local edit tasks.
 - `function_editor` applies one existing-function or small-block change.
