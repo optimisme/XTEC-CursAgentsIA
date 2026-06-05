@@ -27,6 +27,7 @@ Lite OpenCode setup for small local models.
 - The `function_editor` subagent applies one existing-function or small-block change with safe_edit.
 - The `code_editor` subagent applies 2-4 coordinated small block changes in one existing file with safe_edit.
 - The `safe_editor` subagent applies one-file creation or simple one-file changes with safe_edit.
+- Planner/editor subagents must finish with the `agent_contract` MCP: `agent_contract_submit_plan` for plans and `agent_contract_submit_edit_result` for edits. Treat prose-only subagent results as contract violations.
 - For multi-file HTML/CSS/JS apps, call `safe_editor` once per file in this order: HTML, CSS, JS.
 - The main agent still decides the change, re-reads the file, and performs final verification.
 - Before calling an editing subagent, compress the request to file, target unit, exact edits, preserved behavior, and verification. Do not include abandoned alternatives.

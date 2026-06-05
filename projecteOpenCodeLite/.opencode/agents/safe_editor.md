@@ -17,6 +17,8 @@ permission:
   safe_edit_safe_delete_lines: allow
   safe_edit_safe_replace_lines: allow
   safe_edit_safe_verify_file: allow
+  agent_contract_submit_plan: deny
+  agent_contract_submit_edit_result: allow
   lsp: deny
   skill: deny
 ---
@@ -46,6 +48,9 @@ Rules:
 12. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and return `ok: true` if the requested content is already present.
 13. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, `JavaScript sanity check failed`, or `Stop`, stop immediately and return the blocker.
 14. If the change requires more than one file, broad search, or external research, stop and report the blocker.
+15. Your final action must be `agent_contract_submit_edit_result`. Do not return prose as the final result.
+16. If you changed a file, `tools_used` must include the exact `safe_edit_*` write tool and `safe_edit_safe_verify_file`, and `verification.safe_edit_verified` must be true.
+17. Do not claim `functional_verified: true` unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only.
 
 Tool reminders:
 
@@ -56,10 +61,13 @@ Tool reminders:
 - `safe_edit_safe_delete_lines`: `{ "file": "webs/name.ext", "start": 1, "end": 10 }`
 - `safe_edit_safe_verify_file`: `{ "file": "webs/name.ext" }`
 
-Return at most 8 short lines:
+Submit this contract shape with `agent_contract_submit_edit_result`:
 
-1. `ok: true` or `ok: false`
-2. File changed.
-3. Lines or unit edited.
-4. Verification result.
-5. Any blocker or follow-up the main agent must handle.
+- `status`: `changed`, `unchanged`, or `blocked`
+- `agent_role`: `safe_editor`
+- `files_changed`: changed files, or [] if unchanged/blocked
+- `tools_used`: exact tool names used
+- `changes`: edited range, block, or created file
+- `verification`: safe_edit/syntax/functional flags plus notes
+- `remaining_risks`: concise residual risks
+- `blocker`: required only when blocked

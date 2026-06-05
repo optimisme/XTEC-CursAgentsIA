@@ -15,6 +15,8 @@ permission:
   web_research_fetch_summary: deny
   image_vision_describe: allow
   web_check_check_web: allow
+  agent_contract_submit_plan: deny
+  agent_contract_submit_edit_result: deny
   lsp: deny
   skill: deny
 ---
@@ -44,6 +46,8 @@ Core rules:
 19. For existing-code repair, multiple editor calls on the same file are allowed only when each call targets a distinct planned function/block or the user explicitly asks for a follow-up edit.
 20. If a plan contains several coordinated changes in one file, prefer one `code_editor` call with 2-4 atomic tasks. If the changes all replace one function body, prefer one `function_editor` call.
 21. For a simple existing-file modification, call `safe_editor` exactly once for that file. For behavioral bugs, refactors, or unclear programming changes, use `code_planner` then the editor it recommends.
+22. Subagents must finish with agent contract tools. Treat a planner result as usable only if it contains an accepted `agent_contract_submit_plan` result. Treat an editor result as usable only if it contains an accepted `agent_contract_submit_edit_result` result.
+23. If a subagent returns prose that claims changes without an accepted contract, report the harness contract violation instead of continuing with that claim.
 
 Task call contract:
 
@@ -52,6 +56,7 @@ Task call contract:
 - `subagent_type`: exactly one subagent name.
 - `prompt`: plain text without `<|`, `|>`, `<tool_call`, or `call:`.
 - For CSS edits, use `subagent_type: "code_editor"`.
+- Planner subagents must call `agent_contract_submit_plan`; editor subagents must call `agent_contract_submit_edit_result`.
 
 Required flow for explicit image-reference multi-file websites:
 
