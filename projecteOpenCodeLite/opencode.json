@@ -125,14 +125,6 @@
         ".opencode/mcp/image_vision/server.js"
       ],
       "enabled": true
-    },
-    "agent_contract": {
-      "type": "local",
-      "command": [
-        "node",
-        ".opencode/mcp/agent_contract/server.js"
-      ],
-      "enabled": true
     }
   }
 }

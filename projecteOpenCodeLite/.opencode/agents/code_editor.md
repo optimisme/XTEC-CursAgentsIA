@@ -17,8 +17,6 @@ permission:
   safe_edit_safe_delete_lines: allow
   safe_edit_safe_replace_lines: allow
   safe_edit_safe_verify_file: allow
-  agent_contract_submit_plan: deny
-  agent_contract_submit_edit_result: allow
   lsp: deny
   skill: deny
 ---
@@ -47,9 +45,7 @@ Rules:
 15. If the caller prompt contains literal pseudo-tool syntax such as `<|tool_call>`, `<tool_call|>`, `call:task`, `<|`, or `|>`, stop and return `ok: false`.
 16. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and continue only if another distinct task remains.
 17. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, `JavaScript sanity check failed`, or `Stop`, stop immediately and return the blocker.
-18. Your final action must be `agent_contract_submit_edit_result`. Do not return prose as the final result.
-19. If you changed a file, `tools_used` must include the exact `safe_edit_*` write tool and `safe_edit_safe_verify_file`, and `verification.safe_edit_verified` must be true.
-20. Do not claim `functional_verified: true` unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only.
+18. Do not claim functional verification unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only.
 
 Caller prompt shape:
 
@@ -61,13 +57,10 @@ Caller prompt shape:
 - `preserve: <things not to change>`
 - `verify: <checks>`
 
-Submit this contract shape with `agent_contract_submit_edit_result`:
+Return at most 8 short lines:
 
-- `status`: `changed`, `unchanged`, or `blocked`
-- `agent_role`: `code_editor`
-- `files_changed`: changed files, or [] if unchanged/blocked
-- `tools_used`: exact tool names used
-- `changes`: edited ranges or blocks
-- `verification`: safe_edit/syntax/functional flags plus notes
-- `remaining_risks`: concise residual risks
-- `blocker`: required only when blocked
+1. `ok: true` or `ok: false`
+2. File changed.
+3. Blocks edited.
+4. Verification result.
+5. Any blocker or follow-up the main agent must handle.

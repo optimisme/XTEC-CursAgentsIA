@@ -27,13 +27,15 @@ Lite OpenCode setup for small local models.
 - The `function_editor` subagent applies one existing-function or small-block change with safe_edit.
 - The `code_editor` subagent applies 2-4 coordinated small block changes in one existing file with safe_edit.
 - The `safe_editor` subagent applies one-file creation or simple one-file changes with safe_edit.
-- Planner/editor subagents must finish with the `agent_contract` MCP: `agent_contract_submit_plan` for plans and `agent_contract_submit_edit_result` for edits. Treat prose-only subagent results as contract violations.
 - For multi-file HTML/CSS/JS apps, call `safe_editor` once per file in this order: HTML, CSS, JS.
+- After each editor task, the coordinator must verify the expected target file exists with `read` or `glob`; do not trust subagent prose alone.
+- For separate HTML/CSS/JS apps, confirm each file has the expected kind before final `web_check`: HTML markup in `.html`, CSS rules in `.css`, and JavaScript code in `.js`.
 - The main agent still decides the change, re-reads the file, and performs final verification.
 - Before calling an editing subagent, compress the request to file, target unit, exact edits, preserved behavior, and verification. Do not include abandoned alternatives.
 - New self-contained HTML files: create the complete requested file in one `safe_edit_safe_create_file` call, then verify it. Do not create a scaffold first.
 - New simple text files: create the complete file in one `safe_edit_safe_create_file_from_lines` call, then verify it.
 - Existing files: use small current-line edits. Prefer `safe_edit_safe_replace_lines` for replacements; use `safe_edit_safe_delete_lines` or `safe_edit_safe_insert_lines` only for pure deletion or pure insertion.
+- Every editor prompt should put the exact target path first, as `file: webs/name.ext`. Editing subagents must use exactly that path for every safe_edit call.
 - To modify content, delete the current old lines, verify if another edit is needed, then insert the new physical lines at the current position.
 - For existing files, do not use any editing method other than `safe_edit_safe_replace_lines`, `safe_edit_safe_delete_lines`, and `safe_edit_safe_insert_lines`.
 - If using insert/delete lines, call `safe_edit_safe_verify_file` first and base the edit only on those returned line numbers.

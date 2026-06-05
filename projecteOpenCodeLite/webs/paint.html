@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LitePaint</title>
+    <title>Modern Paint Editor</title>
     <link rel="stylesheet" href="paint.css">
 </head>
 <body>
-    <header>
-        <h1>LitePaint</h1>
-    </header>
-
-    <main>
-        <div class="toolbar">
-            <div class="tool-group">
-                <label for="colorPicker">Color:</label>
-                <input type="color" id="colorPicker" value="#000000">
+    <div class="app-container">
+        <header>
+            <h1>Paint Editor</h1>
+        </header>
+        <div class="main-editor">
+            <div class="toolbar">
+                <div class="tool-group">
+                    <label for="colorPicker">Color:</label>
+                    <input type="color" id="colorPicker" value="#000000">
+                </div>
+                <div class="tool-group">
+                    <label for="brushSize">Size:</label>
+                    <input type="range" id="brushSize" min="1" max="50" value="5">
+                    <span id="brushSizeValue">5</span>
+                </div>
+                <div class="tool-group">
+                    <button id="eraserBtn" class="btn">Eraser</button>
+                    <button id="clearBtn" class="btn btn-danger">Clear</button>
+                     <button id="saveBtn" class="btn">Save PNG</button>
+                </div>
             </div>
-            <div class="tool-group">
-                <label for="brushSize">Brush Size:</label>
-                <input type="range" id="brushSize" min="1" max="50" value="5">
-                <span id="brushSizeValue">5</span>
-            </div>
-            <div class="tool-group">
-                <button id="eraserBtn">Eraser: Off</button>
-            </div>
-            <div class="tool-group">
-                <button id="clearBtn">Clear Canvas</button>
+            <div class="canvas-container">
+                <canvas id="paintCanvas" width="800" height="600"></canvas>
             </div>
         </div>
-
-        <canvas id="paintCanvas"></canvas>
-    </main>
-
+    </div>
     <script src="paint.js"></script>
 </body>
 </html>

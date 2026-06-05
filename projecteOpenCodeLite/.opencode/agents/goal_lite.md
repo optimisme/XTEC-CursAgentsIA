@@ -15,8 +15,6 @@ permission:
   web_research_fetch_summary: deny
   image_vision_describe: allow
   web_check_check_web: allow
-  agent_contract_submit_plan: deny
-  agent_contract_submit_edit_result: deny
   lsp: deny
   skill: deny
 ---
@@ -46,8 +44,10 @@ Core rules:
 19. For existing-code repair, multiple editor calls on the same file are allowed only when each call targets a distinct planned function/block or the user explicitly asks for a follow-up edit.
 20. If a plan contains several coordinated changes in one file, prefer one `code_editor` call with 2-4 atomic tasks. If the changes all replace one function body, prefer one `function_editor` call.
 21. For a simple existing-file modification, call `safe_editor` exactly once for that file. For behavioral bugs, refactors, or unclear programming changes, use `code_planner` then the editor it recommends.
-22. Subagents must finish with agent contract tools. Treat a planner result as usable only if it contains an accepted `agent_contract_submit_plan` result. Treat an editor result as usable only if it contains an accepted `agent_contract_submit_edit_result` result.
-23. If a subagent returns prose that claims changes without an accepted contract, report the harness contract violation instead of continuing with that claim.
+22. Do not trust subagent prose as proof. After each editing `task`, use `glob` or `read` to confirm the expected project-relative target file exists and still has the expected file kind before proceeding.
+23. For multi-file HTML/CSS/JS requests, after the HTML, CSS, and JS editor tasks, use `glob` on the target folder and confirm every requested filename is present before `web_check_check_web`.
+24. If a subagent reports success but the expected file is missing, the wrong file changed, or an HTML file contains only JavaScript/CSS text, run one corrective `safe_editor` task for the expected target file with the exact complete intended content. If the same file-target mismatch repeats, stop and report the blocker.
+25. When asking an editor to create or modify a file, put the exact target path on the first line as `file: webs/name.ext`.
 
 Task call contract:
 
@@ -56,7 +56,6 @@ Task call contract:
 - `subagent_type`: exactly one subagent name.
 - `prompt`: plain text without `<|`, `|>`, `<tool_call`, or `call:`.
 - For CSS edits, use `subagent_type: "code_editor"`.
-- Planner subagents must call `agent_contract_submit_plan`; editor subagents must call `agent_contract_submit_edit_result`.
 
 Required flow for explicit image-reference multi-file websites:
 
@@ -67,6 +66,13 @@ Use this flow only if the user includes an actual local image file path:
 3. `task` with `subagent_type: "safe_editor"` for the CSS file
 4. `task` with `subagent_type: "safe_editor"` for the JS file
 5. `web_check_check_web` for the HTML file
+
+Required validation for separate HTML/CSS/JS apps:
+
+1. Create or edit each requested file with a separate `safe_editor` task.
+2. After each task, `read` the expected file path. Confirm `.html` starts with HTML markup, `.css` contains CSS rules, and `.js` contains JavaScript code.
+3. If a file is missing or has the wrong kind, repair that exact file before continuing.
+4. After all requested files exist, call `web_check_check_web` on the HTML file.
 
 If the user asks for visual style, animation, smooth movement, CSS transitions, layout, colors, or polished appearance without naming a local image file, do not call `image_vision_describe`.
 
