@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3x3 Slider Puzzle</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --primary-color: #4a90e2;
+            --text-color: #333;
+            --tile-bg: #e0e0e0;
+            --tile-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --tile-border: #ccc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        #game-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 350px) {
+            #game-container {
+                width: 280px;
+                height: 280px;
+            }
+        }
+
+        #puzzle-board {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .tile {
+            position: absolute;
+            width: 93.3333333%;
+            height: 93.3333333%;
+            background-color: var(--tile-bg);
+            border: var(--tile-border);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: var(--tile-shadow);
+            box-sizing: border-box;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .tile:active {
+            transform: scale(0.95);
+        }
+
+        .tile.empty {
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        .controls {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+            height: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="title">3x3 Slider Puzzle</h1>
+    <div id="game-container">
+        <div id="puzzle-board"></div>
+    </div>
+    <div id="message"></div>
+    <div class="controls">
+        <button id="shuffle-btn">New Game (Shuffle)</button>
+    </div>
+
+    <script>
+        const board = document.getElementById('puzzle-board');
+        const shuffleBtn = document.getElementById('shuffle-btn');
+        const message = document.getElementById('message');
+        
+        let tiles = [];
+        const size = 3;
+
+        function initBoard() {
+            tiles = [];
+            board.innerHTML = '';
+            for (let i = 0; i < size * size; i++) {
+                const tileElement = document.createElement('div');
+                tileElement.className = 'tile';
+                if (i === 8) {
+                    tileElement.classList.add('empty');
+                    tileElement.innerText = '';
+                } else {
+                    tileElement.innerText = i + 1;
+                }
+                
+                const x = i % size;
+                const y = Math.floor(i / size);
+                
+                tileElement.style.transform = `translate(${x * 100}px, ${y * 100}px)`;
+                
+                tileElement.addEventListener('click', () => {
+                    moveTile(i);
+                });
+                
+                board.appendChild(tileElement);
+                tiles.push({
+                    id: i,
+                    x: x,
+                    y: y,
+                    element: tileElement
+                });
+            }
+        }
+
+        function updateTilePositions() {
+            tiles.forEach(tile => {
+                if (tile.id !== 8) {
+                    tile.element.style.transform = `translate(${tile.x * 100}px, ${tile.y * 100}px)`;
+                }
+            });
+        }
+
+        function moveTile(index) {
+            const tile = tiles[index];
+            const emptyTile = tiles.find(t => t.id === 8);
+            
+            const dx = Math.abs(tile.x - emptyTile.x);
+            const dy = Math.abs(tile.y - emptyTile.y);
+            
+            if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
+                const tempX = tile.x;
+                const tempY = tile.y;
+                tile.x = emptyTile.x;
+                tile.y = emptyTile.y;
+                emptyTile.x = tempX;
+                emptyTile.y = tempY;
+                
+                updateTilePositions();
+                checkWin();
+            }
+        }
+
+        function checkWin() {
+            let win = true;
+            for (let i = 0; i < 8; i++) {
+                const t = tiles.find(tile => tile.id === i);
+                const expectedX = i % size;
+                const expectedY = Math.floor(i / size);
+                if (t.x !== expectedX || t.y !== expectedY) {
+                    win = false;
+                    break;
+                }
+            }
+            const emptyTile = tiles.find(t => t.id === 8);
+            if (emptyTile.x !== 2 || emptyTile.y !== 2) {
+                win = false;
+            }
+
+            if (win) {
+                message.innerText = "You solved it!";
+                message.style.color = "green";
+            }
+        }
+
+        function solveableShuffle() {
+            // Reset to solved
+            for (let i = 0; i < 8; i++) {
+                tiles[i].x = i % size;
+                tiles[i].y = Math.floor(i / size);
+            }
+            tiles[8].x = 2;
+            tiles[8].y = 2;
+            updateTilePositions();
+            message.innerText = "";
+            message.style.color = "black";
+
+            let moves = 0;
+            while (moves < 100) {
+                const emptyTile = tiles.find(t => t.id === 8);
+                const possibleMoves = [];
+                const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+                
+                for (let [dx, dy] of directions) {
+                    const nx = emptyTile.x + dx;
+                    const ny = emptyTile.y + dy;
+                    if (nx >= 0 && nx < size && ny >= 0 && ny < size) {
+                        const moveTileObj = tiles.find(t => t.x === nx && t.y === ny);
+                        if (moveTileObj) {
+                            possibleMoves.push(tiles.indexOf(moveTileObj));
+                        }
+                    }
+                }
+                
+                if (possibleMoves.length > 0) {
+                    const randomMoveIdx = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                    moveTile(randomMoveIdx);
+                    moves++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        initBoard();
+
+        board.addEventListener('click', (e) => {
+            const tileEl = e.target.closest('.tile');
+            if (tileEl && !tileEl.classList.contains('empty')) {
+                const index = tiles.findIndex(t => t.element === tileEl);
+                moveTile(index);
+            }
+        });
+
+        shuffleBtn.addEventListener('click', solveableShuffle);
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_PROJECT="vllm"
-DEFAULT_MODEL="gemma4-31b-spark"
+DEFAULT_MODEL="gemma4-31b-qat-w4a16-spark"
 MODEL="${1:-$DEFAULT_MODEL}"
 ACTION="${2:-restart}"
 
@@ -18,20 +18,12 @@ Models:
   qwen35-9b-quanttrio-spark
   qwen3-8b
   qwen3-14b-spark
-  lfm25-8b-a1b
-  gemma4-12b-llamacpp
-  gemma4-12b-qat-llamacpp
-  gemma4-12b-q8-llamacpp
-  qwopus35-9b-moq-llamacpp
+  gemma4-12b-qat-w4a16-spark
   gemma4-12b-litertlm
-  gemma4-31b-spark         default
+  gemma4-31b-qat-w4a16-spark       default
   gemma4-26b-a4b-spark
   gemma4-8b
   gemma4-8b-spark
-  qwopus35-4b-coder
-  mellum2-12b-a25b-thinking
-  mellum2-12b-a25b-thinking-spark
-  mellum2-12b-a25b-thinking-awq-spark
   qwen3.6-27b-spark
 
 Actions:
@@ -43,6 +35,7 @@ Actions:
 
 Examples:
   ./docker/run_docker.sh
+  ./docker/run_docker.sh gemma4-31b-qat-w4a16-spark
   ./docker/run_docker.sh gemma4-8b
   ./docker/run_docker.sh qwen3-14b-spark logs
   ./docker/run_docker.sh qwen3-8b stop
@@ -63,20 +56,12 @@ compose_file_for() {
     qwen35-9b-quanttrio-spark) printf '%s\n' "docker-compose-qwen35-9b-quanttrio-spark.yml" ;;
     qwen3-8b) printf '%s\n' "docker-compose-qwen3-8b.yml" ;;
     qwen3-14b-spark) printf '%s\n' "docker-compose-qwen3-14b-spark.yml" ;;
-    lfm25-8b-a1b) printf '%s\n' "docker-compose-lfm25-8b-a1b.yml" ;;
-    gemma4-12b-llamacpp) printf '%s\n' "docker-compose-gemma4-12b-llamacpp.yml" ;;
-    gemma4-12b-qat-llamacpp) printf '%s\n' "docker-compose-gemma4-12b-qat-llamacpp.yml" ;;
-    gemma4-12b-q8-llamacpp) printf '%s\n' "docker-compose-gemma4-12b-q8-llamacpp.yml" ;;
-    qwopus35-9b-moq-llamacpp) printf '%s\n' "docker-compose-qwopus35-9b-moq-llamacpp.yml" ;;
+    gemma4-12b-qat-w4a16-spark) printf '%s\n' "docker-compose-gemma4-12b-qat-w4a16-spark.yml" ;;
     gemma4-12b-litertlm) printf '%s\n' "docker-compose-gemma4-12b-litertlm.yml" ;;
-    gemma4-31b-spark) printf '%s\n' "docker-compose-gemma4-31b-spark.yml" ;;
+    gemma4-31b-qat-w4a16-spark) printf '%s\n' "docker-compose-gemma4-31b-qat-w4a16-spark.yml" ;;
     gemma4-26b-a4b-spark) printf '%s\n' "docker-compose-gemma4-26b-a4b-spark.yml" ;;
     gemma4-8b) printf '%s\n' "docker-compose-gemma4-8b.yml" ;;
     gemma4-8b-spark) printf '%s\n' "docker-compose-gemma4-8b-spark.yml" ;;
-    qwopus35-4b-coder) printf '%s\n' "docker-compose-qwopus35-4b-coder.yml" ;;
-    mellum2-12b-a25b-thinking) printf '%s\n' "docker-compose-mellum2-12b-a25b-thinking.yml" ;;
-    mellum2-12b-a25b-thinking-spark) printf '%s\n' "docker-compose-mellum2-12b-a25b-thinking-spark.yml" ;;
-    mellum2-12b-a25b-thinking-awq-spark) printf '%s\n' "docker-compose-mellum2-12b-a25b-thinking-awq-spark.yml" ;;
     qwen3.6-27b-spark) printf '%s\n' "docker-compose-qwen36-27b-spark.yml" ;;
     *)
       echo "Unknown model: $model" >&2
@@ -96,20 +81,12 @@ container_for() {
     qwen35-9b-quanttrio-spark) printf '%s\n' "qwen35_9b_quanttrio_spark_vllm" ;;
     qwen3-8b) printf '%s\n' "qwen3_8b_awq_vllm" ;;
     qwen3-14b-spark) printf '%s\n' "qwen3_14b_awq_vllm" ;;
-    lfm25-8b-a1b) printf '%s\n' "lfm25_8b_a1b_vllm" ;;
-    gemma4-12b-llamacpp) printf '%s\n' "gemma4_12b_llamacpp" ;;
-    gemma4-12b-qat-llamacpp) printf '%s\n' "gemma4_12b_qat_llamacpp" ;;
-    gemma4-12b-q8-llamacpp) printf '%s\n' "gemma4_12b_q8_llamacpp" ;;
-    qwopus35-9b-moq-llamacpp) printf '%s\n' "qwopus35_9b_moq_llamacpp" ;;
+    gemma4-12b-qat-w4a16-spark) printf '%s\n' "gemma4_12b_qat_w4a16_spark_vllm" ;;
     gemma4-12b-litertlm) printf '%s\n' "gemma4_12b_litertlm" ;;
-    gemma4-31b-spark) printf '%s\n' "gemma4_31b_spark_vllm" ;;
+    gemma4-31b-qat-w4a16-spark) printf '%s\n' "gemma4_31b_qat_w4a16_spark_vllm" ;;
     gemma4-26b-a4b-spark) printf '%s\n' "gemma4_26b_a4b_spark_vllm" ;;
     gemma4-8b) printf '%s\n' "gemma4_8b_vllm" ;;
     gemma4-8b-spark) printf '%s\n' "gemma4_8b_spark_vllm" ;;
-    qwopus35-4b-coder) printf '%s\n' "qwopus35_4b_coder_vllm" ;;
-    mellum2-12b-a25b-thinking) printf '%s\n' "mellum2_12b_a25b_thinking_vllm" ;;
-    mellum2-12b-a25b-thinking-spark) printf '%s\n' "mellum2_12b_a25b_thinking_spark_vllm" ;;
-    mellum2-12b-a25b-thinking-awq-spark) printf '%s\n' "mellum2_12b_a25b_thinking_awq_spark_vllm" ;;
     qwen3.6-27b-spark) printf '%s\n' "qwen36_27b_vllm" ;;
     *)
       echo "Unknown model: $model" >&2
@@ -128,20 +105,12 @@ stop_all() {
     docker-compose-qwen35-9b-quanttrio-spark.yml \
     docker-compose-qwen3-8b.yml \
     docker-compose-qwen3-14b-spark.yml \
-    docker-compose-lfm25-8b-a1b.yml \
-    docker-compose-gemma4-12b-llamacpp.yml \
-    docker-compose-gemma4-12b-qat-llamacpp.yml \
-    docker-compose-gemma4-12b-q8-llamacpp.yml \
-    docker-compose-qwopus35-9b-moq-llamacpp.yml \
+    docker-compose-gemma4-12b-qat-w4a16-spark.yml \
     docker-compose-gemma4-12b-litertlm.yml \
-    docker-compose-gemma4-31b-spark.yml \
+    docker-compose-gemma4-31b-qat-w4a16-spark.yml \
     docker-compose-gemma4-26b-a4b-spark.yml \
     docker-compose-gemma4-8b.yml \
     docker-compose-gemma4-8b-spark.yml \
-    docker-compose-qwopus35-4b-coder.yml \
-    docker-compose-mellum2-12b-a25b-thinking.yml \
-    docker-compose-mellum2-12b-a25b-thinking-spark.yml \
-    docker-compose-mellum2-12b-a25b-thinking-awq-spark.yml \
     docker-compose-qwen36-27b-spark.yml
   do
     if [[ -f "$ROOT_DIR/$file" ]]; then
