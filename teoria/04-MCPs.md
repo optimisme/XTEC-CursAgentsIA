@@ -145,6 +145,19 @@ Exemple de prompt per a la variant lite:
 Use the safe_edit MCP to update app.js. First read the target lines with safe_read_lines, apply only the needed change, then verify the changed section with safe_verify_file.
 ```
 
+En aquesta variant també pot tenir sentit afegir un MCP com `agent_contract`.
+
+`agent_contract` no edita fitxers ni valida HTML. Serveix per obligar els subagents a retornar un resultat estructurat i validable. Per exemple:
+
+* el planner ha d'indicar quins fitxers ha llegit i quin editor recomana;
+* un editor ha d'indicar quins fitxers ha modificat;
+* ha de dir quines tools ha fet servir;
+* ha de declarar quina verificació s'ha fet.
+
+Això evita confiar només en frases com "ja ho he canviat" o "he verificat el resultat". El harness pot comprovar si realment hi ha hagut un contracte d'edició, si s'ha fet servir `safe_edit` i si el fitxer s'ha verificat.
+
+Per tant, `safe_edit` controla **com es modifica** el fitxer, `web_check` valida **el resultat web**, i `agent_contract` valida **què afirma haver fet el subagent**.
+
 La configuració completa d'aquesta variant es resumeix a la secció final de `05-Servidors.md`.
 
 ### MCP de memòria per a models grans

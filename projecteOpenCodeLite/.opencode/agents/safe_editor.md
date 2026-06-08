@@ -17,6 +17,8 @@ permission:
   safe_edit_safe_delete_lines: allow
   safe_edit_safe_replace_lines: allow
   safe_edit_safe_verify_file: allow
+  agent_contract_submit_plan: deny
+  agent_contract_submit_edit_result: allow
   lsp: deny
   skill: deny
 ---
@@ -47,10 +49,12 @@ Rules:
 12. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and return `ok: true` if the requested content is already present.
 13. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, `JavaScript sanity check failed`, or `Stop`, stop immediately and return the blocker.
 14. If the change requires more than one file, broad search, or external research, stop and report the blocker.
-15. Do not claim functional verification unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only.
+15. Do not claim functional verification unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only. In `agent_contract_submit_edit_result`, set `functional_verified` to `false` unless `tools_used` includes a functional checker such as `web_check_check_web`.
 16. Every safe_edit write and verify call must use exactly the target file path named by the caller. If you are about to pass any other `file` value, stop and return `ok: false`.
 17. Do not write JavaScript into an `.html` file, CSS into a `.js` file, or HTML into a `.js`/`.css` file unless the caller explicitly asks for that exact single-file format.
 18. If the caller says `file: webs/paint.js`, the only valid safe_edit file argument is `webs/paint.js`; never choose a linked HTML file instead.
+19. Treat caller `preconditions` and `expected_result` as the editing contract. If a precondition is visibly false, stop and report `ok: false` instead of guessing.
+20. You must call `agent_contract_submit_edit_result` after safe_edit verification with files changed, tools used, change summary, verification, and risks. Then return the compact text summary below.
 
 Tool reminders:
 

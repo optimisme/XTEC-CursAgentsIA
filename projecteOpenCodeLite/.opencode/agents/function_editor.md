@@ -17,6 +17,8 @@ permission:
   safe_edit_safe_delete_lines: allow
   safe_edit_safe_replace_lines: allow
   safe_edit_safe_verify_file: allow
+  agent_contract_submit_plan: deny
+  agent_contract_submit_edit_result: allow
   lsp: deny
   skill: deny
 ---
@@ -46,7 +48,9 @@ Rules:
 14. If the caller includes abandoned alternatives like "Actually", "Wait", or conflicting position calculations, choose none of them; stop and report that the coordinator must provide the final chosen instruction.
 15. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and return `ok: true` if the requested content is already present.
 16. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, `JavaScript sanity check failed`, or `Stop`, stop immediately and return the blocker.
-17. Do not claim functional verification unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only.
+17. Do not claim functional verification unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only. In `agent_contract_submit_edit_result`, set `functional_verified` to `false` unless `tools_used` includes a functional checker such as `web_check_check_web`.
+18. Treat caller `preconditions` and `expected_result` as the edit contract. If a precondition is visibly false, stop and report `ok: false`.
+19. You must call `agent_contract_submit_edit_result` after safe_edit verification with files changed, tools used, change summary, verification, and risks. Then return the compact text summary below.
 
 Tool reminders:
 

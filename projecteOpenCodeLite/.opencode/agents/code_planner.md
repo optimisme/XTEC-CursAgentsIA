@@ -16,6 +16,8 @@ permission:
   safe_edit_safe_insert_lines: deny
   safe_edit_safe_delete_lines: deny
   safe_edit_safe_verify_file: deny
+  agent_contract_submit_plan: allow
+  agent_contract_submit_edit_result: deny
   lsp: deny
   skill: deny
 ---
@@ -41,17 +43,17 @@ Rules:
 12. If the fix needs one JavaScript function/method/handler only, recommend `function_editor`.
 13. Never recommend `function_editor` for CSS selectors or style blocks.
 14. Because you are read-only, never say or imply that you changed, edited, fixed, verified by execution, or wrote a file.
+15. Express the plan as action reasoning: preconditions, edit action, expected effect, and verifier. Keep each field short and observable.
+16. You must call `agent_contract_submit_plan` after analysis with the final planner contract.
+17. After the contract tool returns, stop analyzing and immediately return only the compact text summary below.
 
-Return at most 12 short lines in this shape:
+Return at most 8 short lines in this shape:
 
 - `ok: true` or `ok: false`
 - `target_file: <path>`
-- `target_unit: <function/block/name>`
 - `editor: function_editor` or `editor: code_editor`
-- `problem: <one sentence>`
-- `change_plan: <explicit local edits>`
-- `edit_tasks: <1-4 atomic editor tasks if needed>`
-- `preserve: <things not to change>`
+- `edit_tasks: <1-4 atomic editor tasks>`
+- `preconditions: <observable facts needed before editing>`
+- `expected_result: <observable postconditions after editing>`
 - `verify: <specific checks>`
-- `risk: <short note or none>`
 - `blocker: <only if ok:false>`

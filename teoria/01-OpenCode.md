@@ -54,10 +54,121 @@ En aquest repositori hi ha dues carpetes preparades:
 | `projecteOpenCode` | Configuració normal per a models grans o proveïdors externs. Manté les eines estàndard, subagents, skills i MCPs de validació. |
 | `projectOpenCodeLite` | Configuració reduïda per a models locals petits. Limita eines i instruccions per donar menys soroll al model. |
 
+
+## Login amb proveïdors de AIs
+
+OpenCode permet connectar amb diferents models AI, per fer-ho cal tenir una API de client o un usuari/contrasenya segons el proveidor.
+
+Per fer-ho amb linia de comandes:
+
+```bash
+opencode auth login
+```
+
+I per fer logout:
+
+```bash
+opencode auth logout
+```
+
+També es pot fer visualment desde OpenCode:
+
+### ZEN
+
+El servei gratuït que ofereix Open Code s'anomena **Zen**:
+
+[OpenCode Zen](https://opencode.ai/zen)
+
+Un cop donats d'alta, pots generar una clau d'accés *"API key"* a la pàgina web.
+
+<center>
+<img src="./assets/01-zen-apikey.png" class="images">
+</center>
+
+Es recomana esborrar les claus generades i no publicar-les enlloc:
+
+<center>
+<img src="./assets/01-zen-keymanagement.png" class="images">
+</center>
+
+Amb la clau, es pot fer:
+
+```bash
+/connect
+```
+
+Escollir la opció **'OpenCode Zen'**, enganxar la clau:
+
+<center>
+<img src="./assets/01-zen-introkey.png" class="images">
+</center>
+
+Segons el proveïdor, hi haurà uns models disponibles. Per canviar de model:
+
+```bash
+/models
+```
+
+<center>
+<img src="./assets/01-zen-models.png" class="images">
+</center>
+
+També es pot fer la connexió per linia de comandes:
+
+```bash
+opencode auth list
+opencode auth login
+```
+
+Un cop feta la connexió es pot cridar opencode fora de l'entorn visual:
+
+```bash
+opencode run "say hello"
+```
+
+### NVIDIA
+
+Com que els comptes gratuïts tenen limitacions d'ús, cal combinar els proveïdors. Per exemple amb NVIDIA:
+
+[NVIDIA build](https://build.nvidia.com)
+
+<center>
+<img src="./assets/01-nvidia-settings.png" class="images">
+</center>
+
+Podem gestionar les claus a "API Keys"
+
+<center>
+<img src="./assets/01-nvidia-keys.png" class="images">
+</center>
+
+---
+> **NOTA:** Tot i que molts models de NVIDIA digui *"Free Endpoint"*, hi ha un límit de 40 peticions cada hora.
+
+<center>
+<img src="./assets/01-nvidia-free.png" class="images">
+</center>
+
+### OpenAI Codex
+
+Per connectar amb Codex directament enlloc de fer servir la API cal instal·lar:
+
+[OpenAI Codex Auth](https://github.com/numman-ali/opencode-openai-codex-auth)
+
+```bash
+npx -y opencode-openai-codex-auth@latest
+opencode auth login
+```
+
+I fer login amb:
+
+```text
+ChatGPT Pro/Plus (browser)
+```
+
 ## Interacció
 
 La interacció amb OpenCode es fa de tres maneres:
-
 
 ### Comandes "/"
 
@@ -198,86 +309,6 @@ Crea un script que posi la següent capçalera a tots els arxius de codi ".java"
 ```text
 Revisa l’historial de la conversa on vaig fer un ls
 ```
-
-## Connectar amb AIs
-
-OpenCode permet connectar amb diferents models AI, per fer-ho cal tenir una API de client o un usuari/contrasenya segons el proveidor.
-
-### ZEN
-
-El servei gratuït que ofereix Open Code s'anomena **Zen**:
-
-[OpenCode Zen](https://opencode.ai/zen)
-
-Un cop donats d'alta, pots generar una clau d'accés *"API key"* a la pàgina web.
-
-<center>
-<img src="./assets/01-zen-apikey.png" class="images">
-</center>
-
-Es recomana esborrar les claus generades i no publicar-les enlloc:
-
-<center>
-<img src="./assets/01-zen-keymanagement.png" class="images">
-</center>
-
-Amb la clau, es pot fer:
-
-```bash
-/connect
-```
-
-Escollir la opció **'OpenCode Zen'**, enganxar la clau:
-
-<center>
-<img src="./assets/01-zen-introkey.png" class="images">
-</center>
-
-Segons el proveïdor, hi haurà uns models disponibles. Per canviar de model:
-
-```bash
-/models
-```
-
-<center>
-<img src="./assets/01-zen-models.png" class="images">
-</center>
-
-També es pot fer la connexió per linia de comandes:
-
-```bash
-opencode auth list
-opencode auth login
-```
-
-Un cop feta la connexió es pot cridar opencode fora de l'entorn visual:
-
-```bash
-opencode run "say hello"
-```
-
-### NVIDIA
-
-Com que els comptes gratuïts tenen limitacions d'ús, cal combinar els proveïdors. Per exemple amb NVIDIA:
-
-[NVIDIA build](https://build.nvidia.com)
-
-<center>
-<img src="./assets/01-nvidia-settings.png" class="images">
-</center>
-
-Podem gestionar les claus a "API Keys"
-
-<center>
-<img src="./assets/01-nvidia-keys.png" class="images">
-</center>
-
----
-> **NOTA:** Tot i que molts models de NVIDIA digui *"Free Endpoint"*, hi ha un límit de 40 peticions cada hora.
-
-<center>
-<img src="./assets/01-nvidia-free.png" class="images">
-</center>
 
 ## Context, tokens i cost
 

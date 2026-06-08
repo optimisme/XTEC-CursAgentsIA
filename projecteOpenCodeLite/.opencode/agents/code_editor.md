@@ -17,6 +17,8 @@ permission:
   safe_edit_safe_delete_lines: allow
   safe_edit_safe_replace_lines: allow
   safe_edit_safe_verify_file: allow
+  agent_contract_submit_plan: deny
+  agent_contract_submit_edit_result: allow
   lsp: deny
   skill: deny
 ---
@@ -45,7 +47,9 @@ Rules:
 15. If the caller prompt contains literal pseudo-tool syntax such as `<|tool_call>`, `<tool_call|>`, `call:task`, `<|`, or `|>`, stop and return `ok: false`.
 16. If a safe_edit tool returns `No-op`, do not repeat the same edit. Verify the file once and continue only if another distinct task remains.
 17. If a safe_edit tool says `suspicious file path`, `corrupt tool-call path`, `malformed tool-call syntax`, `JavaScript sanity check failed`, or `Stop`, stop immediately and return the blocker.
-18. Do not claim functional verification unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only.
+18. Do not claim functional verification unless the caller explicitly provided a functional checker result. Normal safe_edit verification is syntax/file verification only. In `agent_contract_submit_edit_result`, set `functional_verified` to `false` unless `tools_used` includes a functional checker such as `web_check_check_web`.
+19. Treat caller `preconditions` and `expected_result` as the edit contract. If a precondition is visibly false, stop and report `ok: false`.
+20. You must call `agent_contract_submit_edit_result` after safe_edit verification with files changed, tools used, change summary, verification, and risks. Then return the compact text summary below.
 
 Caller prompt shape:
 
@@ -54,6 +58,8 @@ Caller prompt shape:
 - `tasks:`
 - `1. target: <selector/function/block>; edit: <exact replacement intent>`
 - `2. target: <selector/function/block>; edit: <exact replacement intent>`
+- `preconditions: <observable facts that make the edit applicable>`
+- `expected_result: <observable postconditions>`
 - `preserve: <things not to change>`
 - `verify: <checks>`
 

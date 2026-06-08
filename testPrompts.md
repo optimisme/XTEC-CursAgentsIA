@@ -1,8 +1,16 @@
-Create a new file named clock.html at webs folder that shows an analog circular watch updated every second and drawn on a canvas, make it look like a swiss trains watch, search on the internet the look of swiss train station clocks.
+> Create a new file named clock.html at webs folder that shows an analog circular watch updated every second and drawn on a canvas, make it look like a swiss trains watch, search on the internet the look of swiss train station clocks.
 
-Create a new file named snake.html at webs folder with a playable Snake game using only HTML, CSS, and JavaScript. Use canvas, keyboard arrows to control direction, the game doesn't start until user presses a direction key, the game has a score display, pause/restart buttons, and run the web checker.
+- modify @webs/clock.html in a way that continuously updates seconds hand at 30fps showing a smooth movement instead of jumping every second
 
-Create a new file named slider.html at webs folder with a slider puzle 3x3 that moves the clicked piece to the empty space, make the pieces with big numbers from 1 to 8 and making it solved when all numbers are properly sorted and the empty space is at bottom right corner. Don't use canvas, each piece must be a `<div>`. Ensure pieces animate smoothly, don't make them jump from begin position to end one.
+- modify @webs/clock.html so it shows the seconds hand in green instead of blue
+
+> Create a new file named snake.html at webs folder with a playable Snake game using only HTML, CSS, and JavaScript. Use canvas, keyboard arrows to control direction, the game doesn't start until user presses a direction key, the game has a score display, pause/restart buttons, and run the web checker.
+
+- modify @webs/snake.html to ensure the food is drawn like a red circle, don't allow drawing the food like a square or a different color than red
+
+> Create a new file named slider.html at webs folder with a slider puzle 3x3 that moves the clicked piece to the empty space, make the pieces with big numbers from 1 to 8 and making it solved when all numbers are properly sorted and the empty space is at bottom right corner. Don't use canvas, each piece must be a `<div>`. 
+
+- modify @webs/slider.html pieces animate smoothly, don't make them jump from begin position to end one.
 
 
 ---

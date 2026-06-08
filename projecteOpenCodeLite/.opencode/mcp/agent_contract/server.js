@@ -175,6 +175,13 @@ const editResultSchema = z.object({
       path: ["verification", "safe_edit_verified"]
     });
   }
+  if (value.verification.functional_verified && !value.tools_used.some((tool) => tool === "web_check_check_web" || tool.includes("functional"))) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "functional_verified=true requires a functional checker tool such as web_check_check_web in tools_used",
+      path: ["verification", "functional_verified"]
+    });
+  }
 });
 
 function appendAudit(kind, payload) {
