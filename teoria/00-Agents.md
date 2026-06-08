@@ -30,6 +30,49 @@ En programació, això permet que l'agent pugui llegir fitxers, executar tests, 
 
 ---
 
+## Abans de parlar d'agents: què és un LLM?
+
+Un **LLM** (*Large Language Model*) és un model de llenguatge que genera text a partir d'una entrada. En una conversa simple funciona com un chatbot:
+
+```text
+Usuari: Hola
+LLM: Hola, com puc ajudar?
+```
+
+El model no actua sobre el món per si sol. Calcula una resposta probable segons el text que rep, el seu entrenament i el context disponible.
+
+Això és important perquè un agent no substitueix el model: l'agent és el sistema que dona al model context, eines i un bucle de treball.
+
+### Pensament del model
+
+Alguns models poden treballar amb modes de **raonament** o **thinking**. Això vol dir que abans de respondre poden analitzar la petició, separar-la en passos o decidir quina acció convé fer.
+
+Es poden distingir tres casos:
+
+| Tipus | Descripció | Exemple |
+| --- | --- | --- |
+| Sense pensament explícit | El model respon directament | `17 és primer.` |
+| Raonament explícit | La resposta inclou una explicació del raonament | `Per saber si 17 és primer, miro si és divisible per 2, 3 o 5...` |
+| Cadena de pensament interna | El model planifica o analitza abans de respondre, però aquest procés no forma part necessàriament de la resposta final | El model decideix comprovar divisibilitat abans de contestar |
+
+En agents, el més rellevant no és que el model expliqui sempre tot el que pensa, sinó que pugui decidir bons passos: llegir informació, usar una eina, observar el resultat i continuar.
+
+### Context bàsic
+
+El **context** és la informació que el model té disponible en un moment concret. Pot incloure el que s'ha dit abans, instruccions, documents, fitxers, resultats d'eines i decisions preses.
+
+Per exemple:
+
+```text
+Usuari: Em dic Toni.
+LLM: D'acord, et dius Toni.
+
+Usuari: Com em dic?
+LLM: Et dius Toni.
+```
+
+El model pot respondre perquè el nom forma part del context recent. En un agent, el context és encara més important, perquè condiciona quines accions farà i quan decidirà que ja ha acabat.
+
 ## Què és un agent?
 
 Un agent combina tres peces:
@@ -192,6 +235,120 @@ Ha d'entregar una resposta final quan:
 * cal una decisió humana.
 
 Un bon agent no continua actuant indefinidament només perquè pot fer més coses.
+
+---
+
+## Tool calls i harness
+
+Perquè un agent pugui actuar, el model ha de saber demanar accions en un format que el sistema pugui entendre. Aquestes accions sovint s'anomenen **tool calls**.
+
+Una tool call no és una resposta normal per a l'usuari, sinó una petició perquè el sistema executi una eina. Per exemple:
+
+```json
+{
+  "tool": "edit_file",
+  "path": "src/main.java",
+  "line": 10,
+  "content": "System.out.println(\"Hello, World!\");"
+}
+```
+
+O bé:
+
+```json
+{
+  "tool": "bash",
+  "command": "tree",
+  "path": "/home/user/Documents"
+}
+```
+
+Només els models que han estat entrenats o adaptats per generar bé aquestes crides són realment útils per a agents amb eines. Si el model genera JSON invàlid, noms d'eines incorrectes o paràmetres inexistents, l'agent falla encara que la idea sigui bona.
+
+### Què és el harness o arnès?
+
+El **harness** o **arnès** és la part del sistema que envolta el model i fa possible el treball agentic.
+
+S'encarrega de:
+
+* donar instruccions i context al model;
+* indicar quines eines estan disponibles;
+* capturar les respostes de tipus tool call;
+* comprovar si tenen un format vàlid;
+* comprovar si l'acció és coherent amb les eines existents;
+* aplicar permisos o restriccions;
+* executar l'eina;
+* retornar l'observació al context;
+* decidir si cal continuar o entregar la resposta final.
+
+Això permet separar dues peces:
+
+```text
+Model:
+  pensa, parla i decideix accions
+
+Harness:
+  valida, executa eines, controla permisos i actualitza context
+```
+
+Amb un bon arnès es pot canviar de model amb més facilitat, perquè les normes del projecte, les eines i les comprovacions no depenen només del prompt del model.
+
+### La paradoxa de l'arnès
+
+Un arnès més gran no sempre fa millor l'agent. Sovint passa el contrari:
+
+```text
+arnès més senzill
+  -> menys instruccions
+  -> menys context innecessari
+  -> menys confusió
+  -> millor comportament
+```
+
+La idea pràctica és donar al model el mínim context suficient i les eines justes per fer la tasca. Com més curt i rellevant és el context, més fàcil és que el model decideixi bé.
+
+### Harness mínim recomanat per programació
+
+Una configuració senzilla pot ser:
+
+```text
+AGENTS.md
+  -> normes del projecte, curtes i verificables
+
+Agent líder
+  -> entén l'objectiu, planifica i coordina
+
+Subagent implementador
+  -> fa canvis concrets
+
+Subagent revisor
+  -> comprova riscos, errors i tests
+
+Fitxer de progrés
+  -> documenta què s'ha fet, què falta i quins errors han aparegut
+```
+
+Per projectes petits, `AGENTS.md` hauria de ser curt. Una bona regla és mantenir-lo per sota d'unes 200 línies i evitar normes que no es puguin verificar.
+
+Exemple de normes útils:
+
+```text
+Llegeix abans de modificar.
+Fes canvis petits.
+Executa els tests relacionats.
+No donis la tasca per acabada si no has validat el resultat.
+Explica només els canvis rellevants.
+```
+
+Exemple de normes poc útils:
+
+```text
+Fes-ho perfecte.
+Sigues molt intel·ligent.
+No cometis errors mai.
+```
+
+Les primeres orienten accions concretes. Les segones ocupen context però no ajuden gaire a decidir què fer.
 
 ---
 
@@ -533,19 +690,3 @@ Necessito que el sistema decideixi què fer després d'observar cada resultat?
 ```
 
 Si la resposta és no, probablement no cal un agent.
-
----
-
-## Resum
-
-Un agent és una combinació de model, context i eines que treballa iterativament cap a un objectiu.
-
-Les idees clau són:
-
-* l'agent segueix un cicle d'objectiu, acció, observació i correcció;
-* el context és part del disseny del sistema;
-* les eines donen capacitat d'actuar, però també introdueixen risc;
-* hi ha arquitectures diferents segons la complexitat;
-* un agent no sempre és la millor solució.
-
-Programar amb agents vol dir dissenyar bé aquest sistema, no només escriure un prompt.

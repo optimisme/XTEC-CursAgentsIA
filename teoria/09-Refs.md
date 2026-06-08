@@ -15,5 +15,5 @@
 
 - [Claude MCPs](https://code.claude.com/docs/en/mcp) guia sobre MCPs
 
-
+- [How LLMs actually work](https://www.0xkato.xyz/how-llms-actually-work/) explicació teòrica sobre LLMs
 
