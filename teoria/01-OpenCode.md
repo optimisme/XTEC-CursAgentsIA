@@ -47,14 +47,6 @@ opencode
 
 - Si es fa servir com a extensió de Visual Studio Code, obrir l'extensió amb la carpeta arrel de projecte oberta.
 
-En aquest repositori hi ha dues carpetes preparades:
-
-| Carpeta | Ús |
-| --- | --- |
-| `projecteOpenCode` | Configuració normal per a models grans o proveïdors externs. Manté les eines estàndard, subagents, skills i MCPs de validació. |
-| `projectOpenCodeLite` | Configuració reduïda per a models locals petits. Limita eines i instruccions per donar menys soroll al model. |
-
-
 ## Login amb proveïdors de AIs
 
 OpenCode permet connectar amb diferents models AI, per fer-ho cal tenir una API de client o un usuari/contrasenya segons el proveidor.
@@ -467,6 +459,16 @@ Exemple de configuració **'opencode.json'**:
     }
   }
 }
+```
+
+Segons la configuració d'aquest projecte, per carregar les variables d'entorn cal fer:
+
+- Crear un arxiu 'keys.env' a partir de l'exemple 'keys.env.example'
+
+- Cridar 'opencode' amb 'run_opencode.sh' per carregar les variables d'entorn que hi ha a 'keys.env'
+
+```bash
+bash run_opencode.sh
 ```
 
 ---

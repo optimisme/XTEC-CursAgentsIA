@@ -17,7 +17,7 @@ Pel què fa al context, a OpenCode pot incloure:
 * Resums generats amb /compact.
 * Informació rellevant del codi, estructura o configuració del projecte.
 
-## agents.md
+## AGENTS.md
 
 És un fitxer de context del projecte per als agents d’IA. La transcripció el descriu com una mena de “README per a la intel·ligència artificial”: serveix per explicar al model com és el projecte i quines decisions ha de respectar.
 

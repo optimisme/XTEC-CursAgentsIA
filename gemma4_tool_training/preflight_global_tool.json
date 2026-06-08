@@ -1,0 +1,33 @@
+{
+  "ok": true,
+  "dataset": {
+    "rows": 66,
+    "kinds": {
+      "targeted_programming_modification": 24,
+      "programming_creation": 8,
+      "loop_control": 5,
+      "corrected_target_failure": 29
+    },
+    "scenarios": {
+      "python": 13,
+      "javascript": 14,
+      "typescript": 4,
+      "go": 5,
+      "rust": 6,
+      "java": 6,
+      "php": 6,
+      "csharp": 6,
+      "generic": 5,
+      "swift": 1
+    },
+    "sources": {
+      "synthetic_global_tool_invariant": 37,
+      "real_trace_rewrite": 29
+    }
+  },
+  "eval_cases": {
+    "rows": 5
+  },
+  "errors": [],
+  "training_readiness": "pipeline smoke-test only; collect hundreds or thousands of diverse traces before claiming adapter quality"
+}
