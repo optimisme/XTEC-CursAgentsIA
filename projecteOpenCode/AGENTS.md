@@ -21,13 +21,9 @@ It demonstrates a richer setup with subagents, skills, commands, validation MCPs
 ## Editing
 
 - Use the standard OpenCode edit tools for file modifications.
-- For requested new self-contained HTML files, use `bash` with a single quoted heredoc to create or replace the exact target file, or use `edit` if modifying an existing file. Do not use the `write` tool.
 - Before editing, read the relevant target lines.
 - Keep edits small and verifiable.
 - Do not rewrite existing whole files unless the file is very small or explicitly requested.
-- For requested single-file HTML apps, keep CSS and JavaScript inside the HTML file with `<style>` and `<script>` blocks. Do not use external `styles.css`, `app.js`, `<link rel="stylesheet">`, or `<script src=...>`.
-- For browser apps with no explicit file constraint, prefer separate `index.html`, `styles.css`, and `app.js` files so HTML, CSS, and JavaScript remain easier to verify.
-- If the user asks for a specific new `.html` file or says single-file, keep that file self-contained unless extra files are explicitly allowed.
 
 ## Tool call rules
 
@@ -80,12 +76,7 @@ This is a teaching project without any programming tools, ignore this section he
 - MCPs are in `.opencode/mcp/`.
 - Skills are in `.opencode/skills/`.
 - Tools are in `.opencode/tools/`.
-- The `memory` MCP can search, read and update files under `memory/`.
-
-## Visual references
-
-- Swiss railway clock style: white circular face, black minute ticks, heavier hour ticks, black rectangular hour and minute hands, and a thin red second hand with a red circular disc near its tip.
-- Canvas clock angles: 12 o'clock is at the top; minutes and seconds use `value / 60 * 2 * Math.PI - Math.PI / 2`; hours use `((hour % 12) + minutes / 60) / 12 * 2 * Math.PI - Math.PI / 2`.
+- The `memory` MCP can search, read and update files under `memory/`. 
 
 ## Rules
 

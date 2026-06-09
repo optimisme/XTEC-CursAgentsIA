@@ -15,6 +15,8 @@ Inventari dels models configurats a `docker/docker-compose-*.yml`.
 | `qwen35-9b-quanttrio` | `QuantTrio/Qwen3.5-9B-AWQ` | 9B | 11.55 GB | Local AWQ | AWQ | 2 seq / 2048 tokens |
 | `qwen35-9b-quanttrio-spark` | `QuantTrio/Qwen3.5-9B-AWQ` | 9B | 11.55 GB | Spark AWQ | AWQ | 8 seq / 4096 tokens |
 | `qwen3.6-27b-spark` | `Qwen/Qwen3.6-27B` | 27B | 51.77 GB | Spark BF16 | BF16, no quantitzat | 8 seq / 8192 tokens |
+| `qwen3.6-35b-a3b-mtp-iq4-spark-llamacpp` | `localweights/Qwen3.6-35B-A3B-MTP-IQ4_XS-GGUF:IQ4_XS` | 35B total, A3B actius | 18.06 GiB GGUF | Spark llama.cpp | IQ4_XS GGUF, MTP | 1 seq / 32768 tokens |
+| `qwen3.6-35b-a3b-mtp-iq4-llamacpp` | `localweights/Qwen3.6-35B-A3B-MTP-IQ4_XS-GGUF:IQ4_XS` | 35B total, A3B actius | 18.06 GiB GGUF | 16GB llama.cpp parcial | IQ4_XS GGUF, MTP | 1 seq / 16384 tokens, partial GPU offload |
 
 ## Defaults i exposicio
 
