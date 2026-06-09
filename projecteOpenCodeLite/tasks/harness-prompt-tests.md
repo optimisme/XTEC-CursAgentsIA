@@ -2,14 +2,20 @@
 
 These prompts test whether small local models follow the Lite harness workflow for one-shot creation and one-shot modification.
 
-Run each prompt in a fresh `opencode run` session through `./run_opencode.sh`. Do not repair generated files manually between prompts in the same scenario; the point is to observe whether the model and harness recover through the allowed workflow.
+Run each prompt in a fresh `opencode run` session through `harness/run_opencode_harness.sh`. Do not repair generated files manually between prompts in the same scenario; the point is to observe whether the model and harness recover through the allowed workflow.
 
 Optional runner:
 
 ```sh
-node .opencode/harness/run_prompt_tests.js --id=clock_create_research
-node .opencode/harness/run_prompt_tests.js --timeout=420
+node harness/run_prompt_tests.js --id=clock_create_research
+node harness/run_prompt_tests.js --timeout=420
+node harness/run_prompt_tests.js --model=spark-vllm/active-model --id=clock_smooth_modify
+node harness/run_prompt_tests.js --model=spark-vllm/active-model --strict --id=clock_smooth_modify
 ```
+
+By default the wrapper validates observable safety: command completion, no visible protocol leakage, no truncation, required web checks after web-file edits, and post-edit web animation/timer invariants. `--strict` additionally requires planner/editor contract rows and the expected planner/editor routing. Use strict mode for harness architecture tests, not for ordinary model capability smoke tests.
+
+For small local models, the wrapper also stops early when the log shows unsafe recovery loops: empty `safe_edit_safe_replace_lines` replacements, absolute paths in `safe_edit` calls, three repeated identical safe_edit writes to the same file, or target drift during `modify @file` prompts.
 
 ## Scenario A: Canvas Clock
 

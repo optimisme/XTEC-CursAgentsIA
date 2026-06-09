@@ -9,6 +9,7 @@ Lite OpenCode setup for small local models.
 - Make the smallest change that satisfies the request.
 - Create or modify only the requested files.
 - Use subagents only for focused web research, read-only web/code review, image inspection, or scoped safe_edit file changes.
+- When implementing multiple files plan what to develop first, don't parallelize development if not necessary.
 - If you say you will use a tool or subagent, the next assistant action must be the actual tool call. Do not narrate intended tool calls as plain text.
 - Never write literal pseudo-tool syntax such as `<|tool_call>`, `<tool_call|>`, `call:task`, or JSON-looking tool calls in assistant text. If a tool is needed, invoke the actual tool.
 - Do not pass exploratory reasoning, conflicting calculations, or long analysis prose to editing subagents. Convert decisions into short explicit edit instructions first.
@@ -23,6 +24,7 @@ Lite OpenCode setup for small local models.
 - Use underscore tool names such as `safe_edit_safe_create_file`, `safe_edit_safe_create_file_from_lines`, `safe_edit_safe_replace_lines`, `safe_edit_safe_insert_lines`, and `safe_edit_safe_delete_lines`.
 - For new files and trivial one-file text/style edits, delegate to `safe_editor` with the `task` tool; `safe_editor` verifies its own file with safe_edit.
 - For behavioral `modify @existing-file` requests, debugging, or improving existing code, first call `code_planner`, then pass its explicit local instructions to `function_editor` or `code_editor`.
+- If the prompt mentions smooth movement, continuous/continuously, fps, animation, timing, `setInterval`, `setTimeout`, `requestAnimationFrame`, canvas behavior, event handling, game logic, or bug repair, do not use `safe_editor`, even for a one-line change.
 - The `code_planner` subagent is read-only and proposes the smallest scoped fix.
 - The `function_editor` subagent applies one existing-function or small-block change with safe_edit.
 - The `code_editor` subagent applies 2-4 coordinated small block changes in one existing file with safe_edit.

@@ -48,6 +48,9 @@ function validateRequestedFile(file) {
   if (typeof file !== "string" || file.trim() === "") {
     throw new Error("File path must be a non-empty string.");
   }
+  if (path.isAbsolute(file)) {
+    throw new Error(`Absolute file paths are not allowed: ${file}. Use a project-relative path such as webs/app.html.`);
+  }
 
   const suspiciousPatterns = [
     /<\|/,
@@ -303,6 +306,9 @@ function replaceLines({ file, start, end, lines: replacementLines }) {
   assertRange(start, end, lines.length);
 
   const replacement = normalizePhysicalLines(replacementLines);
+  if (replacement.length === 0) {
+    throw new Error("safe_replace_lines requires at least one replacement line. Use safe_delete_lines for pure deletion.");
+  }
   if (replacement.length > MAX_REPLACE_LINES) {
     throw new Error(`Replace too large: ${replacement.length} lines. Limit is ${MAX_REPLACE_LINES}. Split the request or return a blocker instead of emitting a huge edit.`);
   }
@@ -517,6 +523,14 @@ async function main() {
   if (process.argv.includes("--self-test")) {
     resolveProjectPath("opencode.json");
     try {
+      resolveProjectPath(path.join(projectRoot, "opencode.json"));
+      throw new Error("Absolute path rejection self-test failed.");
+    } catch (error) {
+      if (!String(error.message).includes("Absolute file paths are not allowed")) {
+        throw error;
+      }
+    }
+    try {
       resolveProjectPath("../outside.txt");
       throw new Error("Path traversal check failed.");
     } catch (error) {
@@ -551,6 +565,15 @@ async function main() {
       throw new Error("safe line operation self-test failed.");
     }
     replaceLines({ file: selfTestFile, start: 2, end: 2, lines: ["two-a", "two-b"] });
+    verifyFile({ file: selfTestFile });
+    try {
+      replaceLines({ file: selfTestFile, start: 1, end: 1, lines: [] });
+      throw new Error("safe_replace_lines accepted an empty replacement.");
+    } catch (error) {
+      if (!String(error.message).includes("requires at least one replacement line")) {
+        throw error;
+      }
+    }
     verifyFile({ file: selfTestFile });
     const replaceContent = readTextFile(selfTestPath);
     if (replaceContent !== "one\ntwo-a\ntwo-b\nthree\n") {

@@ -1,7 +1,7 @@
 # Stop:    docker compose -f docker-compose-qwen36-35b-a3b-mtp-iq4-llamacpp.yml down
 # Restart: docker compose -f docker-compose-qwen36-35b-a3b-mtp-iq4-llamacpp.yml up -d
 # Logs:    docker logs -f --tail 80 qwen36_35b_a3b_mtp_iq4_llamacpp
-# Note:    llama.cpp / GGUF service, not vLLM. Conservative RTX 4060 Ti 16 GB test.
+# Note:    llama.cpp / GGUF service, not vLLM. RTX 4060 Ti 16 GB with partial GPU offload.
 services:
   qwen-llamacpp:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
@@ -49,7 +49,7 @@ services:
           --alias active-model \
           --host 0.0.0.0 \
           --port 8000 \
-          -c 16384 \
+          -c 24576 \
           -ngl 24 \
           -np 1 \
           -cb \

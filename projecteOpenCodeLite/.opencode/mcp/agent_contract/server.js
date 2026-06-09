@@ -14,7 +14,7 @@ const server = new McpServer({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, "../../..");
-const auditLog = path.join(__dirname, "contracts.jsonl");
+let auditLog = path.join(__dirname, "contracts.jsonl");
 
 function textResult(text) {
   return { content: [{ type: "text", text }] };
@@ -248,6 +248,8 @@ registerContractTool(
 );
 
 async function selfTest() {
+  const originalAuditLog = auditLog;
+  auditLog = path.join(__dirname, `contracts.self-test.${process.pid}.jsonl`);
   if (fs.existsSync(auditLog)) fs.unlinkSync(auditLog);
 
   const acceptedPlan = submitPlan({
@@ -324,9 +326,14 @@ async function selfTest() {
     throw new Error("valid edit result was not accepted");
   }
 
-  const audit = fs.readFileSync(auditLog, "utf8").trim().split("\n");
-  if (audit.length !== 2) {
-    throw new Error(`expected 2 audit rows, got ${audit.length}`);
+  try {
+    const audit = fs.readFileSync(auditLog, "utf8").trim().split("\n");
+    if (audit.length !== 2) {
+      throw new Error(`expected 2 audit rows, got ${audit.length}`);
+    }
+  } finally {
+    if (fs.existsSync(auditLog)) fs.unlinkSync(auditLog);
+    auditLog = originalAuditLog;
   }
 }
 

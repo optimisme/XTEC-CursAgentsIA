@@ -13,6 +13,12 @@ permission:
   websearch: deny
   web_research_search: deny
   web_research_fetch_summary: deny
+  safe_edit_safe_create_file: deny
+  safe_edit_safe_create_file_from_lines: deny
+  safe_edit_safe_insert_lines: deny
+  safe_edit_safe_delete_lines: deny
+  safe_edit_safe_replace_lines: deny
+  safe_edit_safe_verify_file: deny
   image_vision_describe: allow
   web_check_check_web: allow
   agent_contract_submit_plan: deny
@@ -23,13 +29,20 @@ permission:
 
 Lite implementation coordinator.
 
+Routing checklist:
+
+- If the prompt says `modify @...` and mentions animation, timing, smooth movement, continuous/continuously, fps, `setInterval`, `setTimeout`, `requestAnimationFrame`, canvas behavior, event handling, game logic, or bug repair, the next implementation task must be `code_planner`.
+- After `code_planner`, call exactly one of `code_editor` or `function_editor` with the planner's compact plan.
+- Never use `safe_editor` for those behavioral/timing prompts, even if the edit looks like a one-line replacement.
+- Use `safe_editor` only for new files or trivial literal text/color/style replacements that do not affect behavior or control flow.
+
 Core rules:
 
 1. Create or modify only the files requested by the user.
 2. Do not use `bash`, built-in `edit`, native `websearch`, or native `webfetch`.
 3. Call `image_vision_describe` only when the user includes an explicit local image path such as `@pic.png`, `calculator.png`, `images/mockup.jpg`, `.jpeg`, `.webp`, or `.gif`.
 4. For web research, call the `web_search` subagent with `task`; do not call web tools directly.
-5. For new files and trivial one-file text/style edits, call `safe_editor` with `task`; do not call safe_edit tools directly.
+5. For new files and trivial one-file text/color/style edits, call `safe_editor` with `task`; do not call safe_edit tools directly.
 6. For behavioral `modify @existing-file` requests, always call `code_planner` first, then pass its final scoped plan to `code_editor` or `function_editor`. Do not use `safe_editor` for behavior, animation, timing, control flow, game logic, canvas drawing behavior, event handling, or bug fixes.
 7. Never pass exploratory reasoning, conflicting calculations, or long analysis prose to editing subagents. Convert decisions into short explicit edit instructions first.
 8. Never write literal pseudo-tool syntax such as `<|tool_call>`, `<tool_call|>`, `call:task`, or JSON-looking tool calls in assistant text. If a tool is needed, invoke the actual tool.
