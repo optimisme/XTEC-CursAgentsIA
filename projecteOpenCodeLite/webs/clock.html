@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiss Railway Clock</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e0e0e0;
+            font-family: sans-serif;
+        }
+        canvas {
+            background-color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="clock" width="800" height="800"></canvas>
+    <script>
+        const canvas = document.getElementById('clock');
+        const ctx = canvas.getContext('2d');
+        const radius = canvas.width / 2;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        function drawClock() {
+            const now = new Date();
+            const seconds = now.getSeconds() + now.getMilliseconds() / 1000;
+            const minutes = now.getMinutes() + seconds / 60;
+            const hours = (now.getHours() % 12) + minutes / 60;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw face
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius - 20, 0, 2 * Math.PI);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.strokeStyle = 'black';
+            ctx.lineWidth = 15;
+            ctx.stroke();
+
+            // Draw tick marks
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = 'black';
+            for (let i = 0; i < 60; i++) {
+                const angle = (i * 6 * Math.PI) / 180;
+                const length = i % 5 === 0 ? 60 : 30;
+                const x1 = centerX + (radius - 40) * Math.cos(angle);
+                const y1 = centerY + (radius - 40) * Math.sin(angle);
+                const x2 = centerX + (radius - 20) * Math.cos(angle);
+                const y2 = centerY + (radius - 20) * Math.sin(angle);
+                
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+
+            // Draw numerals
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 60px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            for (let i = 1; i <= 12; i++) {
+                const angle = (i * 30 * Math.PI) / 180 - Math.PI / 2;
+                const x = centerX + (radius - 120) * Math.cos(angle);
+                const y = centerY + (radius - 120) * Math.sin(angle);
+                ctx.fillText(i, x, y);
+            }
+
+            // Helper for drawing hands
+            function drawHand(angle, length, width, color) {
+                ctx.beginPath();
+                ctx.lineWidth = width;
+                ctx.strokeStyle = color;
+                ctx.lineCap = 'butt';
+                ctx.moveTo(centerX, centerY);
+                const x = centerX + length * Math.cos(angle);
+                const y = centerY + length * Math.sin(angle);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+            }
+
+            // Draw Hour Hand
+            drawHand((hours * 30 * Math.PI) / 180 - Math.PI / 2, radius * 0.5, 20, 'black');
+
+            // Draw Minute Hand
+            drawHand((minutes * 6 * Math.PI) / 180 - Math.PI / 2, radius * 0.75, 12, 'black');
+
+            // Draw Second Hand (Red Baton)
+drawHand((seconds * 6 * Math.PI) / 180 - Math.PI / 2, radius * 0.85, 8, 'green');
+   const secondAngle = (seconds * 6 * Math.PI) / 180 - Math.PI / 2;
+   const circleX = centerX + (radius * 0.85) * Math.cos(secondAngle);
+   const circleY = centerY + (radius * 0.85) * Math.sin(secondAngle);
+   ctx.beginPath();
+   ctx.arc(circleX, circleY, 8, 0, 2 * Math.PI);
+   ctx.fillStyle = 'green';
+   ctx.fill();
+
+            requestAnimationFrame(drawClock);
+        }
+
+        drawClock();
+    </script>
+</body>
+</html>
