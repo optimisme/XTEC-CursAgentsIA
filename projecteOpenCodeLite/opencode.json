@@ -61,10 +61,10 @@
         "active-model": {
           "name": "Active Model",
           "limit": {
-            "context": 24576,
-            "output": 3072
+            "context": 32768,
+            "output": 2048
           },
-          "max_tokens": 3072,
+          "max_tokens": 2048,
           "tool_call": true,
           "reasoning": false
         }

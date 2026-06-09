@@ -49,7 +49,7 @@ services:
           --alias active-model \
           --host 0.0.0.0 \
           --port 8000 \
-          -c 24576 \
+          -c 32768 \
           -ngl 24 \
           -np 1 \
           -cb \

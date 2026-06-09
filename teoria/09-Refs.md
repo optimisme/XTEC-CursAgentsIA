@@ -1,5 +1,5 @@
 
-# Referències
+# Webs
 
 - [OpenCode ecosystem](https://opencode.ai/docs/ecosystem/) integracions amb OpenCoce (add-ons)
 
@@ -17,3 +17,10 @@
 
 - [How LLMs actually work](https://www.0xkato.xyz/how-llms-actually-work/) explicació teòrica sobre LLMs
 
+# Vídeos
+
+- []()
+
+- [Esto es lo que Aprendí Adaptando Claude Code para SDD](https://www.youtube.com/watch?v=ElGlTv2A_bM&t=11s) explicació arnés amb "Spec driven development"
+
+- [Construyo mi propio arnés de IA](https://www.youtube.com/watch?v=2B9QTg_-nyc) explicació tool calls
