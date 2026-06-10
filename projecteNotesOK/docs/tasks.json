@@ -1,0 +1,52 @@
+[
+  {
+    "title": "Create a project structure with 'webs' and 'docs' folders.",
+    "status": "done",
+    "acceptance": ["Has a 'webs' folder", "Has a 'docs' folder"]
+  },
+  {
+    "title": "Create the main HTML structure in 'webs/index.html'.",
+    "status": "done",
+    "acceptance": ["Has a 'webs/index.html' file", "Contains a form with title and content inputs and a submit button", "Contains a container to display saved notes", "Contains a search input field", "Links to 'styles.css' and 'app.js'"]
+  },
+  {
+    "title": "Create the CSS styles in 'webs/styles.css'.",
+    "status": "done",
+    "acceptance": ["Has a 'webs/styles.css' file", "Uses a clean, minimal layout with readable fonts", "Has sufficient spacing between elements", "Buttons are easy to see and click (minimum 44px height)", "Uses consistent colors defined as CSS custom properties"]
+  },
+  {
+    "title": "Create the main application structure in 'webs/app.js'.",
+    "status": "done",
+    "acceptance": ["Has a 'webs/app.js' file", "Defines core storage functions: loadNotes, saveNotes, createNote, updateNote, deleteNote", "Wires up the form submit to create a new note", "Wires up the search input to filter displayed notes"]
+  },
+  {
+    "title": "Implement note creation with localStorage persistence.",
+    "status": "done",
+    "acceptance": ["createNote(title, content) creates a note with id, title, content, and createdAt", "saveNotes(notes) stores notes array in localStorage safely", "loadNotes() returns an array (empty if no saved data)", "Creating a note appends it to localStorage", "Invalid saved data does not crash the app"]
+  },
+  {
+    "title": "Implement note display on the page.",
+    "status": "done",
+    "acceptance": ["Notes from localStorage are displayed when the page loads", "Each note shows its title and content", "Notes are rendered inside the notes container", "Empty state shows a message when no notes exist"]
+  },
+  {
+    "title": "Implement note editing functionality.",
+    "status": "done",
+    "acceptance": ["updateNote(id, title, content) updates only the selected note", "Editing a note updates its content in localStorage", "The page re-renders to show the updated note", "Editing a non-existent note returns null without errors"]
+  },
+  {
+    "title": "Implement note deletion functionality.",
+    "status": "done",
+    "acceptance": ["deleteNote(id) removes only the selected note", "Deleted notes are removed from localStorage", "The page re-renders after deletion", "Deleting a non-existent note returns false without errors"]
+  },
+  {
+    "title": "Implement note search by title or content.",
+    "status": "done",
+    "acceptance": ["The search input filters notes by title or content", "Notes matching the search query are displayed", "Searching with an empty query shows all notes", "Search is case-insensitive"]
+  },
+  {
+    "title": "Polish the interface with minimal usable design.",
+    "status": "done",
+    "acceptance": ["The layout is clean and simple", "All interactive elements have visible focus and hover states", "The color scheme is consistent across the app", "The app is usable without zoom on standard screen sizes", "All text is readable with sufficient contrast"]
+  }
+]

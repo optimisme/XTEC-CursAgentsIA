@@ -1,0 +1,244 @@
+/* ── Custom Properties ── */
+:root {
+  --color-primary: #4f46e5;
+  --color-primary-hover: #4338ca;
+  --color-bg: #f4f5f7;
+  --color-surface: #ffffff;
+  --color-text: #1e1e2f;
+  --color-text-secondary: #6b7280;
+  --color-border: #d1d5db;
+  --color-border-focus: #4f46e5;
+  --color-error: #dc2626;
+  --color-card-hover: #f9fafb;
+
+  --spacing-unit: 0.75rem;
+  --radius: 0.5rem;
+  --max-width: 640px;
+
+  --font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+}
+
+/* ── Reset & Base ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: calc(var(--spacing-unit) * 2);
+  text-align: center;
+}
+
+header h1 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+/* ── Main Layout ── */
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: calc(var(--spacing-unit) * 3) calc(var(--spacing-unit) * 2);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-unit) * 3);
+}
+
+section {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: calc(var(--spacing-unit) * 2);
+}
+
+/* ── Form ── */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-unit) * 1.5);
+}
+
+label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+input[type="text"],
+input[type="search"],
+textarea {
+  width: 100%;
+  padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit));
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  min-height: 44px;
+  transition: border-color 0.2s ease;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--color-border-focus);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-secondary);
+}
+
+/* ── Buttons ── */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 calc(var(--spacing-unit) * 2);
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+}
+
+button:active {
+  background-color: var(--color-primary-hover);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.35);
+}
+
+/* ── Search Section ── */
+#search-section {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-unit) * 0.75);
+}
+
+/* ── Notes Container ── */
+#notes-container h2 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: calc(var(--spacing-unit) * 1.5);
+}
+
+/* ── Notes List (cards) ── */
+#notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing-unit) * 1.5);
+}
+
+#notes-list .note-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: calc(var(--spacing-unit) * 2);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#notes-list .note-card:hover {
+  background-color: var(--color-card-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+#notes-list .note-card h3 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin-bottom: calc(var(--spacing-unit) * 0.5);
+  color: var(--color-primary);
+}
+
+#notes-list .note-card p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#notes-list .note-card .note-date {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: calc(var(--spacing-unit) * 0.75);
+  opacity: 0.7;
+}
+
+#notes-list .note-card .note-actions {
+  margin-top: calc(var(--spacing-unit) * 1);
+  display: flex;
+  gap: calc(var(--spacing-unit) * 0.5);
+}
+
+#notes-list .note-card .note-actions button {
+  min-height: 44px;
+  font-size: var(--font-size-sm);
+  padding: 0 calc(var(--spacing-unit));
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+#notes-list .note-card .note-actions button:hover {
+  background-color: var(--color-border);
+  color: var(--color-text);
+  box-shadow: none;
+}
+
+/* ── Empty State ── */
+#notes-list .empty-state {
+  text-align: center;
+  padding: calc(var(--spacing-unit) * 4);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  :root {
+    --spacing-unit: 0.625rem;
+    --max-width: 100%;
+  }
+
+  main {
+    padding: var(--spacing-unit) calc(var(--spacing-unit));
+  }
+}
