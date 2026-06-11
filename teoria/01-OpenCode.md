@@ -208,6 +208,8 @@ Quan s'escriu el caràcter "/" apareix el menú de comandes:
 
 * **/undo**: desfà l’últim missatge o acció de la sessió; cal anar amb compte perquè, pot no revertir sempre els fitxers modificats i és millor fer commits freqüents. 
 
+* **/compact**: compactar el context per reduir-lo. 
+
 ### Paleta de comandes (Ctrl+P)
 
 Menú intern de la interfície, fora de la conversa amb l'agent.
