@@ -7,6 +7,15 @@ DEFAULT_MODEL="gemma4-31b-qat-w4a16-spark"
 MODEL="${1:-$DEFAULT_MODEL}"
 ACTION="${2:-restart}"
 
+if [[ $# -eq 1 ]]; then
+  case "$1" in
+    restart|start|stop|logs|ps)
+      MODEL="$DEFAULT_MODEL"
+      ACTION="$1"
+      ;;
+  esac
+fi
+
 usage() {
   cat <<EOF
 Usage:
@@ -115,6 +124,27 @@ stop_all() {
   do
     if [[ -f "$ROOT_DIR/$file" ]]; then
       docker compose -p "$COMPOSE_PROJECT" -f "$ROOT_DIR/$file" down --remove-orphans
+    fi
+  done
+
+  for container in \
+    qwen35_9b_vllm \
+    qwen35_9b_quanttrio_vllm \
+    qwen35_9b_quanttrio_spark_vllm \
+    qwen3_8b_awq_vllm \
+    qwen3_14b_awq_vllm \
+    gemma4_12b_qat_w4a16_spark_vllm \
+    gemma4_12b_litertlm \
+    gemma4_31b_qat_w4a16_spark_vllm \
+    gemma4_26b_a4b_spark_vllm \
+    gemma4_8b_vllm \
+    gemma4_8b_spark_vllm \
+    qwen36_27b_vllm \
+    qwen36_35b_a3b_mtp_iq4_spark_llamacpp \
+    qwen36_35b_a3b_mtp_iq4_llamacpp
+  do
+    if docker ps -a --format '{{.Names}}' | grep -Fxq "$container"; then
+      docker rm -f "$container"
     fi
   done
 }

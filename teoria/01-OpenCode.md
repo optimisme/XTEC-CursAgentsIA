@@ -206,7 +206,7 @@ Quan s'escriu el caràcter "/" apareix el menú de comandes:
 
 * **/timestamps**: activa o desactiva la visualització de marques de temps als missatges de la sessió.
 
-* **/undo**: desfà l’últim missatge o acció de la sessió; cal anar amb compte perquè, segons el vídeo, pot no revertir sempre els fitxers modificats i és millor fer commits freqüents. 
+* **/undo**: desfà l’últim missatge o acció de la sessió; cal anar amb compte perquè, pot no revertir sempre els fitxers modificats i és millor fer commits freqüents. 
 
 ### Paleta de comandes (Ctrl+P)
 
