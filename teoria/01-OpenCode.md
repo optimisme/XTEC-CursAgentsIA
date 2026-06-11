@@ -190,7 +190,7 @@ Quan s'escriu el caràcter "/" apareix el menú de comandes:
 
 * **/review**: revisa els canvis del projecte i ajuda a detectar errors, millores o problemes abans de donar-los per bons.
 
-* **/sessions**: mostra les sessions obertes o anteriors i permet canviar entre converses de treball. Al vídeo es mostra que també es poden tenir sessions en paral·lel i recuperar-ne una que encara està en procés. 
+* **/sessions**: mostra les sessions obertes o anteriors i permet canviar entre converses de treball. També es poden tenir sessions en paral·lel i recuperar-ne una que encara està en procés. 
 
 * **/share**: genera un enllaç per compartir l’historial de la sessió, incloent els passos fets, el model utilitzat, les respostes i els canvis aplicats. 
 
