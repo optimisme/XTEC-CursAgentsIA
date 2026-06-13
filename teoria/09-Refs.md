@@ -3,6 +3,8 @@
 
 - [OpenCode ecosystem](https://opencode.ai/docs/ecosystem/) integracions amb OpenCoce (add-ons)
 
+- [Anatomy of an agent harness](https://x.com/akshay_pachaar/status/2041146899319971922)
+
 - [Claude Harness Engineering](https://walkinglabs.github.io/learn-harness-engineering/en/) guia explicativa sobre què tenir en compte quan montes l'arnés d'un projecte i com aquest afecta els models
 
 - [Codex best practices](https://developers.openai.com/codex/learn/best-practices) recomanacions de OpenAI al treballar amb Codex
