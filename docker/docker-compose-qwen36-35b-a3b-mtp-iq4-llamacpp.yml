@@ -13,12 +13,12 @@ services:
       - LLAMA_CACHE=/root/.cache/llama.cpp
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - llamacpp-hf-cache:/root/.cache/huggingface
-      - llamacpp-runtime-cache:/root/.cache/llama.cpp
+      - xtec-hf-cache:/root/.cache/huggingface
+      - xtec-gguf-cache:/root/.cache/llama.cpp
     ports:
       - "8000:8000"
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/v1/models || wget -q -O - http://localhost:8000/v1/models >/dev/null"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8000/v1/models >/dev/null"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -44,12 +44,17 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
+        echo "Starting llama.cpp server for localweights/Qwen3.6-35B-A3B-MTP-IQ4_XS-GGUF:IQ4_XS on 0.0.0.0:8000"
+        echo "Model cache: $${LLAMA_CACHE}"
         exec /app/llama-server \
           -hf localweights/Qwen3.6-35B-A3B-MTP-IQ4_XS-GGUF:IQ4_XS \
           --alias active-model \
           --host 0.0.0.0 \
           --port 8000 \
-          -c 32768 \
+          --log-timestamps \
+          --log-prefix \
+          --verbose \
+          -c 65536 \
           -ngl 24 \
           -np 1 \
           -cb \
@@ -58,5 +63,9 @@ services:
           -ctv q8_0
 
 volumes:
-  llamacpp-hf-cache:
-  llamacpp-runtime-cache:
+  xtec-hf-cache:
+    name: xtec-hf-cache
+    external: true
+  xtec-gguf-cache:
+    name: xtec-gguf-cache
+    external: true

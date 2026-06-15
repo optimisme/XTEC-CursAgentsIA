@@ -1,0 +1,56 @@
+{
+  "lessons": [
+    {
+      "id": "javascript-events",
+      "title": "Esdeveniments en JavaScript",
+      "level": "beginner",
+      "keywords": ["javascript", "events", "dom", "click", "listener", "addEventListener"],
+      "learning_outcomes": [
+        "Explain what a browser event is.",
+        "Use addEventListener to react to a user action.",
+        "Read basic information from an event object.",
+        "Avoid common mistakes when attaching event listeners."
+      ],
+      "estimated_duration_minutes": 45
+    },
+    {
+      "id": "css-flexbox",
+      "title": "CSS Flexbox",
+      "level": "beginner",
+      "keywords": ["css", "flexbox", "layout", "display flex", "justify-content", "align-items"],
+      "learning_outcomes": [
+        "Explain the role of a flex container and flex items.",
+        "Use display flex to create a one-dimensional layout.",
+        "Control horizontal and vertical alignment with Flexbox.",
+        "Build a simple responsive row or column layout."
+      ],
+      "estimated_duration_minutes": 50
+    },
+    {
+      "id": "sql-select",
+      "title": "Consultes SELECT en SQL",
+      "level": "beginner",
+      "keywords": ["sql", "select", "database", "where", "order by", "query"],
+      "learning_outcomes": [
+        "Explain the purpose of a SELECT query.",
+        "Select specific columns from a table.",
+        "Filter rows with WHERE.",
+        "Sort query results with ORDER BY."
+      ],
+      "estimated_duration_minutes": 45
+    },
+    {
+      "id": "mongodb-basics",
+      "title": "Introduccio a MongoDB",
+      "level": "beginner",
+      "keywords": ["mongodb", "nosql", "database", "collection", "document", "find", "insertOne"],
+      "learning_outcomes": [
+        "Explain what MongoDB is and how it differs from a relational database.",
+        "Identify databases, collections, and documents.",
+        "Insert a simple document with insertOne.",
+        "Query documents with find and a basic filter."
+      ],
+      "estimated_duration_minutes": 50
+    }
+  ]
+}

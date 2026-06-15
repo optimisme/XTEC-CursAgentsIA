@@ -1,0 +1,116 @@
+{
+  "compose_project": "vllm",
+  "default_model": "gemma4-31b-qat-w4a16-spark",
+  "endpoint": "http://127.0.0.1:8000/v1",
+  "volumes": {
+    "xtec-hf-cache": {
+      "description": "Shared Hugging Face cache for model weights, tokenizers, and snapshots."
+    },
+    "xtec-vllm-cache": {
+      "description": "Runtime cache used by vLLM containers."
+    },
+    "xtec-gguf-cache": {
+      "description": "GGUF and llama.cpp cache used by llama.cpp containers."
+    }
+  },
+  "models": {
+    "gemma4-31b-qat-w4a16-spark": {
+      "compose": "docker-compose-gemma4-31b-qat-w4a16-spark.yml",
+      "container": "gemma4_31b_qat_w4a16_spark_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Default Gemma 4 31B QAT W4A16 Spark profile."
+    },
+    "gemma4-26b-a4b-spark": {
+      "compose": "docker-compose-gemma4-26b-a4b-spark.yml",
+      "container": "gemma4_26b_a4b_spark_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Gemma 4 26B A4B Spark BF16 profile."
+    },
+    "gemma4-12b-qat-w4a16-spark": {
+      "compose": "docker-compose-gemma4-12b-qat-w4a16-spark.yml",
+      "container": "gemma4_12b_qat_w4a16_spark_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Gemma 4 12B QAT W4A16 Spark profile."
+    },
+    "gemma4-12b-qat-w4a16-vllm": {
+      "compose": "docker-compose-gemma4-12b-qat-w4a16-vllm.yml",
+      "container": "gemma4_12b_qat_w4a16_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Gemma 4 12B QAT W4A16 local vLLM profile."
+    },
+    "gemma4-8b": {
+      "compose": "docker-compose-gemma4-8b.yml",
+      "container": "gemma4_8b_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Gemma 4 8B local BitsAndBytes profile."
+    },
+    "gemma4-8b-spark": {
+      "compose": "docker-compose-gemma4-8b-spark.yml",
+      "container": "gemma4_8b_spark_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Gemma 4 8B Spark BF16 profile."
+    },
+    "qwen3.6-35b-a3b-mtp-iq4-llamacpp": {
+      "compose": "docker-compose-qwen36-35b-a3b-mtp-iq4-llamacpp.yml",
+      "container": "qwen36_35b_a3b_mtp_iq4_llamacpp",
+      "engine": "llamacpp",
+      "volumes": ["xtec-hf-cache", "xtec-gguf-cache"],
+      "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile."
+    },
+    "qwen3.6-35b-a3b-mtp-iq4-spark-llamacpp": {
+      "compose": "docker-compose-qwen36-35b-a3b-mtp-iq4-spark-llamacpp.yml",
+      "container": "qwen36_35b_a3b_mtp_iq4_spark_llamacpp",
+      "engine": "llamacpp",
+      "volumes": ["xtec-hf-cache", "xtec-gguf-cache"],
+      "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF Spark llama.cpp profile."
+    },
+    "qwen3.6-27b-spark": {
+      "compose": "docker-compose-qwen36-27b-spark.yml",
+      "container": "qwen36_27b_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Qwen3.6 27B Spark vLLM profile."
+    },
+    "qwen35-9b": {
+      "compose": "docker-compose-qwen35-9b.yml",
+      "container": "qwen35_9b_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Qwen3.5 9B AWQ local vLLM profile."
+    },
+    "qwen35-9b-quanttrio": {
+      "compose": "docker-compose-qwen35-9b-quanttrio.yml",
+      "container": "qwen35_9b_quanttrio_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "QuantTrio Qwen3.5 9B AWQ local vLLM profile."
+    },
+    "qwen35-9b-quanttrio-spark": {
+      "compose": "docker-compose-qwen35-9b-quanttrio-spark.yml",
+      "container": "qwen35_9b_quanttrio_spark_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "QuantTrio Qwen3.5 9B AWQ Spark vLLM profile."
+    },
+    "qwen3-14b-spark": {
+      "compose": "docker-compose-qwen3-14b-spark.yml",
+      "container": "qwen3_14b_awq_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Qwen3 14B AWQ Spark vLLM profile."
+    },
+    "qwen3-8b": {
+      "compose": "docker-compose-qwen3-8b.yml",
+      "container": "qwen3_8b_awq_vllm",
+      "engine": "vllm",
+      "volumes": ["xtec-hf-cache", "xtec-vllm-cache"],
+      "description": "Qwen3 8B AWQ local vLLM profile."
+    }
+  }
+}

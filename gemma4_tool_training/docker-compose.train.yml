@@ -5,13 +5,23 @@ services:
       dockerfile: Dockerfile
     image: gemma4-12b-lora-train:local
     working_dir: /workspace/gemma4_tool_training
+    entrypoint: []
     env_file:
-      - ../tokens.env
+      - ../docker/tokens.env
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
       - HF_HUB_DISABLE_XET=1
       - PYTORCH_ALLOC_CONF=expandable_segments:True
+      - DATASET=${DATASET:-data/global_tool_sft_seed.jsonl}
+      - OUTPUT_DIR=${OUTPUT_DIR:-outputs/gemma4-12b-global-tool-lora}
+      - EPOCHS=${EPOCHS:-3}
+      - BATCH_SIZE=${BATCH_SIZE:-1}
+      - GRAD_ACCUM=${GRAD_ACCUM:-16}
+      - LEARNING_RATE=${LEARNING_RATE:-2e-4}
+      - MAX_SEQ_LENGTH=${MAX_SEQ_LENGTH:-2048}
+      - MAX_STEPS=${MAX_STEPS:--1}
+      - BASE_MODEL=${BASE_MODEL:-google/gemma-4-12B-it}
     volumes:
       - .:/workspace/gemma4_tool_training
       - vllm_hf_cache:/root/.cache/huggingface
@@ -32,8 +42,8 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        python preflight.py --dataset "$${DATASET:-data/global_tool_sft_seed.jsonl}"
-        python train_lora.py \
+        python3 preflight.py --dataset "$${DATASET:-data/global_tool_sft_seed.jsonl}"
+        python3 train_lora.py \
           --base-model "$${BASE_MODEL:-google/gemma-4-12B-it}" \
           --dataset "$${DATASET:-data/global_tool_sft_seed.jsonl}" \
           --output-dir "$${OUTPUT_DIR:-outputs/gemma4-12b-global-tool-lora}" \
@@ -47,4 +57,4 @@ services:
 volumes:
   vllm_hf_cache:
     external: true
-    name: docker_vllm-hf-cache
+    name: xtec-hf-cache

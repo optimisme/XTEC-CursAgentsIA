@@ -1,8 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "ieti-agents/active-model",
-  "default_agent": "build",
-  "enabled_providers": ["opencode", "ieti-agents"],
+  "default_agent": "guided-teacher",
+  "enabled_providers": ["ieti-agents", "opencode"],
   "permission": {
     "read": "allow",
     "grep": "allow",

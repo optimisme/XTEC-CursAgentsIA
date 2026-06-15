@@ -1,0 +1,86 @@
+[
+  {
+    "title": "Research 10 recommended Girona places and save cited source data.",
+    "status": "done",
+    "acceptance": [
+      "The task performs web research before creating or editing the travel-guide page files",
+      "docs/girona-research.json exists and contains exactly 10 recommended places to visit in Girona",
+      "Each place includes name, category, short description, openingHours, officialUrl, sourceUrl, sourceTitle, and retrievedDate fields",
+      "Opening hours are included when available from checked sources, and uncertain hours are explicitly marked as not available instead of invented",
+      "The selected places cover a useful mix of landmarks, historic streets, museums, viewpoints, bridges, parks, markets, or food-related stops",
+      "At least 7 of the 10 entries use official attraction, official tourism, municipal, museum, or public tourism body sources"
+    ]
+  },
+  {
+    "title": "Create the static Girona travel-guide HTML shell in webs/travel.html.",
+    "status": "done",
+    "acceptance": [
+      "webs/travel.html exists and identifies the page as a mini travel guide for Girona",
+      "The page links to travel.css and travel.js and uses no external dependencies",
+      "The first viewport includes the Girona title, a short practical intro, search input, category filter controls, and a visible start of the card grid",
+      "The page includes semantic regions for header, controls, card grid, empty state, and sources",
+      "The page includes a noscript message explaining that cards and filters need JavaScript",
+      "The markup provides stable ids or data hooks needed by travel.js"
+    ]
+  },
+  {
+    "title": "Style the responsive card-based travel guide in webs/travel.css.",
+    "status": "done",
+    "acceptance": [
+      "webs/travel.css creates a responsive card grid that works on mobile, tablet, and desktop widths",
+      "Search and category controls are visible, compact, and usable without overlapping other content",
+      "Cards clearly separate place name, category, description, opening hours, official link, and citation link",
+      "The layout avoids oversized marketing-style hero sections and keeps guide content visible in the first viewport",
+      "Focus-visible, hover, active, and selected states are defined for interactive controls and links",
+      "The page has no horizontal overflow or clipped text at common mobile widths"
+    ]
+  },
+  {
+    "title": "Render researched places as cards from structured data in webs/travel.js.",
+    "status": "done",
+    "acceptance": [
+      "webs/travel.js loads or defines the 10 researched places using the same fields saved in docs/girona-research.json",
+      "The script renders exactly 10 place cards on initial load",
+      "Each rendered card shows name, category, short description, opening hours or an explicit unavailable-hours message, official link when available, and source citation link",
+      "External links use safe new-tab attributes when opening in a new tab",
+      "The script renders a sources section listing all distinct sources used by the card data",
+      "The app handles missing optional officialUrl values without breaking card rendering"
+    ]
+  },
+  {
+    "title": "Implement search and category filtering in webs/travel.js.",
+    "status": "done",
+    "acceptance": [
+      "The search input filters cards by place name, category, description, and opening-hours text",
+      "Category controls filter cards by category",
+      "Search and category filters work together rather than replacing each other",
+      "An empty-state message appears when no cards match the active filters",
+      "A clear or all-categories control restores the full 10-card list",
+      "Filtering updates visible result counts or equivalent status text for user feedback"
+    ]
+  },
+  {
+    "title": "Add traveler-focused content polish and citation quality checks.",
+    "status": "done",
+    "acceptance": [
+      "Descriptions are concise, original summaries suitable for visitors and not copied from source pages",
+      "Every card has a useful category label and practical opening-hours text",
+      "Every card has either an official link or a clearly relevant public tourism source link",
+      "The sources section is readable and includes retrieval dates",
+      "The page clearly distinguishes official links from citation/source links",
+      "No place entry contains placeholder text, fake URLs, or invented hours"
+    ]
+  },
+  {
+    "title": "Verify responsive behavior, accessibility, and static-site quality.",
+    "status": "pending",
+    "acceptance": [
+      "webs/travel.html can be opened through a simple local server without build steps",
+      "The browser console has no errors during initial load, search, filtering, and link interaction",
+      "Keyboard users can reach search, filters, cards, and links in a logical order",
+      "Interactive controls have accessible names and visible focus indicators",
+      "The card grid remains readable at desktop and mobile viewport widths",
+      "The implementation is organized into readable HTML, CSS, and JavaScript with no external dependencies"
+    ]
+  }
+]

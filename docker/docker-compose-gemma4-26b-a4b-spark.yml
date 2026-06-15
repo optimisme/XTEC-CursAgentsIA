@@ -14,8 +14,8 @@ services:
       - HF_HUB_DISABLE_XET=1
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - vllm-hf-cache:/root/.cache/huggingface
-      - vllm-runtime-cache:/root/.cache/vllm
+      - xtec-hf-cache:/root/.cache/huggingface
+      - xtec-vllm-cache:/root/.cache/vllm
     ports:
       - "8000:8000"
     healthcheck:
@@ -67,5 +67,9 @@ services:
           --default-chat-template-kwargs '{"enable_thinking": true}'
 
 volumes:
-  vllm-hf-cache:
-  vllm-runtime-cache:
+  xtec-hf-cache:
+    name: xtec-hf-cache
+    external: true
+  xtec-vllm-cache:
+    name: xtec-vllm-cache
+    external: true

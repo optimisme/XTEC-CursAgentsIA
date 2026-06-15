@@ -44,9 +44,6 @@ For **normal prompts** — greetings ("hi"), questions, debugging help, code rev
 ### `/next-task`
 Find the first pending task in `docs/tasks.json`, implement it, verify every acceptance criterion, and mark it `"done"` only if all criteria pass. If any criterion fails, mark it `"failed"`.
 
-### `/review-current-task`
-Run the Reviewer agent against the current task to verify acceptance criteria without implementing anything new. Useful for double-checking work or re-verifying after manual edits.
-
 ---
 
 ## Available Skills

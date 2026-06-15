@@ -13,8 +13,8 @@ services:
       - LLAMA_CACHE=/root/.cache/llama.cpp
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - llamacpp-hf-cache:/root/.cache/huggingface
-      - llamacpp-runtime-cache:/root/.cache/llama.cpp
+      - xtec-hf-cache:/root/.cache/huggingface
+      - xtec-gguf-cache:/root/.cache/llama.cpp
     ports:
       - "8000:8000"
     healthcheck:
@@ -49,14 +49,18 @@ services:
           --alias active-model \
           --host 0.0.0.0 \
           --port 8000 \
-          -c 32768 \
+          -c 4194304 \
           -ngl 999 \
-          -np 1 \
+          -np 64 \
           -cb \
           -fa on \
           -ctk q8_0 \
           -ctv q8_0
 
 volumes:
-  llamacpp-hf-cache:
-  llamacpp-runtime-cache:
+  xtec-hf-cache:
+    name: xtec-hf-cache
+    external: true
+  xtec-gguf-cache:
+    name: xtec-gguf-cache
+    external: true
