@@ -52,6 +52,9 @@ services:
           -c 4194304 \
           -ngl 999 \
           -np 64 \
+          --temp 0.6 \
+          --top-p 0.95 \
+          --top-k 20 \
           -cb \
           -fa on \
           -ctk q8_0 \

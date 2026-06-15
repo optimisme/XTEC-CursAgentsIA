@@ -51,7 +51,7 @@ services:
           --port 8000 \
           --dtype bfloat16 \
           --max-model-len 32768 \
-          --gpu-memory-utilation 0.90 \
+          --gpu-memory-utilization 0.90 \
           --attention-backend FLASH_ATTN \
           --reasoning-parser qwen3 \
           --enable-auto-tool-choice \
@@ -63,6 +63,7 @@ services:
           --max-num-batched-tokens 8192 \
           --enable-prefix-caching \
           --enforce-eager \
+          --override-generation-config '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}' \
           --speculative-config '{"method":"qwen3_next_mtp","num_speculative_tokens":2}'
 
 volumes:
