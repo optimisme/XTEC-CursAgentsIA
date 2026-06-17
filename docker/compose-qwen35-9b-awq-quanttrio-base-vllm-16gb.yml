@@ -1,11 +1,11 @@
-# Stop:    docker compose -f docker-compose-qwen35-9b-quanttrio.yml down
-# Restart: docker compose -f docker-compose-qwen35-9b-quanttrio.yml up -d
-# Logs:    docker logs -f --tail 20 qwen35_9b_quanttrio_vllm
+# Stop:    docker compose -f compose-qwen35-9b-awq-quanttrio-base-vllm-16gb.yml down
+# Restart: docker compose -f compose-qwen35-9b-awq-quanttrio-base-vllm-16gb.yml up -d
+# Logs:    docker logs -f --tail 20 qwen35_9b_awq_quanttrio_base_vllm_16gb
 # Note:    optimized for a 16GB VRAM GPU. Stop any other vLLM service using port 8000 before starting this one.
 services:
   qwen-vllm:
     image: vllm/vllm-openai:cu130-nightly
-    container_name: qwen35_9b_quanttrio_vllm
+    container_name: qwen35_9b_awq_quanttrio_base_vllm_16gb
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub

@@ -36,6 +36,8 @@ function parseArgs(argv) {
     sourceLabel: "vram16",
     timeoutMs: DEFAULT_TIMEOUT_MS,
     parallel: 1,
+    reasoning: false,
+    outputTokens: 8192,
     dryRun: false,
     dangerouslySkipPermissions: false,
   };
@@ -66,6 +68,10 @@ function parseArgs(argv) {
     else if (arg === "--limit") args.limit = Number.parseInt(nextValue(), 10);
     else if (arg.startsWith("--parallel=")) args.parallel = Number.parseInt(arg.slice("--parallel=".length), 10);
     else if (arg === "--parallel") args.parallel = Number.parseInt(nextValue(), 10);
+    else if (arg.startsWith("--reasoning=")) args.reasoning = parseBool(arg.slice("--reasoning=".length), "--reasoning");
+    else if (arg === "--reasoning") args.reasoning = parseBool(nextValue(), "--reasoning");
+    else if (arg.startsWith("--output-tokens=")) args.outputTokens = Number.parseInt(arg.slice("--output-tokens=".length), 10);
+    else if (arg === "--output-tokens") args.outputTokens = Number.parseInt(nextValue(), 10);
     else if (arg.startsWith("--timeout-ms=")) args.timeoutMs = Number.parseInt(arg.slice("--timeout-ms=".length), 10);
     else if (arg === "--timeout-ms") args.timeoutMs = Number.parseInt(nextValue(), 10);
     else throw new Error(`unknown argument: ${arg}`);
@@ -79,10 +85,19 @@ function parseArgs(argv) {
   if (!Number.isFinite(args.parallel) || args.parallel <= 0) {
     throw new Error("--parallel must be a positive integer");
   }
+  if (!Number.isFinite(args.outputTokens) || args.outputTokens <= 0) {
+    throw new Error("--output-tokens must be a positive integer");
+  }
   if (args.id && args.ids) {
     throw new Error("use either --id or --ids, not both");
   }
   return args;
+}
+
+function parseBool(value, name) {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  throw new Error(`${name} must be true or false`);
 }
 
 function readJsonl(filePath) {
@@ -112,7 +127,7 @@ function ensureTask(task) {
   }
 }
 
-function writeOpencodeConfig(projectDir, model, endpoint) {
+function writeOpencodeConfig(projectDir, model, endpoint, options) {
   const provider = model.split("/")[0] || "vram16-vllm";
   const config = {
     $schema: "https://opencode.ai/config.json",
@@ -153,11 +168,11 @@ function writeOpencodeConfig(projectDir, model, endpoint) {
             name: "Active Model",
             limit: {
               context: 32768,
-              output: 8192,
+              output: options.outputTokens,
             },
-            max_tokens: 8192,
+            max_tokens: options.outputTokens,
             tool_call: true,
-            reasoning: false,
+            reasoning: options.reasoning,
           },
         },
       },
@@ -166,7 +181,7 @@ function writeOpencodeConfig(projectDir, model, endpoint) {
   fs.writeFileSync(path.join(projectDir, "opencode.json"), JSON.stringify(config, null, 2) + "\n");
 }
 
-function materializeProject(task, rootDir, model, endpoint) {
+function materializeProject(task, rootDir, model, endpoint, options) {
   const projectDir = path.join(rootDir, task.id);
   fs.mkdirSync(projectDir, { recursive: true });
   for (const file of task.files) {
@@ -207,7 +222,7 @@ function materializeProject(task, rootDir, model, endpoint) {
     ) + "\n",
     "utf8"
   );
-  writeOpencodeConfig(projectDir, model, endpoint);
+  writeOpencodeConfig(projectDir, model, endpoint, options);
   return projectDir;
 }
 
@@ -274,7 +289,7 @@ async function collectTask(task, args) {
   ensureTask(task);
   const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), `gemma4-tool-${task.id}-`));
   const stateRoot = fs.mkdtempSync(path.join(os.tmpdir(), `gemma4-opencode-state-${task.id}-`));
-  const projectDir = materializeProject(task, workspaceRoot, args.model, args.endpoint);
+  const projectDir = materializeProject(task, workspaceRoot, args.model, args.endpoint, args);
   const logDir = path.resolve(args.outputDir);
   fs.mkdirSync(logDir, { recursive: true });
   const logFile = path.join(logDir, `${new Date().toISOString().replace(/[:.]/g, "-")}_${args.sourceLabel}_${task.id}.log`);

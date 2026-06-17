@@ -86,7 +86,7 @@ Definicions a conèixer:
 | **BF16** | Format numèric de 16 bits, sense quantització agressiva. | Models Spark grans en BF16. |
 | **FP8** | Format de 8 bits per reduir memòria. | KV cache en `fp8`. |
 | **AWQ** | Quantització pensada per executar models grans amb menys memòria. | `Qwen3-8B-AWQ`. |
-| **BnB** | BitsAndBytes, càrrega quantitzada flexible. | `gemma4-8b` local. |
+| **BnB** | BitsAndBytes, càrrega quantitzada flexible. | `gemma4-e4b-bf16-it-vllm-16gb` local. |
 | **GGUF** | Format habitual de llama.cpp. | Models locals lleugers o CPU. |
 | **Gated model** | Model que requereix acceptar condicions abans de descarregar-lo. | Alguns models de Hugging Face. |
 | **Checkpoint** | Fitxers de pesos del model. | Un repositori de Hugging Face. |

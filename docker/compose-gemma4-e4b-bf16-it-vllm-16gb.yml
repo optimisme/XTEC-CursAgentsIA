@@ -1,11 +1,11 @@
-# Stop:    docker compose -f docker-compose-qwen35-9b.yml down
-# Restart: docker compose -f docker-compose-qwen35-9b.yml up -d
-# Logs:    docker logs -f --tail 20 qwen35_9b_vllm
-# Note:    this service is published on host port 8000.
+# Stop:    docker compose -f compose-gemma4-e4b-bf16-it-vllm-16gb.yml down
+# Restart: docker compose -f compose-gemma4-e4b-bf16-it-vllm-16gb.yml up -d
+# Logs:    docker logs -f --tail 20 gemma4_e4b_bf16_it_vllm_16gb
+# Note:    optimized for RTX 4060 Ti 16GB. Stop any other vLLM service using port 8000 before starting this one.
 services:
-  qwen-vllm:
-    image: vllm/vllm-openai:cu130-nightly
-    container_name: qwen35_9b_vllm
+  gemma-vllm:
+    image: vllm/vllm-openai:latest
+    container_name: gemma4_e4b_bf16_it_vllm_16gb
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -21,7 +21,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8000/v1/models"]
       interval: 30s
-      timeout: 5s
+      timeout: 30s
       retries: 5
       start_period: 20m
     ipc: host
@@ -45,26 +45,28 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        exec vllm serve QuantTrio/Qwen3.5-9B-AWQ \
+        exec vllm serve google/gemma-4-E4B-it \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
-          --dtype bfloat16 \
           --max-model-len 32768 \
           --gpu-memory-utilization 0.85 \
-          --quantization awq_marlin \
-          --attention-backend FLASH_ATTN \
-          --reasoning-parser qwen3 \
-          --enable-auto-tool-choice \
-          --tool-call-parser qwen3_coder \
-          --language-model-only \
-          --skip-mm-profiling \
-          --enable-chunked-prefill \
+          --load-format bitsandbytes \
+          --quantization bitsandbytes \
+          --kv-cache-dtype fp8 \
           --max-num-seqs 2 \
           --max-num-batched-tokens 2048 \
           --enable-prefix-caching \
+          --enable-chunked-prefill \
           --enforce-eager \
-          --trust-remote-code
+          --trust-remote-code \
+          --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
+          --generation-config vllm \
+          --reasoning-parser gemma4 \
+          --enable-auto-tool-choice \
+          --tool-call-parser gemma4 \
+          --chat-template examples/tool_chat_template_gemma4.jinja \
+          --default-chat-template-kwargs '{"enable_thinking": true}'
 
 volumes:
   xtec-hf-cache:

@@ -1,11 +1,11 @@
-# Stop:    docker compose -f docker-compose-gemma4-8b-spark.yml down
-# Restart: docker compose -f docker-compose-gemma4-8b-spark.yml up -d
-# Logs:    docker logs -f --tail 20 gemma4_8b_spark_vllm
+# Stop:    docker compose -f compose-qwen35-9b-awq-quanttrio-base-vllm-spark.yml down
+# Restart: docker compose -f compose-qwen35-9b-awq-quanttrio-base-vllm-spark.yml up -d
+# Logs:    docker logs -f --tail 20 qwen35_9b_awq_quanttrio_base_vllm_spark
 # Note:    optimized for NVIDIA Spark / GB10 hosts. Remote service listens on port 8000.
 services:
-  gemma-vllm:
-    image: vllm/vllm-openai:gemma4-cu130
-    container_name: gemma4_8b_spark_vllm
+  qwen-vllm:
+    image: vllm/vllm-openai:cu130-nightly
+    container_name: qwen35_9b_awq_quanttrio_base_vllm_spark
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -45,26 +45,26 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        exec vllm serve google/gemma-4-E4B-it \
+        exec vllm serve QuantTrio/Qwen3.5-9B-AWQ \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --dtype bfloat16 \
           --max-model-len 32768 \
           --gpu-memory-utilization 0.90 \
-          --kv-cache-dtype fp8 \
+          --quantization awq_marlin \
+          --attention-backend FLASH_ATTN \
+          --reasoning-parser qwen3 \
+          --enable-auto-tool-choice \
+          --tool-call-parser qwen3_coder \
+          --language-model-only \
+          --skip-mm-profiling \
+          --enable-chunked-prefill \
           --max-num-seqs 8 \
           --max-num-batched-tokens 4096 \
           --enable-prefix-caching \
-          --enable-chunked-prefill \
-          --trust-remote-code \
-          --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
-          --generation-config vllm \
-          --reasoning-parser gemma4 \
-          --enable-auto-tool-choice \
-          --tool-call-parser gemma4 \
-          --chat-template examples/tool_chat_template_gemma4.jinja \
-          --default-chat-template-kwargs '{"enable_thinking": true}'
+          --enforce-eager \
+          --trust-remote-code
 
 volumes:
   xtec-hf-cache:

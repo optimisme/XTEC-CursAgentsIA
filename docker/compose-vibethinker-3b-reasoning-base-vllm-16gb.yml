@@ -1,11 +1,14 @@
-# Stop:    docker compose -f docker-compose-gemma4-26b-a4b-spark.yml down
-# Restart: docker compose -f docker-compose-gemma4-26b-a4b-spark.yml up -d
-# Logs:    docker logs -f --tail 20 gemma4_26b_a4b_spark_vllm
-# Note:    optimized for NVIDIA Spark / GB10 hosts. Remote service listens on port 8000.
+# Stop:    docker compose -f compose-vibethinker-3b-reasoning-base-vllm-16gb.yml down
+# Restart: docker compose -f compose-vibethinker-3b-reasoning-base-vllm-16gb.yml up -d
+# Logs:    docker logs -f --tail 80 vibethinker_3b_reasoning_base_vllm_16gb
+# Note:    VibeThinker-3B is a compact reasoning/code model based on Qwen2.5-Coder-3B.
+#          The upstream model card warns it was not trained for tool-calling or autonomous agents.
+#          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
 services:
-  gemma-vllm:
-    image: vllm/vllm-openai:gemma4-cu130
-    container_name: gemma4_26b_a4b_spark_vllm
+  vibethinker-vllm:
+    image: vllm/vllm-openai:latest
+    pull_policy: missing
+    container_name: vibethinker_3b_reasoning_base_vllm_16gb
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -21,9 +24,9 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8000/v1/models"]
       interval: 30s
-      timeout: 5s
+      timeout: 30s
       retries: 5
-      start_period: 30m
+      start_period: 20m
     ipc: host
     deploy:
       resources:
@@ -45,26 +48,23 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        exec vllm serve google/gemma-4-26B-A4B-it \
+        exec vllm serve WeiboAI/VibeThinker-3B \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --dtype bfloat16 \
-          --max-model-len 32768 \
-          --gpu-memory-utilization 0.90 \
-          --kv-cache-dtype fp8 \
-          --max-num-seqs 4 \
+          --max-model-len 8192 \
+          --gpu-memory-utilization 0.85 \
+          --max-num-seqs 2 \
           --max-num-batched-tokens 4096 \
           --enable-prefix-caching \
           --enable-chunked-prefill \
+          --enforce-eager \
           --trust-remote-code \
-          --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
-          --generation-config vllm \
-          --reasoning-parser gemma4 \
+          --generation-config auto \
+          --override-generation-config '{"temperature": 1.0, "top_p": 0.95, "top_k": -1}' \
           --enable-auto-tool-choice \
-          --tool-call-parser gemma4 \
-          --chat-template examples/tool_chat_template_gemma4.jinja \
-          --default-chat-template-kwargs '{"enable_thinking": true}'
+          --tool-call-parser hermes
 
 volumes:
   xtec-hf-cache:

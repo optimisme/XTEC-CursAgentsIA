@@ -1,14 +1,13 @@
-# Local:   DIFFUSIONGEMMA_HOST_PORT=8002 docker compose -f docker-compose-diffusiongemma-26b-a4b-spark.yml up -d
-# Stop:    docker compose -f docker-compose-diffusiongemma-26b-a4b-spark.yml down
-# Restart: docker compose -f docker-compose-diffusiongemma-26b-a4b-spark.yml up -d
-# Logs:    docker logs -f --tail 80 diffusiongemma_26b_a4b_spark_vllm
-# Note:    DiffusionGemma is currently published as a 26B/4B-active Gemma 4 MoE model,
-#          not as a 12B checkpoint. Remote service listens on port 8000.
+# Stop:    docker compose -f compose-gemma4-31b-qat-w4a16-it-vllm-spark.yml down
+# Restart: docker compose -f compose-gemma4-31b-qat-w4a16-it-vllm-spark.yml up -d
+# Logs:    docker logs -f --tail 80 gemma4_31b_qat_w4a16_it_vllm_spark
+# Note:    Gemma 4 31B QAT compressed-tensors checkpoint for NVIDIA Spark / GB10 hosts.
+#          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
 services:
-  diffusiongemma-vllm:
-    image: vllm/vllm-openai:gemma
+  gemma-vllm:
+    image: vllm/vllm-openai:cu129-nightly
     pull_policy: always
-    container_name: diffusiongemma_26b_a4b_spark_vllm
+    container_name: gemma4_31b_qat_w4a16_it_vllm_spark
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -20,7 +19,7 @@ services:
       - xtec-hf-cache:/root/.cache/huggingface
       - xtec-vllm-cache:/root/.cache/vllm
     ports:
-      - "${DIFFUSIONGEMMA_HOST_PORT:-8000}:8000"
+      - "8000:8000"
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8000/v1/models"]
       interval: 30s
@@ -48,23 +47,36 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        exec vllm serve google/diffusiongemma-26B-A4B-it \
+        python3 - <<'PY'
+        import json
+        from pathlib import Path
+
+        snapshot_root = Path("/root/.cache/huggingface/hub/models--google--gemma-4-31B-it-qat-w4a16-ct/snapshots")
+        for config_path in snapshot_root.glob("*/config.json"):
+            config = json.loads(config_path.read_text())
+            vision_config = config.get("vision_config")
+            if isinstance(vision_config, dict) and "num_soft_tokens" not in vision_config:
+                num_soft_tokens = vision_config.get("mm_posemb_size")
+                if num_soft_tokens is not None:
+                    vision_config["num_soft_tokens"] = num_soft_tokens
+                    config_path.write_text(json.dumps(config, indent=2) + "\n")
+                    print(f"Patched {config_path}: vision_config.num_soft_tokens={num_soft_tokens}")
+        PY
+        exec vllm serve google/gemma-4-31B-it-qat-w4a16-ct \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --dtype bfloat16 \
-          --max-model-len 65536 \
-          --max-num-seqs 4 \
-          --gpu-memory-utilization 0.85 \
+          --max-model-len 32768 \
+          --gpu-memory-utilization 0.90 \
           --kv-cache-dtype fp8 \
+          --max-num-seqs 2 \
           --max-num-batched-tokens 4096 \
-          --attention-backend TRITON_ATTN \
-          --generation-config vllm \
-          --hf-overrides '{"diffusion_sampler": "entropy_bound", "diffusion_entropy_bound": 0.1}' \
-          --diffusion-config '{"canvas_length": 256}' \
+          --enable-prefix-caching \
           --enable-chunked-prefill \
           --trust-remote-code \
-          --limit-mm-per-prompt '{"image": 0, "video": 0}' \
+          --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
+          --generation-config vllm \
           --reasoning-parser gemma4 \
           --enable-auto-tool-choice \
           --tool-call-parser gemma4 \

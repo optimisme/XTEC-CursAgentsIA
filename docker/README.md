@@ -2,7 +2,7 @@
 
 Aquest directori separa dues responsabilitats:
 
-- `docker-compose-*.yml`: defineixen com arrenca cada servei Docker.
+- `compose-*.yml`: defineixen com arrenca cada servei Docker.
 - `models.json`: es el cataleg operatiu de models.
 - `modelctl.sh`: es el gestor unic per listar, arrencar, parar, veure logs i gestionar caches.
 
@@ -37,19 +37,19 @@ Llista els models configurats:
 Arrenca un model sense parar altres serveis:
 
 ```bash
-./docker/modelctl.sh start gemma4-31b-qat-w4a16-spark
+./docker/modelctl.sh start gemma4-31b-qat-w4a16-it-vllm-spark
 ```
 
 Reinicia un model aturant abans tots els contenidors configurats:
 
 ```bash
-./docker/modelctl.sh restart gemma4-31b-qat-w4a16-spark
+./docker/modelctl.sh restart gemma4-31b-qat-w4a16-it-vllm-spark
 ```
 
 Segueix els logs:
 
 ```bash
-./docker/modelctl.sh logs gemma4-31b-qat-w4a16-spark
+./docker/modelctl.sh logs gemma4-31b-qat-w4a16-it-vllm-spark
 ```
 
 El perfil arrencat exposa el model com `active-model` a
@@ -98,7 +98,7 @@ Atura primer els serveis amb `./docker/modelctl.sh stop` si cal.
 
 ## Afegir un model
 
-1. Crea el fitxer `docker-compose-<model>.yml`.
+1. Crea el fitxer `compose-<model>-<quantization>-<features>-<prediction>-<runner>-<device>.yml`.
 2. Munta `xtec-hf-cache` i el runtime que pertoqui:
    - `xtec-vllm-cache` per vLLM.
    - `xtec-gguf-cache` per llama.cpp/GGUF.
@@ -107,6 +107,6 @@ Atura primer els serveis amb `./docker/modelctl.sh stop` si cal.
 
 ```bash
 python3 -m json.tool docker/models.json >/tmp/models_valid.json
-for f in docker/docker-compose-*.yml; do docker compose -f "$f" config --quiet; done
+for f in docker/compose-*.yml; do docker compose -f "$f" config --quiet; done
 ./docker/modelctl.sh list
 ```

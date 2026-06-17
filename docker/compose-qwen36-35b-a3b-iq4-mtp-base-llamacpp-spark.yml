@@ -1,12 +1,12 @@
-# Stop:    docker compose -f docker-compose-qwen36-35b-a3b-mtp-iq4-spark-llamacpp.yml down
-# Restart: docker compose -f docker-compose-qwen36-35b-a3b-mtp-iq4-spark-llamacpp.yml up -d
-# Logs:    docker logs -f --tail 80 qwen36_35b_a3b_mtp_iq4_spark_llamacpp
+# Stop:    docker compose -f compose-qwen36-35b-a3b-iq4-mtp-base-llamacpp-spark.yml down
+# Restart: docker compose -f compose-qwen36-35b-a3b-iq4-mtp-base-llamacpp-spark.yml up -d
+# Logs:    docker logs -f --tail 80 qwen36_35b_a3b_iq4_mtp_base_llamacpp_spark
 # Note:    llama.cpp / GGUF service, not vLLM. Optimized first for NVIDIA Spark / GB10.
 services:
   qwen-llamacpp:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     pull_policy: always
-    container_name: qwen36_35b_a3b_mtp_iq4_spark_llamacpp
+    container_name: qwen36_35b_a3b_iq4_mtp_base_llamacpp_spark
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub

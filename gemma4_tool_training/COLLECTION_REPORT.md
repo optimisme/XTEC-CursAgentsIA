@@ -452,3 +452,606 @@ Rejected as duplicate or low-value:
   file.
 - `typescript_median_no_mutation`: read source, then mutated the temporary path
   before reading tests.
+
+## 2026-06-17 16GB MTP OpenCode Calculator Website Prompt
+
+OpenCode was run locally in `projecteTest` against the 16GB MTP vLLM endpoint:
+
+- Endpoint: `http://127.0.0.1:8002/v1`
+- Model: `vram16-vllm/active-model`
+- Served checkpoint: `google/gemma-4-12B-it-qat-w4a16-ct`
+- Prompt: create `webs/calculator.html`, `webs/calculator.css`, and
+  `webs/calculator.js` matching `@calculator.png` with a light red display and
+  rounded keys.
+
+Result: failed; no requested files were created.
+
+Observed behavior:
+
+- Initial run failed before model work because the project default agent
+  `guided-teacher` is missing.
+- After using a minimal primary agent, the model globbed `webs`, failed to
+  notice the existing empty directory, then recovered by running `ls -F`.
+- The model read `calculator.png`, then stated it could not see images and
+  stopped to ask whether it should proceed, instead of using the available
+  image-vision tool or proceeding from the textual requirements.
+- A continued run accepted "proceed", ran `mkdir -p webs`, then printed HTML/CSS
+  content in the assistant message rather than writing files.
+- The model later claimed `webs/calculator.html` had been created, but a read
+  failed with `File not found`, and `glob webs/*` still returned no files.
+- Both runs repeatedly hit the 8k context boundary after verbose progress
+  summaries. The local `vram16-vllm` OpenCode config had to be reduced from
+  8192 output tokens to 1024 output tokens to keep sessions from failing before
+  any useful work.
+
+MTP status during the run:
+
+- The vLLM endpoint remained healthy.
+- Speculative decoding metrics increased during the test, confirming MTP was
+  active during OpenCode usage.
+
+Failure classes to keep for later training:
+
+- Missing or invalid default-agent setup can mask model behavior.
+- Do not stop for clarification when the user already requested creation and
+  textual visual requirements are sufficient.
+- Use project-relative paths in file tools, never absolute paths.
+- Do not print intended file contents instead of calling write/edit tools.
+- Do not claim files were created before verifying they exist.
+- Keep progress summaries compact on 8k-context local endpoints.
+
+## 2026-06-17 16GB E4B MTP 32k OpenCode Calculator Website Prompt
+
+OpenCode was rerun locally in `projecteTest` against the 16GB MTP vLLM endpoint
+after switching the 16GB profile from 12B to E4B and raising the advertised
+OpenCode context to 32k:
+
+- Endpoint: `http://127.0.0.1:8002/v1`
+- Model: `vram16-vllm/active-model`
+- Served checkpoint: `google/gemma-4-E4B-it-qat-w4a16-ct`
+- MTP assistant checkpoint: `google/gemma-4-E4B-it-qat-q4_0-unquantized-assistant`
+- OpenCode context/output config: `context: 32768`, `output: 4096`,
+  `max_tokens: 4096`
+- Generation defaults: `temperature=1.0`, `top_p=0.95`, `top_k=64`
+- Prompt: create `webs/calculator.html`, `webs/calculator.css`, and
+  `webs/calculator.js` matching `@calculator.png` with a light red display and
+  rounded keys.
+
+Result: failed/partial. The model improved over the 12B MTP run by creating
+some files, but it did not complete the requested website and had to be
+interrupted after repeatedly looping on CSS creation.
+
+Observed behavior:
+
+- The model first attempted an unavailable tool, `image_vision_describe`, even
+  though the OpenCode tool list only exposed `glob`, `grep`, `invalid`, `read`,
+  `task`, and `web_check_check_web`.
+- It recovered from the invalid image tool instead of stopping for
+  clarification and proceeded from the text description.
+- It created `webs/calculator.html` and `webs/calculator.css`.
+- It repeatedly launched safe-editor subagent tasks for CSS creation and did
+  not progress to creating `webs/calculator.js` before manual interruption.
+- The generated HTML linked assets as `webs/calculator.css` and
+  `webs/calculator.js` from inside the `webs/` directory, so both links would
+  resolve incorrectly in a browser.
+- The generated HTML used `<div class="buttons">`, while the generated CSS
+  styled `.buttons-grid`, so the button grid styles would not apply.
+- The button layout contained repeated division operator buttons and omitted a
+  complete normal operator set.
+
+MTP status during the run:
+
+- The vLLM endpoint remained healthy.
+- Speculative decoding metrics increased during the test. After interruption,
+  `vllm:spec_decode_num_drafts_total` was `25822` and
+  `vllm:spec_decode_num_accepted_tokens_total` was `20886`, confirming MTP was
+  active during OpenCode usage.
+
+Failure classes to keep for later training:
+
+- Do not call unavailable tools after OpenCode reports the available tool list.
+- Recovering from an invalid tool is useful, but the model must continue to all
+  required deliverables rather than looping on a completed subtask.
+- Track requested files explicitly and verify each required file exists before
+  finishing.
+- Use paths relative to the file being generated for browser asset links.
+- Keep HTML and CSS selectors synchronized.
+- Validate generated app structure before using `web_check_check_web`.
+
+## 2026-06-17 16GB E4B MTP 32k Generic Trace Batch
+
+A small isolated-fixture collection pass was run against the same E4B MTP
+endpoint to get real OpenCode programming traces beyond the website prompt:
+
+- Endpoint: `http://127.0.0.1:8002/v1`
+- Model: `vram16-vllm/active-model`
+- Source label: `vram16-e4b-mtp-32k`
+- Output directory: `traces/generic/vram16-e4b-mtp-32k`
+- Tasks: `python_inventory_missing_key`, `javascript_slugify_blank`,
+  `python_normalize_tags_unique`
+
+Manifest:
+
+- `traces/generic/vram16-e4b-mtp-32k/manifest_vram16-e4b-mtp-32k_2026-06-17T07-40-27-482Z.jsonl`
+
+Results:
+
+- `javascript_slugify_blank`: accepted candidate trace. The model read the
+  target file, made the correct edit, found the focused test, ran
+  `node test/slugify.test.js` successfully, and produced the required final
+  sections. It redundantly ran the same test twice.
+- `python_inventory_missing_key`: useful corrected-failure candidate. The model
+  read and edited `src/inventory.py` correctly, but searched the wrong test path
+  (`src/test_inventory.py`), missed the provided focused test at
+  `tests/test_inventory.py`, and finalized with inspection-only verification.
+- `python_normalize_tags_unique`: useful corrected-failure candidate. The model
+  made the correct edit, then wrongly believed the edit had failed, retried
+  using an absolute temporary path with a mutated directory segment, hit an
+  external-directory permission rejection, and ended without the required final
+  sections.
+
+Failure classes to keep for later training:
+
+- Use the provided task verification command or inspect `task.json` before
+  inventing/searching a different test path.
+- Treat a successful edit result as authoritative unless a later read proves
+  otherwise.
+- Keep using project-relative paths after a tool shows absolute temporary paths.
+- Do not retry a completed edit with a copied absolute path.
+- Avoid redundant verification commands when one focused passing run is enough.
+
+## 2026-06-17 16GB E4B MTP 32k Generic Trace Batch 2
+
+A second isolated-fixture pass was run against the same E4B MTP endpoint:
+
+- Endpoint: `http://127.0.0.1:8002/v1`
+- Model: `vram16-vllm/active-model`
+- Source label: `vram16-e4b-mtp-32k`
+- Output directory: `traces/generic/vram16-e4b-mtp-32k`
+- Tasks: `python_csv_skip_blank`, `javascript_parse_bool_defaults`,
+  `javascript_group_by_key`
+
+Manifest:
+
+- `traces/generic/vram16-e4b-mtp-32k/manifest_vram16-e4b-mtp-32k_2026-06-17T07-43-37-097Z.jsonl`
+
+Results:
+
+- `python_csv_skip_blank`: useful near-success trace. The model eventually
+  found `task.json`, ran the provided focused command
+  `PYTHONPATH=. python tests/test_csv_rows.py` successfully, and made a
+  plausible correct edit. The classifier rejected it because the final answer
+  omitted the exact `Changed files` marker. The trace also includes repeated
+  file reads and repeated verification.
+- `javascript_parse_bool_defaults`: raw failure. The model emitted visible
+  Markdown pseudo-tool syntax, `[read](src/parseBool.js)`, and stopped without
+  using the tool or editing the file.
+- `javascript_group_by_key`: raw failure. The model described a plan, then
+  printed a fake `glob` JSON block in assistant text instead of making a real
+  tool call, and stopped without creating `src/groupBy.js`.
+
+Failure classes to keep for later training:
+
+- Use actual OpenCode tool calls, not Markdown links or JSON examples that look
+  like tool calls.
+- Do not stop after describing the intended tool call.
+- Preserve the required final marker labels exactly.
+- Avoid repeated verification when the focused command has already passed.
+
+## 2026-06-17 E4B MTP OpenCode Reasoning Flag A/B
+
+A matched six-task A/B test was run against the 16GB E4B MTP endpoint to test
+whether disabling OpenCode's model `reasoning` flag lowers tool mistakes.
+
+Shared settings:
+
+- Endpoint: `http://127.0.0.1:8002/v1`
+- Model: `vram16-vllm/active-model`
+- Served checkpoint: `google/gemma-4-E4B-it-qat-w4a16-ct`
+- Output tokens: `4096`
+- Tasks: `python_inventory_missing_key`, `javascript_slugify_blank`,
+  `python_normalize_tags_unique`, `python_csv_skip_blank`,
+  `javascript_parse_bool_defaults`, `javascript_group_by_key`
+
+Manifests:
+
+- Off: `traces/ab/reasoning-off/manifest_e4b-mtp-reasoning-off_2026-06-17T07-52-59-508Z.jsonl`
+- On: `traces/ab/reasoning-on/manifest_e4b-mtp-reasoning-on_2026-06-17T07-58-01-073Z.jsonl`
+
+Headline result:
+
+- `reasoning=false`: 2 accepted / 6 completed.
+- `reasoning=true`: 4 accepted / 6 completed.
+
+Per-task result:
+
+| Task | reasoning=false | reasoning=true |
+| --- | --- | --- |
+| `python_inventory_missing_key` | accepted | rejected |
+| `javascript_slugify_blank` | accepted | accepted |
+| `python_csv_skip_blank` | rejected | rejected |
+| `python_normalize_tags_unique` | rejected | accepted by classifier |
+| `javascript_parse_bool_defaults` | rejected | accepted |
+| `javascript_group_by_key` | rejected | accepted |
+
+Observed failure modes with `reasoning=false`:
+
+- `python_csv_skip_blank`: printed pseudo-tool text (`[glob: ...]`,
+  `[read: ...]`) and stopped without real tool calls.
+- `python_normalize_tags_unique`: printed Markdown pseudo-tool syntax
+  (`[read](src/tags.py)`) and stopped.
+- `javascript_parse_bool_defaults`: made a correct-looking edit and ran tests,
+  but produced a long trace with repeated edit errors and omitted the required
+  final markers.
+- `javascript_group_by_key`: used tools but had repeated write/edit errors and
+  omitted the required final markers.
+
+Observed failure modes with `reasoning=true`:
+
+- `python_inventory_missing_key`: printed pseudo-tool syntax
+  (`[glob{pattern: "**/*"}]`) and stopped without real tool calls.
+- `python_csv_skip_blank`: useful near-success trace with real tools and tests,
+  but omitted final markers.
+- `python_normalize_tags_unique`: classifier accepted it, but the trace did not
+  run the provided focused test command. It should be treated as a
+  corrected-failure candidate, not a clean accepted trace.
+
+Caveat:
+
+- OpenCode event token counters still reported `reasoning: 0` in these traces.
+  This A/B result tests the OpenCode `reasoning` configuration flag, not a
+  confirmed separate hidden-thinking token stream from vLLM.
+
+Conclusion:
+
+- In this small matched run, disabling `reasoning` did not lower the observed
+  error rate. The `reasoning=true` configuration produced more classifier
+  accepts and fewer fake-tool stops overall, though one accepted row exposed a
+  classifier weakness around claimed verification.
+- The result is not statistically strong enough to treat as final policy, but
+  it argues against assuming `reasoning=false` is automatically safer for Gemma
+  4 E4B MTP tool use.
+
+Recommended next test:
+
+- Repeat this A/B on at least 20-30 tasks and tighten the classifier so
+  accepted traces require a real verification tool call when a focused command
+  is present.
+
+## 2026-06-17 Central E4B MTP Capture From Albert And Super
+
+Gemma 4 E4B MTP was deployed on both available remotes and traces were captured
+centrally under the local `gemma4_tool_training/traces/central` directory.
+
+Deployment:
+
+- `albert@localhost -p 2223`: already running
+  `compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-16gb.yml`.
+- `super@localhost -p 2225`: created and synced
+  `compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-spark.yml`, then started
+  container `gemma4_e4b_qat_w4a16_spark_mtp_vllm`.
+- Super initially failed with the 16GB-named compose due to cache/DNS timing,
+  then the Spark-named compose downloaded the E4B target checkpoint and MTP
+  assistant successfully.
+
+Super load confirmation:
+
+- Served checkpoint: `google/gemma-4-E4B-it-qat-w4a16-ct`
+- MTP assistant: `google/gemma-4-E4B-it-qat-q4_0-unquantized-assistant`
+- `max_model_len`: `32768`
+- Model loading memory: `9.36 GiB`
+- Available KV cache memory: `95.48 GiB`
+- GPU KV cache size: `9,242,714 tokens`
+- Maximum concurrency for 32,768-token requests: `282.07x`
+
+Central local capture folders:
+
+- `traces/central/albert-e4b-mtp-20260617`
+- `traces/central/super-e4b-mtp-20260617`
+
+Manifests:
+
+- `traces/central/albert-e4b-mtp-20260617/manifest_albert-e4b-mtp_2026-06-17T08-11-59-352Z.jsonl`
+- `traces/central/albert-e4b-mtp-20260617/manifest_albert-e4b-mtp-b2_2026-06-17T08-24-49-289Z.jsonl`
+- `traces/central/super-e4b-mtp-20260617/manifest_super-e4b-mtp_2026-06-17T08-21-01-352Z.jsonl`
+- `traces/central/super-e4b-mtp-20260617/manifest_super-e4b-mtp-b2_2026-06-17T08-24-49-289Z.jsonl`
+
+Results:
+
+- Total: 5 accepted / 16 completed.
+- Albert batch 1: 3 accepted / 4 completed.
+- Albert batch 2: 0 accepted / 4 completed.
+- Super batch 1: 1 accepted / 4 completed.
+- Super batch 2: 1 accepted / 4 completed.
+
+Accepted candidate traces:
+
+- `albert-e4b-mtp/java_email_trim`
+- `albert-e4b-mtp/javascript_manifest_array_strings`
+- `albert-e4b-mtp/javascript_env_parser_crlf`
+- `super-e4b-mtp/python_toml_boolean_port`
+- `super-e4b-mtp-b2/javascript_parse_bool_defaults`
+
+Useful failure/correction candidates:
+
+- `albert-e4b-mtp/python_json_config_numbers`: made useful edits but omitted
+  required final markers.
+- `albert-e4b-mtp-b2/python_parse_duration_units`: used tools and tests, but
+  omitted `Verification` and `Remaining risk`.
+- `albert-e4b-mtp-b2/javascript_deep_get_default`: used tools and verification
+  but omitted all final markers.
+- `albert-e4b-mtp-b2/python_envfile_crlf_comments`: used tools and tests but
+  omitted `Changed files` and `Remaining risk`.
+- `albert-e4b-mtp-b2/python_csv_crlf_header_trim`: used tools and tests but
+  omitted all final markers.
+- `super-e4b-mtp/javascript_package_type_module`: performed useful tool work
+  but omitted final markers after write/edit retries.
+- `super-e4b-mtp/python_markdown_frontmatter_bool`: made useful edits and ran
+  checks but had repeated edit errors and omitted final markers.
+- `super-e4b-mtp-b2/java_json_escape_string`: used tools and tests but omitted
+  final markers.
+
+Raw failure patterns:
+
+- `super-e4b-mtp/java_clamp_score`: printed a fake JSON tool call after saying
+  it would use grep.
+- `super-e4b-mtp-b2/php_query_parse_repeated`: printed pseudo-tool syntax
+  `[glob{pattern:<|"|>src/Query.php<|"|>}]` and stopped.
+- `super-e4b-mtp-b2/python_final_json_schema`: printed pseudo-tool syntax
+  `[glob{pattern: "src/report.py"}]` and stopped.
+
+MTP status after central capture:
+
+- Super endpoint: `vllm:spec_decode_num_drafts_total=11747`,
+  `vllm:spec_decode_num_accepted_tokens_total=8268`.
+- Albert endpoint: `vllm:spec_decode_num_drafts_total=73912`,
+  `vllm:spec_decode_num_accepted_tokens_total=56322`.
+
+Training notes:
+
+- The central capture produced enough fresh E4B-specific evidence to start
+  writing corrected examples, but it is still too small for final training.
+- The strongest correction targets are not general coding fixes; they are
+  protocol fixes: real tool calls, exact final markers, no fake JSON/Markdown
+  tool syntax, stop after passing verification, and do not retry successful
+  edits with mutated paths.
+
+## 2026-06-17 VibeThinker 3B 16GB Probe
+
+`WeiboAI/VibeThinker-3B` was added as a local source-of-truth compose profile
+and deployed on `albert@localhost -p 2223`.
+
+Local files:
+
+- `docker/compose-vibethinker-3b-reasoning-base-vllm-16gb.yml`
+- `docker/models.json` entry `vibethinker-3b-reasoning-base-vllm-16gb`
+
+Remote deployment:
+
+- Synced to `/home/albert/Documents/vLLM/docker/`.
+- Stopped the previous 16GB endpoint container to free port `8000`.
+- Started `vibethinker_3b_vllm_16gb`.
+- Served locally through the existing `8002 -> remote 8000` tunnel.
+
+Serving notes:
+
+- Initial profile using `cu129-nightly`, `--max-model-len 32768`, and FP8 KV
+  cache stalled during startup while Hugging Face cache downloads were still
+  incomplete.
+- The working profile uses `vllm/vllm-openai:latest`, `--max-model-len 8192`,
+  BF16 weights, eager execution, and vLLM's Hermes tool parser.
+- `/v1/models` reports root `WeiboAI/VibeThinker-3B` and `max_model_len 8192`.
+
+Upstream warning:
+
+- The Hugging Face model card explicitly says VibeThinker-3B was not trained on
+  tool-calling or agent-based programming data and does not recommend it for
+  function calling, API orchestration, or autonomous coding agents.
+
+Behavior tests:
+
+- Direct exact-output sanity prompt `Return exactly: ok` failed: the model
+  emitted visible `<think>` reasoning instead of the requested exact output.
+- Direct OpenAI-compatible tool-call probe with a `get_weather` tool failed:
+  finish reason was `length`, no `tool_calls` were returned, and the visible
+  response was `<think>` text speculating about XML/tool-call formatting.
+- OpenCode collection with `reasoning=false` completed 3/3 tasks but accepted
+  0/3.
+- OpenCode collection with `reasoning=true` completed 1/1 comparison task but
+  accepted 0/1.
+
+Central local capture folders:
+
+- `traces/central/vibethinker-3b-16gb-20260617`
+- `traces/central/vibethinker-3b-16gb-reasoning-20260617`
+
+Failure shape:
+
+- The model did not make real OpenCode tool calls.
+- It spent the entire response budget reasoning about tool-call formats,
+  usually beginning with visible `<think>`.
+- It hit the 2048-token output cap and stopped with finish reason `length`.
+- The traces are useful as negative evidence, but they are poor LoRA training
+  material unless rewritten into corrected examples from scratch.
+
+Conclusion:
+
+- VibeThinker-3B can run on the 16GB machine, but this deployment should not be
+  used as a primary tool-behavior data collector.
+- For tool behavior, Gemma 4 E4B MTP is still materially better on this setup:
+  it at least reaches real tool use and produces curatable protocol failures.
+
+## 2026-06-17 E4B MTP Temperature 0.25 Probe
+
+The 16GB endpoint on `albert@localhost -p 2223` was restored from
+`VibeThinker-3B` back to the local source-of-truth compose:
+
+- `docker/compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-16gb.yml`
+
+Only the generation override was changed:
+
+- Previous: `{"temperature": 1.0, "top_p": 0.95, "top_k": 64}`
+- Current: `{"temperature": 0.25, "top_p": 0.95, "top_k": 64}`
+
+Deployment:
+
+- Synced the updated local compose to
+  `/home/albert/Documents/vLLM/docker/compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-16gb.yml`.
+- Stopped `vibethinker_3b_vllm_16gb`.
+- Started `gemma4_e4b_qat_w4a16_vllm_mtp_16gb`.
+- `/v1/models` reports root `google/gemma-4-E4B-it-qat-w4a16-ct` and
+  `max_model_len 32768`.
+- vLLM startup logs confirm `override_generation_config` contains
+  `temperature: 0.25`, MTP is enabled, and the Gemma4 tool parser is enabled.
+
+Direct tool-call probe:
+
+- Prompt: use a `get_weather` tool for Barcelona and do not answer from memory.
+- Result: success. The response finished with `finish_reason: tool_calls` and
+  returned a real tool call:
+  `get_weather({"city": "Barcelona"})`.
+
+OpenCode trace batch:
+
+- Endpoint: `http://127.0.0.1:8002/v1`
+- Model: `vram16-vllm/active-model`
+- Source label: `e4b-mtp-temp025`
+- Output directory: `traces/ab/e4b-mtp-temp025-20260617`
+- Tasks: `python_inventory_missing_key`, `javascript_slugify_blank`,
+  `python_normalize_tags_unique`
+
+Manifest:
+
+- `traces/ab/e4b-mtp-temp025-20260617/manifest_e4b-mtp-temp025_2026-06-17T09-00-52-897Z.jsonl`
+
+Results:
+
+- `python_inventory_missing_key`: accepted.
+- `javascript_slugify_blank`: rejected, but it did use real tools. The failure
+  was repeated/duplicated edits, searching the wrong test location, not using
+  the provided focused verification command, and missing final markers.
+- `python_normalize_tags_unique`: accepted.
+
+MTP status:
+
+- `vllm:spec_decode_num_drafts_total=8811`
+- `vllm:spec_decode_num_accepted_tokens_total=7076`
+
+Initial conclusion:
+
+- Lowering temperature to `0.25` appears beneficial for basic tool-call
+  reliability in this small probe: the direct OpenAI-compatible tool-call test
+  succeeded, and the OpenCode batch accepted 2/3 tasks.
+- The remaining failure class is not fake tool syntax; it is over-editing,
+  poor verification-command discovery, and missing final answer protocol.
+- This is only a small sample. Run a matched 20-30 task A/B against
+  `temperature=1.0` before treating `0.25` as the default collection setting.
+
+## 2026-06-17 Spark E4B MTP Temperature 1.0 vs 0.1 A/B
+
+A matched 20-task OpenCode A/B test was run on the Spark remote
+`super@localhost -p 2225` for Gemma 4 E4B MTP.
+
+Shared settings:
+
+- Endpoint: `http://127.0.0.1:8001/v1`
+- Model: `spark-vllm/active-model`
+- Served checkpoint: `google/gemma-4-E4B-it-qat-w4a16-ct`
+- MTP assistant: `google/gemma-4-E4B-it-qat-q4_0-unquantized-assistant`
+- `top_p=0.95`
+- `top_k=64`
+- `reasoning=true`
+- Output tokens: `4096`
+- Parallelism: `4`
+- Timeout: `720000 ms`
+
+Temperature setup:
+
+- A-side used the already-running Spark compose at `temperature=1.0`.
+- B-side changed the local source-of-truth compose
+  `docker/compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-spark.yml` to
+  `temperature=0.1`, synced it to
+  `/home/super/Documents/vLLM/docker/compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-spark.yml`,
+  and recreated container `gemma4_e4b_qat_w4a16_spark_mtp_vllm`.
+- Remote and local compose hashes matched after sync.
+- vLLM logs confirmed `override_generation_config` contained
+  `temperature: 0.1`.
+
+Task set:
+
+- `python_inventory_missing_key`
+- `javascript_slugify_blank`
+- `typescript_median_no_mutation`
+- `go_limiter_zero_limit`
+- `rust_ini_semicolon_comments`
+- `java_email_trim`
+- `php_money_negative_parentheses`
+- `csharp_password_symbol`
+- `python_create_ttl_cache`
+- `python_csv_skip_blank`
+- `python_normalize_tags_unique`
+- `javascript_parse_bool_defaults`
+- `javascript_group_by_key`
+- `swift_slug_title_empty_words`
+- `generic_repeated_empty_tool_result`
+- `python_parse_duration_units`
+- `javascript_deep_get_default`
+- `go_parse_port_range`
+- `rust_parse_bool_yes_no`
+- `php_query_parse_repeated`
+
+Manifests:
+
+- `temperature=1.0`:
+  `traces/ab/spark-e4b-mtp-temp100-vs-temp010-20260617/temp100/manifest_spark-e4b-mtp-temp100_2026-06-17T09-07-50-426Z.jsonl`
+- `temperature=0.1`:
+  `traces/ab/spark-e4b-mtp-temp100-vs-temp010-20260617/temp010/manifest_spark-e4b-mtp-temp010_2026-06-17T09-20-23-552Z.jsonl`
+
+Headline result:
+
+- `temperature=1.0`: 8 accepted / 20 completed, 0 timeouts.
+- `temperature=0.1`: 8 accepted / 19 completed, 1 timeout.
+
+Paired result:
+
+- Wins for `0.1`: `go_limiter_zero_limit`,
+  `python_inventory_missing_key`, `php_query_parse_repeated`.
+- Regressions for `0.1`: `java_email_trim`,
+  `javascript_slugify_blank`, `python_create_ttl_cache`.
+- Accepted by both: `rust_ini_semicolon_comments`,
+  `csharp_password_symbol`, `php_money_negative_parentheses`,
+  `python_csv_skip_blank`, `rust_parse_bool_yes_no`.
+- Rejected by both: `typescript_median_no_mutation`,
+  `python_normalize_tags_unique`, `javascript_parse_bool_defaults`,
+  `generic_repeated_empty_tool_result`, `python_parse_duration_units`,
+  `go_parse_port_range`, `javascript_group_by_key`,
+  `swift_slug_title_empty_words`, `javascript_deep_get_default`.
+
+Observed differences:
+
+- `0.1` fixed some final-marker/protocol misses from `1.0`.
+- `0.1` also introduced or worsened over-edit loops. The clearest case was
+  `typescript_median_no_mutation`, where the model made an initial edit, then
+  repeatedly retried the same already-applied edit until timeout.
+- `0.1` still emitted fake/pseudo tool syntax in at least one low-level
+  control task: `generic_repeated_empty_tool_result` produced
+  `[glob{pattern: "**/*"}]`.
+- Several `0.1` rejections used real tools but failed final response markers
+  or verification discovery, so the issue is not only tool-call selection.
+
+MTP status after the B-side run:
+
+- `vllm:spec_decode_num_drafts_total=65735`
+- `vllm:spec_decode_num_accepted_tokens_total=56860`
+
+Conclusion:
+
+- `temperature=0.1` did not improve the 20-task OpenCode acceptance rate on
+  Spark. It tied `temperature=1.0` at 8/20 accepted and added one timeout.
+- The lower temperature made some tasks more deterministic, but not more
+  reliably correct; it appears to increase perseveration after an edit or tool
+  error.
+- Do not switch the Spark E4B MTP collection default to `0.1` based on this
+  result. Prefer `0.25` for the next matched larger run, because the smaller
+  16GB probe at `0.25` improved direct tool calls without showing this strong
+  timeout signal.

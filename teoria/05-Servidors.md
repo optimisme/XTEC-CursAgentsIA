@@ -199,26 +199,26 @@ Els fitxers del projecte són:
 
 | Fitxer                                 | Model |
 | -------------------------------------- | --- |
-| `docker/docker-compose-gemma4-8b.yml`  | `google/gemma-4-E4B-it` |
-| `docker/docker-compose-gemma4-8b-spark.yml` | `google/gemma-4-E4B-it`, optimitzat per NVIDIA Spark / GB10 |
-| `docker/docker-compose-gemma4-26b-a4b-spark.yml` | `google/gemma-4-26B-A4B-it`, optimitzat per NVIDIA Spark / GB10 |
-| `docker/docker-compose-qwen3-8b.yml`   | `Qwen/Qwen3-8B-AWQ` |
-| `docker/docker-compose-qwen3-14b-spark.yml`  | `Qwen/Qwen3-14B-AWQ`, optimitzat per NVIDIA Spark / GB10 |
-| `docker/docker-compose-qwen35-9b.yml`  | `QuantTrio/Qwen3.5-9B-AWQ` |
-| `docker/docker-compose-qwen35-9b-quanttrio.yml` | `QuantTrio/Qwen3.5-9B-AWQ`, configuració 16GB separada |
-| `docker/docker-compose-qwen35-9b-quanttrio-spark.yml` | `QuantTrio/Qwen3.5-9B-AWQ`, optimitzat per NVIDIA Spark / GB10 |
-| `docker/docker-compose-qwen36-27b-spark.yml` | `Qwen/Qwen3.6-27B`, optimitzat per NVIDIA Spark / GB10 |
+| `docker/compose-gemma4-e4b-bf16-it-vllm-16gb.yml`  | `google/gemma-4-E4B-it` |
+| `docker/compose-gemma4-e4b-bf16-it-vllm-spark.yml` | `google/gemma-4-E4B-it`, optimitzat per NVIDIA Spark / GB10 |
+| `docker/compose-gemma4-26b-a4b-it-vllm-spark.yml` | `google/gemma-4-26B-A4B-it`, optimitzat per NVIDIA Spark / GB10 |
+| `docker/compose-qwen3-8b-awq-base-vllm-16gb.yml`   | `Qwen/Qwen3-8B-AWQ` |
+| `docker/compose-qwen3-14b-awq-base-vllm-spark.yml`  | `Qwen/Qwen3-14B-AWQ`, optimitzat per NVIDIA Spark / GB10 |
+| `docker/compose-qwen35-9b-awq-base-vllm-16gb.yml`  | `QuantTrio/Qwen3.5-9B-AWQ` |
+| `docker/compose-qwen35-9b-awq-quanttrio-base-vllm-16gb.yml` | `QuantTrio/Qwen3.5-9B-AWQ`, configuració 16GB separada |
+| `docker/compose-qwen35-9b-awq-quanttrio-base-vllm-spark.yml` | `QuantTrio/Qwen3.5-9B-AWQ`, optimitzat per NVIDIA Spark / GB10 |
+| `docker/compose-qwen36-27b-bf16-base-vllm-spark.yml` | `Qwen/Qwen3.6-27B`, optimitzat per NVIDIA Spark / GB10 |
 
 El model de 27B està pensat per a màquines amb més VRAM. En una GPU petita, normalment no cabrà.
 
 ---
 
-## Script per reiniciar models
+## Script per gestionar models
 
 El projecte inclou l'script:
 
 ```bash
-docker/run_docker.sh
+docker/modelctl.sh
 ```
 
 Serveix per arrencar, parar, reiniciar i consultar logs dels contenidors vLLM sense haver d'escriure cada vegada l'ordre completa de Docker Compose.
@@ -226,28 +226,28 @@ Serveix per arrencar, parar, reiniciar i consultar logs dels contenidors vLLM se
 Exemples:
 
 ```bash
-./docker/run_docker.sh
-./docker/run_docker.sh gemma4-8b
-./docker/run_docker.sh qwen3-8b restart
-./docker/run_docker.sh qwen3-14b-spark logs
-./docker/run_docker.sh qwen3-8b stop
-./docker/run_docker.sh qwen3-8b ps
+./docker/modelctl.sh
+./docker/modelctl.sh restart gemma4-e4b-bf16-it-vllm-16gb
+./docker/modelctl.sh qwen3-8b-awq-base-vllm-16gb restart
+./docker/modelctl.sh qwen3-14b-awq-base-vllm-spark logs
+./docker/modelctl.sh stop
+./docker/modelctl.sh ps
 ```
 
-Per defecte, l'script arrenca `gemma4-26b-a4b-spark` i atura els altres contenidors coneguts abans d'iniciar el nou model.
+Per defecte, l'script arrenca el model marcat com a `default_model` a `docker/models.json` i atura els altres contenidors coneguts abans d'iniciar el nou model.
 
 Això és important perquè diversos models poden intentar usar el mateix port `8000` o la mateixa GPU. Amb aquest script només es pot executar un model.
 
 L'script també permet veure fàcilment els logs del docker, i veure si funciona correctament (o ha fallat):
 
 ```bash
-./docker/run_docker.sh gemma4-8b logs
+./docker/modelctl.sh gemma4-e4b-bf16-it-vllm-16gb logs
 ```
 
 La sortida és tipus:
 
 ```text
-./run_docker.sh gemma4-8b logs
+./modelctl.sh gemma4-e4b-bf16-it-vllm-16gb logs
 (APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299] 
 (APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299]        █     █     █▄   ▄█
 (APIServer pid=1) INFO 05-25 17:42:02 [utils.py:299]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.19.1
@@ -396,10 +396,10 @@ La diferència principal és que Spark pot acceptar més seqüències simultàni
 També es manté una imatge Docker específica i una configuració pròpia:
 
 ```text
-docker/docker-compose-gemma4-8b-spark.yml
+docker/compose-gemma4-e4b-bf16-it-vllm-spark.yml
 ```
 
-No és només una còpia del compose de 16GB: està pensada per aprofitar millor el maquinari Spark, amb `bfloat16`, més utilització de GPU i més concurrència. Per això convé mantenir-la separada de `docker/docker-compose-gemma4-8b.yml`.
+No és només una còpia del compose de 16GB: està pensada per aprofitar millor el maquinari Spark, amb `bfloat16`, més utilització de GPU i més concurrència. Per això convé mantenir-la separada de `docker/compose-gemma4-e4b-bf16-it-vllm-16gb.yml`.
 
 ---
 

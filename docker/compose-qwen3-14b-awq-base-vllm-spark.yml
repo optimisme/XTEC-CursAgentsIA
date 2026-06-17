@@ -1,11 +1,11 @@
-# Stop:    docker compose -f docker-compose-qwen3-8b.yml down
-# Restart: docker compose -f docker-compose-qwen3-8b.yml up -d
-# Logs:    docker logs -f --tail 20 qwen3_8b_awq_vllm
-# Note:    stop any other vLLM service using port 8000 before starting this one.
+# Stop:    docker compose -f compose-qwen3-14b-awq-base-vllm-spark.yml down
+# Restart: docker compose -f compose-qwen3-14b-awq-base-vllm-spark.yml up -d
+# Logs:    docker logs -f --tail 20 qwen3_14b_awq_base_vllm_spark
+# Note:    optimized for NVIDIA Spark / GB10 hosts. Remote service listens on port 8000.
 services:
   qwen-vllm:
     image: vllm/vllm-openai:latest
-    container_name: qwen3_8b_awq_vllm
+    container_name: qwen3_14b_awq_base_vllm_spark
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -45,13 +45,14 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        exec vllm serve Qwen/Qwen3-8B-AWQ \
+        exec vllm serve Qwen/Qwen3-14B-AWQ \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --max-model-len 32768 \
           --hf-overrides '{"rope_scaling":{"rope_type":"yarn","factor":2.0,"original_max_position_embeddings":32768}}' \
           --gpu-memory-utilization 0.85 \
+          --cpu-offload-gb 2 \
           --quantization awq_marlin \
           --kv-cache-dtype fp8 \
           --max-num-seqs 2 \
