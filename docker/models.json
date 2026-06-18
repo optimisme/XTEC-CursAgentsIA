@@ -34,6 +34,16 @@
       ],
       "description": "Gemma 4 26B A4B Spark BF16 profile."
     },
+    "gemma4-26b-a4b-qat-q4_0-it-llamacpp-16gb": {
+      "compose": "compose-gemma4-26b-a4b-qat-q4_0-it-llamacpp-16gb.yml",
+      "container": "gemma4_26b_a4b_qat_q4_0_it_llamacpp_16gb",
+      "engine": "llamacpp",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-gguf-cache"
+      ],
+      "description": "Gemma 4 26B A4B QAT Q4_0 GGUF local llama.cpp profile for 16GB VRAM."
+    },
     "diffusiongemma-26b-a4b-it-vllm-spark": {
       "compose": "compose-diffusiongemma-26b-a4b-it-vllm-spark.yml",
       "container": "diffusiongemma_26b_a4b_it_vllm_spark",

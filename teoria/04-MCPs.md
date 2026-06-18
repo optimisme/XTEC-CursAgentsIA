@@ -128,24 +128,33 @@ Update webs/index.html and then run web_check on the changed file.
 
 ### MCPs per a models petits
 
-`projectOpenCodeLite` sí que inclou un MCP local anomenat `safe_edit`. Serveix per modificar fitxers de manera controlada quan es fan servir models petits: llegir línies concretes, aplicar canvis petits i verificar el resultat després de cada edició.
+`projecteOpenCodeLite` inclou diversos MCPs locals pensats per reduir ambigüitat quan es fan servir models petits. El més important per editar és `safe_edit`: serveix per modificar fitxers de manera controlada, treballant amb línies concretes i verificant el resultat després de cada edició.
 
 Aquest servidor exposa eines com:
 
 | Tool | Ús |
 | --- | --- |
-| `safe_read_lines` | Llegir un rang de línies abans d'editar |
-| `safe_apply_patch` | Aplicar un canvi amb un diff verificable |
-| `safe_replace_lines` | Substituir només un rang concret de línies |
-| `safe_verify_file` | Verificar el fitxer o una secció després d'editar |
+| `safe_create_file` | Crear un fitxer nou a partir d'un contingut complet |
+| `safe_create_file_from_lines` | Crear un fitxer curt a partir d'una llista de línies físiques |
+| `safe_verify_file` | Llegir i verificar tot el fitxer o un rang de línies |
+| `safe_replace_lines` | Substituir un rang concret de línies amb línies noves |
+| `safe_insert_lines` | Inserir línies després d'una línia actual |
+| `safe_delete_lines` | Eliminar un rang concret de línies |
 
 Exemple de prompt per a la variant lite:
 
 ```text
-Use the safe_edit MCP to update app.js. First read the target lines with safe_read_lines, apply only the needed change, then verify the changed section with safe_verify_file.
+Use the safe_edit MCP to update app.js. First verify the current target lines with safe_verify_file, apply only the needed change with safe_replace_lines, then verify the changed section again.
 ```
 
-En aquesta variant també pot tenir sentit afegir un MCP com `agent_contract`.
+En aquesta variant també apareixen altres MCPs locals:
+
+| MCP | Ús |
+| --- | --- |
+| `web_check` | Validar HTML, CSS, JavaScript i assets locals després d'una modificació |
+| `web_research` | Fer cerques web i resumir pàgines amb sortides compactes |
+| `image_vision` | Descriure o analitzar imatges locals amb un model multimodal, si està disponible |
+| `agent_contract` | Validar que planners i editors retornin plans i resultats estructurats |
 
 `agent_contract` no edita fitxers ni valida HTML. Serveix per obligar els subagents a retornar un resultat estructurat i validable. Per exemple:
 
@@ -230,7 +239,7 @@ Before changing the project, search the memory MCP for relevant conventions and 
 
 Aquest patró té més sentit amb **models grans** o agents que treballen durant moltes sessions, perquè poden aprofitar millor records diversos i decidir quan són rellevants.
 
-En `projectOpenCodeLite`, que està pensat per a models petits i edicions controlades, no és imprescindible afegir aquest MCP. Pot ser útil com a exercici avançat, però el risc és que un model petit recuperi massa memòria, la interpreti malament o la prioritzi per sobre del codi actual.
+En `projecteOpenCodeLite`, que està pensat per a models petits i edicions controlades, no és imprescindible afegir aquest MCP. Pot ser útil com a exercici avançat, però el risc és que un model petit recuperi massa memòria, la interpreti malament o la prioritzi per sobre del codi actual.
 
 Per a models petits, sovint és millor:
 
@@ -400,4 +409,4 @@ projecte/
         └── java_check
 ```
 
-En `projectOpenCodeLite` també hi ha `safe_edit`, que és específic de la configuració per a models petits.
+En `projecteOpenCodeLite` també hi ha `safe_edit`, que és específic de la configuració per a models petits.

@@ -1,0 +1,42 @@
+{
+  "input": "data/global_tool_sft_autocurated.raw.jsonl",
+  "output": "data/global_tool_sft_autocurated.deduped.jsonl",
+  "input_rows": 1182,
+  "deduped_rows": 1115,
+  "output_rows": 1115,
+  "summary": {
+    "rows": 1115,
+    "kinds": {
+      "targeted_programming_modification": 24,
+      "programming_creation": 8,
+      "loop_control": 5,
+      "corrected_target_failure": 749,
+      "accepted_target_trace": 329
+    },
+    "scenarios": {
+      "python": 595,
+      "javascript": 209,
+      "typescript": 24,
+      "go": 44,
+      "rust": 44,
+      "java": 83,
+      "php": 45,
+      "csharp": 24,
+      "generic": 24,
+      "swift": 23
+    },
+    "sources": {
+      "synthetic_global_tool_invariant": 37,
+      "real_trace_rewrite": 29,
+      "real_trace_template_rewrite": 1049
+    },
+    "issue_tags": {
+      "no_issue_tag": 66,
+      "accepted_trace_pattern": 329,
+      "missing_final_markers": 556,
+      "missed_required_task_context": 489,
+      "timeout_or_loop": 33,
+      "visible_pseudo_tool_or_hidden_channel": 6
+    }
+  }
+}

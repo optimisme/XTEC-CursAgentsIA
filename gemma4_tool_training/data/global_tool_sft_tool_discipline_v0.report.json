@@ -1,0 +1,55 @@
+{
+  "input": "data/global_tool_sft_tool_discipline_v0.raw.jsonl",
+  "output": "data/global_tool_sft_tool_discipline_v0.deduped.jsonl",
+  "input_rows": 3429,
+  "deduped_rows": 3423,
+  "output_rows": 3423,
+  "summary": {
+    "rows": 3423,
+    "kinds": {
+      "targeted_programming_modification": 24,
+      "programming_creation": 8,
+      "loop_control": 5,
+      "corrected_target_failure": 3021,
+      "accepted_target_trace": 365
+    },
+    "scenarios": {
+      "python": 2214,
+      "javascript": 928,
+      "typescript": 21,
+      "go": 39,
+      "rust": 40,
+      "java": 77,
+      "php": 41,
+      "csharp": 23,
+      "generic": 22,
+      "swift": 18
+    },
+    "sources": {
+      "synthetic_global_tool_invariant": 37,
+      "real_trace_rewrite": 29,
+      "real_trace_template_rewrite": 3357
+    },
+    "issue_tags": {
+      "no_issue_tag": 66,
+      "missed_required_task_context": 2034,
+      "missing_final_markers": 1651,
+      "tool_result_ignored": 1382,
+      "no_recovery_after_tool_failure": 1115,
+      "verification_missing": 1977,
+      "final_without_evidence": 818,
+      "harness_command_missing": 62,
+      "wrong_file_or_context": 806,
+      "accepted_trace_pattern": 364,
+      "unneeded_subagent": 54,
+      "timeout_or_loop": 39,
+      "unbounded_tool_loop": 39,
+      "subagent_tool_missing": 11,
+      "web_tool_missing": 1,
+      "fake_tool_call": 3,
+      "visible_pseudo_tool_or_hidden_channel": 3,
+      "premature_final": 17,
+      "uncategorized_trace_rewrite": 2
+    }
+  }
+}

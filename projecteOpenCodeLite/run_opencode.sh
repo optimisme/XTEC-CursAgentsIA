@@ -17,8 +17,57 @@ if [ ! -f "$KEYS_FILE" ]; then
   exit 1
 fi
 
+chmod 600 "$KEYS_FILE"
+
 set -a
 source "$KEYS_FILE"
 set +a
+
+if [ "${1:-}" = "desktop" ]; then
+  OS="$(uname -s)"
+
+  if [ "$OS" = "Darwin" ]; then
+    # Launch macOS desktop app with inherited environment variables
+    APP="/Applications/OpenCode.app"
+
+    if [ ! -d "$APP" ]; then
+      echo "Error: OpenCode.app was not found in /Applications"
+      exit 1
+    fi
+
+    BIN="$(find "$APP/Contents/MacOS" -type f -maxdepth 1 | head -n 1)"
+
+    if [ -z "$BIN" ]; then
+      echo "Error: OpenCode desktop binary was not found."
+      exit 1
+    fi
+
+    exec "$BIN"
+
+  elif [ "$OS" = "Linux" ]; then
+    # Try common Linux desktop launch paths
+    if command -v opencode-desktop >/dev/null 2>&1; then
+      exec opencode-desktop
+    fi
+
+    if command -v OpenCode >/dev/null 2>&1; then
+      exec OpenCode
+    fi
+
+    if command -v opencode >/dev/null 2>&1; then
+      echo "Warning: opencode desktop binary was not found."
+      echo "Falling back to CLI opencode."
+      exec opencode
+    fi
+
+    echo "Error: OpenCode desktop executable was not found."
+    echo "Tried: opencode-desktop, OpenCode, opencode"
+    exit 1
+
+  else
+    echo "Error: unsupported OS: $OS"
+    exit 1
+  fi
+fi
 
 exec opencode "$@"

@@ -7,20 +7,10 @@ import argparse
 import json
 from pathlib import Path
 
-import torch
-from datasets import Dataset
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer,
-    BitsAndBytesConfig,
-    DataCollatorForLanguageModeling,
-    Trainer,
-    TrainingArguments,
-)
 
+def load_jsonl(path: Path):
+    from datasets import Dataset
 
-def load_jsonl(path: Path) -> Dataset:
     rows = []
     for line in path.read_text(encoding="utf-8").splitlines():
         if line.strip():
@@ -28,26 +18,70 @@ def load_jsonl(path: Path) -> Dataset:
     return Dataset.from_list(rows)
 
 
-def format_messages(example: dict, tokenizer: AutoTokenizer) -> str:
-    return tokenizer.apply_chat_template(
-        example["messages"],
-        tokenize=False,
-        add_generation_prompt=False,
-    )
+def _normalize_message_content(content: object) -> str:
+    if isinstance(content, str):
+        return content
+    return json.dumps(content, ensure_ascii=False)
 
 
-def tokenize_example(example: dict, tokenizer: AutoTokenizer, max_seq_length: int) -> dict:
+def _find_subsequence(haystack: list[int], needle: list[int]) -> int:
+    if not needle:
+        return -1
+    last_start = len(haystack) - len(needle)
+    for index in range(last_start + 1):
+        if haystack[index : index + len(needle)] == needle:
+            return index
+    return -1
+
+
+def assistant_loss_labels(messages: list[dict], tokenizer: AutoTokenizer, max_seq_length: int) -> dict:
+    """Tokenize a chat and mask loss outside assistant answers."""
+    text = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=False)
     encoded = tokenizer(
-        example["text"],
+        text,
         max_length=max_seq_length,
         truncation=True,
         padding=False,
     )
-    encoded["labels"] = encoded["input_ids"].copy()
+    labels = [-100] * len(encoded["input_ids"])
+    assistant_messages = [message for message in messages if message.get("role") == "assistant"]
+    if not assistant_messages:
+        encoded["labels"] = labels
+        return encoded
+
+    assistant_content = _normalize_message_content(assistant_messages[-1].get("content", ""))
+    assistant_ids = tokenizer(
+        assistant_content,
+        add_special_tokens=False,
+    )["input_ids"]
+    start = _find_subsequence(encoded["input_ids"], assistant_ids)
+    if start < 0:
+        encoded["labels"] = labels
+        encoded["label_mask_failed"] = True
+        return encoded
+
+    end = min(start + len(assistant_ids), len(labels))
+    labels[start:end] = encoded["input_ids"][start:end]
+    encoded["labels"] = labels
     return encoded
 
 
+def tokenize_example(example: dict, tokenizer: AutoTokenizer, max_seq_length: int) -> dict:
+    return assistant_loss_labels(example["messages"], tokenizer, max_seq_length)
+
+
 def main() -> int:
+    import torch
+    from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+    from transformers import (
+        AutoModelForCausalLM,
+        AutoTokenizer,
+        BitsAndBytesConfig,
+        DataCollatorForSeq2Seq,
+        Trainer,
+        TrainingArguments,
+    )
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-model", required=True, help="HF model id or local model path.")
     parser.add_argument("--dataset", type=Path, required=True, help="JSONL with messages arrays.")
@@ -107,12 +141,8 @@ def main() -> int:
 
     raw_dataset = load_jsonl(args.dataset)
     train_dataset = raw_dataset.map(
-        lambda example: {"text": format_messages(example, tokenizer)},
-        remove_columns=raw_dataset.column_names,
-    )
-    train_dataset = train_dataset.map(
         lambda example: tokenize_example(example, tokenizer, args.max_seq_length),
-        remove_columns=["text"],
+        remove_columns=raw_dataset.column_names,
     )
 
     training_args = TrainingArguments(
@@ -129,7 +159,7 @@ def main() -> int:
         report_to=[],
     )
 
-    data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
+    data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model, padding=True)
     trainer = Trainer(
         model=model,
         args=training_args,

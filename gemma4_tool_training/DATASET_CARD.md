@@ -39,6 +39,21 @@ Current seed size:
 - 29 corrected target failures from real trace rewrites
 - languages: Python, JavaScript, TypeScript, Go, Rust, Java, PHP, C#, Swift
 
+Autocurated dataset built from current trace manifests:
+
+```text
+data/global_tool_sft_autocurated.deduped.jsonl
+```
+
+Current autocurated size:
+
+- 467 rows after dedupe
+- 66 original seed rows
+- 401 generated real-trace template rewrites
+- 264 corrected target failure rows
+- 166 accepted target trace pattern rows
+- languages: Python, JavaScript, TypeScript, Go, Rust, Java, PHP, C#, Swift
+
 Generic collection task bank:
 
 ```text
@@ -51,6 +66,28 @@ training dataset. Accepted traces still need review, and failed traces must be
 rewritten into corrected assistant targets before training.
 
 Current task bank size: 33 prompts.
+
+Expanded collection task bank:
+
+```text
+tasks/generic_programming_tasks.expanded.jsonl
+```
+
+Current expanded task bank size: 264 prompts. These are deterministic
+paraphrases of the same fixtures, intended for collection diversity rather than
+new behavioral coverage.
+
+Additional generated task banks:
+
+```text
+tasks/generated_250_programming_tasks.jsonl
+tasks/generated_250_programming_tasks.expanded-p01-p08.jsonl
+```
+
+The generated bank adds 250 fixture-backed base tasks and 2,000 prompt variants.
+These tasks currently focus on Python and JavaScript fixtures with standard
+library verification commands so large-volume collection can proceed without
+extra runtime dependencies.
 
 ## Quality Level
 
@@ -67,4 +104,5 @@ not be included unless rewritten into corrected assistant targets.
 
 ```sh
 python preflight.py --dataset data/global_tool_sft_seed.jsonl
+python preflight.py --dataset data/global_tool_sft_autocurated.deduped.jsonl
 ```

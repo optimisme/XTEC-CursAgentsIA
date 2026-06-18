@@ -1,0 +1,9 @@
+{
+  "source": "data/global_tool_sft_tool_discipline_v0.deduped.jsonl",
+  "train": "data/global_tool_sft_tool_discipline_v0.train.jsonl",
+  "holdout": "data/global_tool_sft_tool_discipline_v0.holdout.jsonl",
+  "rows": 3423,
+  "train_rows": 3081,
+  "holdout_rows": 342,
+  "holdout_fraction": 0.0999
+}

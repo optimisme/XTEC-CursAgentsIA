@@ -64,7 +64,7 @@ node collect_generic_traces.js \
   --output-dir traces/generic/vram16 \
   --source-label vram16 \
   --endpoint http://127.0.0.1:8002/v1 \
-  --model vram16-vllm/active-model \
+  --model vram16-local/active-model \
   --limit 3
 ```
 
@@ -83,6 +83,93 @@ node collect_generic_traces.js \
 Each run writes a manifest row with status, log path, acceptance diagnostics,
 and missing formatting markers. Raw failures are analysis material only; rewrite
 them into corrected assistant targets before adding them to SFT data.
+
+## Scale To 1,000 Rows
+
+Create deterministic prompt variants from the 33-fixture task bank:
+
+```sh
+node expand_task_prompts.js \
+  --input tasks/generic_programming_tasks.jsonl \
+  --output tasks/generic_programming_tasks.expanded.jsonl \
+  --variants 8
+```
+
+Collect against the expanded bank with the default OpenCode config. For Spark
+E4B MTP, keep `temperature=1.0`, `top_p=0.95`, `top_k=64`, and thinking on in
+the served model config:
+
+```sh
+node collect_generic_traces.js \
+  --tasks tasks/generic_programming_tasks.expanded.jsonl \
+  --output-dir traces/central/spark-e4b-mtp-expanded-$(date +%Y%m%d) \
+  --source-label spark-e4b-mtp-expanded \
+  --endpoint http://127.0.0.1:8001/v1 \
+  --model spark-vllm/active-model \
+  --reasoning true \
+  --output-tokens 4096 \
+  --timeout-ms 720000 \
+  --parallel 4
+```
+
+Convert manifests into corrected SFT rows without copying raw failed assistant
+output:
+
+```sh
+python build_corrected_rows.py \
+  --seed data/global_tool_sft_seed.jsonl \
+  --manifest 'traces/**/manifest_*.jsonl' \
+  --output data/global_tool_sft_autocurated.raw.jsonl \
+  --accepted \
+  --rejected
+```
+
+Deduplicate and inspect balance:
+
+```sh
+python dedupe_dataset.py \
+  --input data/global_tool_sft_autocurated.raw.jsonl \
+  --output data/global_tool_sft_autocurated.deduped.jsonl \
+  --report data/global_tool_sft_autocurated.report.json
+
+python preflight.py \
+  --dataset data/global_tool_sft_autocurated.deduped.jsonl \
+  --report preflight_autocurated.json
+```
+
+Current generated state:
+
+- `tasks/generic_programming_tasks.expanded.jsonl`: 264 collection prompts.
+- `data/global_tool_sft_autocurated.raw.jsonl`: 534 rows before dedupe.
+- `data/global_tool_sft_autocurated.deduped.jsonl`: 467 trainable rows.
+
+Additional generated task banks:
+
+- `tasks/generated_250_programming_tasks.jsonl`: 250 new fixture-backed base
+  tasks.
+- `tasks/generated_250_programming_tasks.expanded-p01-p08.jsonl`: 2,000
+  collection prompts from those base tasks.
+
+To reach 1,000 rows, collect roughly 1,200-1,500 additional raw traces from the
+expanded task bank, then rebuild and dedupe. Add more base fixtures if the
+deduped dataset becomes dominated by one language or failure class.
+
+## Temporary Data Cleanup
+
+The collector creates one isolated `gemma4-tool-*` workspace and one
+`gemma4-opencode-state-*` directory per task under the system temp directory.
+Current collector runs delete those directories after each task writes its log
+and manifest row. Use `--keep-temp` only for debugging failed fixtures.
+
+Clean stale temp data without touching active `opencode run` processes:
+
+```sh
+python clean_temp_workdirs.py --older-than-minutes 30
+```
+
+This preserves any temp directory referenced by a live `opencode run` command
+and removes only stale generated workdirs. The useful collection data is stored
+under `traces/`, `data/`, and `tasks/` inside this project, not in `/var`.
 
 ## Data Policy
 

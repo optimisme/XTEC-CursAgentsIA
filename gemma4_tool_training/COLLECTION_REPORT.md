@@ -1055,3 +1055,177 @@ Conclusion:
   result. Prefer `0.25` for the next matched larger run, because the smaller
   16GB probe at `0.25` improved direct tool calls without showing this strong
   timeout signal.
+
+## 2026-06-17 Spark E4B MTP LoRA Discipline Batch
+
+This run collected generic OpenCode-style traces only. It did not use the
+`projecteTest` harness or project-specific fixtures.
+
+Runtime:
+
+- Remote: `ssh super@localhost -p 2225`
+- Endpoint: `http://127.0.0.1:8001/v1`
+- Container: `gemma4_e4b_qat_w4a16_mtp_it_vllm_spark`
+- Model: `google/gemma-4-E4B-it-qat-w4a16-ct`
+- Assistant/MTP model:
+  `google/gemma-4-E4B-it-qat-q4_0-unquantized-assistant`
+- Settings: `temperature=1.0`, `top_p=0.95`, `top_k=64`,
+  `enable_thinking=true`
+- Collector: `collect_generic_traces.js`
+- Task file: `tasks/generic_programming_tasks.jsonl`
+- Parallelism: `--parallel 4`
+
+Trace output:
+
+- Folder:
+  `traces/central/spark-e4b-mtp-lora-discipline-20260617/`
+- Manifest:
+  `traces/central/spark-e4b-mtp-lora-discipline-20260617/manifest_spark-e4b-mtp-lora-discipline_2026-06-17T09-57-03-417Z.jsonl`
+
+Result:
+
+- Total tasks: 33
+- Accepted: 15
+- Rejected: 18
+- Timeouts: 0
+
+Accepted trace candidates:
+
+- `javascript_slugify_blank`
+- `go_limiter_zero_limit`
+- `typescript_median_no_mutation`
+- `javascript_parse_bool_defaults`
+- `python_csv_skip_blank`
+- `swift_slug_title_empty_words`
+- `python_normalize_tags_unique`
+- `javascript_deep_get_default`
+- `java_clamp_score`
+- `python_envfile_crlf_comments`
+- `javascript_package_type_module`
+- `python_toml_boolean_port`
+- `python_csv_crlf_header_trim`
+- `python_final_json_schema`
+- `java_json_escape_string`
+
+Raw correction candidates:
+
+- `python_inventory_missing_key`
+- `rust_ini_semicolon_comments`
+- `java_email_trim`
+- `python_create_ttl_cache`
+- `csharp_password_symbol`
+- `php_money_negative_parentheses`
+- `javascript_group_by_key`
+- `generic_repeated_empty_tool_result`
+- `go_parse_port_range`
+- `python_parse_duration_units`
+- `rust_parse_bool_yes_no`
+- `php_query_parse_repeated`
+- `javascript_json_no_trailing_comments`
+- `python_json_config_numbers`
+- `javascript_manifest_array_strings`
+- `javascript_env_parser_crlf`
+- `python_markdown_frontmatter_bool`
+- `java_properties_trim_blank`
+
+Observed failure classes:
+
+- Fake or pseudo tool-call syntax in visible text, for example JSON or
+  Markdown-link shaped tool calls instead of real OpenCode tool calls.
+- Missing final response markers: rejected rows missed `Remaining risk` 18
+  times, `Changed files` 17 times, and `Verification` 13 times.
+- Some traces completed the edit and focused verification but should still be
+  rewritten before training because they repeated verification or included
+  excessive visible reasoning.
+- The loop-control prompt produced a bounded blocker-style response, but it
+  missed the required structured final markers and explicit no-fake-tool
+  wording.
+
+Training use:
+
+- Use accepted rows as candidate positive examples only after manual inspection.
+- Use rejected rows as raw material for corrected target responses; do not train
+  directly on the raw assistant output.
+- Next data improvement should add paraphrased prompt variants and more
+  explicit low-level tool-failure recovery cases, while keeping the default
+  OpenCode configuration.
+
+## 2026-06-17 Dataset Scaling Pipeline
+
+New local tooling was added to move from raw traces toward a 1,000-row training
+set:
+
+- `expand_task_prompts.js`: creates deterministic prompt variants from the
+  generic task bank.
+- `build_corrected_rows.py`: converts trace manifest rows into corrected SFT
+  targets without copying raw failed assistant output.
+- `dedupe_dataset.py`: removes semantic duplicates and reports row balance.
+
+Generated artifacts:
+
+- `tasks/generic_programming_tasks.expanded.jsonl`: 264 prompts from 33 base
+  fixtures and 8 prompt variants.
+- `data/global_tool_sft_autocurated.raw.jsonl`: 534 rows before dedupe.
+- `data/global_tool_sft_autocurated.deduped.jsonl`: 467 rows after dedupe.
+- `data/global_tool_sft_autocurated.report.json`: balance report.
+- `preflight_autocurated.json`: validation report.
+
+Current trainable counts:
+
+- Seed dataset: 66 rows.
+- Real-trace rewrites already in seed: 29 rows.
+- Autocurated deduped dataset: 467 rows.
+- Autocurated real-trace template rewrites: 401 rows.
+
+Preflight result:
+
+- `python preflight.py --dataset data/global_tool_sft_autocurated.deduped.jsonl
+  --report preflight_autocurated.json` passed with 0 errors.
+
+Path to 1,000 rows:
+
+- Use `tasks/generic_programming_tasks.expanded.jsonl` for the next default
+  OpenCode collection runs.
+- A full Spark E4B MTP expanded-bank pass completed after this tooling was
+  added:
+  `traces/central/spark-e4b-mtp-expanded-20260617/manifest_spark-e4b-mtp-expanded_2026-06-17T10-15-54-323Z.jsonl`.
+- Expanded pass result: 264 total traces, 140 accepted, 124 rejected, 0
+  timeouts.
+- With the current 467 trainable rows, about 533 more deduped rows are needed.
+- Because dedupe removes repeated task/failure patterns, collect roughly
+  700-900 additional raw traces before expecting a 1,000-row trainable
+  dataset.
+- Add new base fixtures if the dataset becomes dominated by missing final
+  markers, Python, or JavaScript.
+
+## 2026-06-17 Large Task-Bank Expansion
+
+The next data-growth step adds a larger generated task bank:
+
+- `generate_extra_task_bank.py`: deterministic generator for additional
+  fixture-backed programming tasks.
+- `tasks/generated_250_programming_tasks.jsonl`: 250 new base tasks.
+- `tasks/generated_250_programming_tasks.expanded-p01-p08.jsonl`: 2,000 prompt
+  variants from those base tasks.
+
+The generated tasks currently focus on Python and JavaScript because their
+verification commands use standard runtimes already exercised by the collector.
+This is intended to provide volume for LoRA training while keeping trace
+quality high and avoiding missing-runtime noise.
+
+Cleanup changes:
+
+- `collect_generic_traces.js` now deletes each task's `gemma4-tool-*` workspace
+  and `gemma4-opencode-state-*` directory after the log and manifest row are
+  written.
+- `--keep-temp` preserves those directories only for debugging.
+- `clean_temp_workdirs.py` safely removes stale generated temp directories
+  while preserving any path referenced by a live `opencode run`.
+
+Local cleanup performed:
+
+- Removed 936 stale `gemma4-*` temp directories from previous runs.
+- Removed another 230 stale `gemma4-*` temp directories after adding the
+  cleanup utility.
+- Remaining temp directories after cleanup: 46, corresponding to recent or
+  active collection work.
