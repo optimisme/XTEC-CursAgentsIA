@@ -64,7 +64,7 @@ node collect_generic_traces.js \
   --output-dir traces/generic/vram16 \
   --source-label vram16 \
   --endpoint http://127.0.0.1:8002/v1 \
-  --model vram16-local/active-model \
+  --model vram16-vllm/active-model \
   --limit 3
 ```
 
@@ -206,6 +206,16 @@ Remote Docker training:
 
 The Docker compose default dataset and output directory match the generic
 adapter target.
+
+Follow remote process:
+
+```sh
+# process
+ssh -p 2225 super@localhost 'tail -f Documents/vLLM/gemma4_tool_training/logs/gemma4-tool-discipline-lora-v0.log'
+
+# is alive
+ssh -p 2225 super@localhost 'docker ps --filter name=gemma4_tool_discipline_lora_v0'
+```
 
 ## Evaluation
 
