@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "vram16/active-model",
+  "model": "opencode/big-pickle",
   "default_agent": "goal_lite",
   "enabled_providers": ["ieti-agents", "vram16", "spark-vllm", "opencode"],
   "permission": {

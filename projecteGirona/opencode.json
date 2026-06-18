@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "ieti-agents/active-model",
+  "model": "opencode/big-pickle",
   "default_agent": "build",
   "enabled_providers": ["opencode", "ieti-agents"],
   "permission": {

@@ -20,16 +20,17 @@
             margin-bottom: 20px;
         }
         #puzzle {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 10px;
+            position: relative;
+            width: 320px;
+            height: 320px;
             background-color: #bdc3c7;
             padding: 10px;
             border-radius: 10px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-sizing: border-box;
         }
         .tile {
+            position: absolute;
             width: 100px;
             height: 100px;
             background-color: #3498db;
@@ -42,14 +43,10 @@
             border-radius: 8px;
             cursor: pointer;
             user-select: none;
-            transition: all 0.2s ease;
+            transition: transform 0.2s ease-in-out;
         }
         .tile:hover {
             background-color: #2980b9;
-        }
-        .tile.empty {
-            background-color: #bdc3c7;
-            cursor: default;
         }
         #message {
             margin-top: 20px;
@@ -85,10 +82,12 @@
         let tiles = [1, 2, 3, 4, 5, 6, 7, 8, null];
         const puzzleElement = document.getElementById('puzzle');
         const messageElement = document.getElementById('message');
+        let pieceElements = {};
 
         function initGame() {
             tiles = [1, 2, 3, 4, 5, 6, 7, 8, null];
             shuffle(tiles);
+            setupPuzzleDOM();
             render();
             messageElement.textContent = '';
         }
@@ -113,24 +112,39 @@
             return res;
         }
 
-        function render() {
+        function setupPuzzleDOM() {
             puzzleElement.innerHTML = '';
-            tiles.forEach((tile, index) => {
+            pieceElements = {};
+            for (let i = 1; i <= 8; i++) {
                 const div = document.createElement('div');
-                div.className = 'tile' + (tile === null ? ' empty' : '');
-                if (tile !== null) {
-                    div.textContent = tile;
-                    div.onclick = () => moveTile(index);
-                }
+                div.className = 'tile';
+                div.textContent = i;
+                div.onclick = () => moveTile(i);
                 puzzleElement.appendChild(div);
-            });
+                pieceElements[i] = div;
+            }
         }
 
-        function moveTile(index) {
+        function render() {
+            for (let i = 0; i < 9; i++) {
+                const val = tiles[i];
+                if (val !== null) {
+                    const el = pieceElements[val];
+                    const row = Math.floor(i / 3);
+                    const col = i % 3;
+                    const x = col * 110 + 10;
+                    const y = row * 110 + 10;
+                    el.style.transform = `translate(${x}px, ${y}px)`;
+                }
+            }
+        }
+
+        function moveTile(val) {
+            const tileIndex = tiles.indexOf(val);
             const emptyIndex = tiles.indexOf(null);
-            const neighbors = getNeighbors(index);
+            const neighbors = getNeighbors(tileIndex);
             if (neighbors.includes(emptyIndex)) {
-                [tiles[index], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[index]];
+                [tiles[tileIndex], tiles[emptyIndex]] = [tiles[emptyIndex], tiles[tileIndex]];
                 render();
                 checkWin();
             }
