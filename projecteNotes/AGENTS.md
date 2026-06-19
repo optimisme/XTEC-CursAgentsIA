@@ -1,103 +1,63 @@
-# OpenCode Harness — Spec Driven Development
+# OpenCode Task Harness
 
-This project uses OpenCode with a **Spec Driven Development** workflow. A task-based agent system drives the project forward, but the workflow only runs when you explicitly trigger it.
+This project uses OpenCode agents and commands to coordinate task-driven development. The task workflow is **off by default** — it only runs when you explicitly invoke it.
 
----
+## How it works
 
-## Task Source of Truth
+- **Normal interaction** — For prompts like "hi", questions, debugging, or general chat, the agent responds normally. It does **not** read or modify `docs/tasks.json` unless you ask it to.
+- **`/next-task`** — This command reads `docs/tasks.json`, finds the first `"pending"` task, implements only that task, verifies it against acceptance criteria, and marks it `"done"` only if all criteria pass.
+- **`/review-current-task`** — Re-runs verification on the most recently implemented task without re-implementing it.
 
-**`docs/tasks.json`** is the single source of truth for all project tasks. It contains a JSON array of objects, each with:
+## Task source of truth
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `title` | string | The task description |
-| `status` | `"pending" \| "done" \| "failed"` | Current task state |
-| `acceptance` | string[] | Acceptance criteria that must all pass to mark a task done |
+`docs/tasks.json` — all tasks live here. Each task has an `id`, `title`, `description`, `acceptance_criteria` (list), and `status` (`"pending"` or `"done"`).
 
-**Never manually edit task status outside of the workflow.** The orchestrator is the only agent that updates `docs/tasks.json`.
+## Agents
 
----
+| Agent | File | Responsibility |
+|---|---|---|
+| **Orchestrator** | `.opencode/agents/orchestrator.md` | Reads `docs/tasks.json`, assigns the first pending task to the Programmer, then asks the Reviewer to verify it. Marks a task `done` only when all acceptance criteria pass. |
+| **Programmer** | `.opencode/agents/programmer.md` | Implements only the current task with minimal, focused changes. Uses no external dependencies. Reports changed files. |
+| **Reviewer** | `.opencode/agents/reviewer.md` | Verifies changed files against the task's acceptance criteria, checks project integrity, basic accessibility (if applicable), and absence of debugging artefacts. Returns a structured pass/fail report. |
 
-## Workflow Triggers
-
-The task workflow runs **only** when you:
-
-- Run the `/next-task` command
-- Explicitly ask to continue task development (e.g., "continue", "next task", "implement the next task")
-
-For **normal prompts** — greetings ("hi"), questions, debugging help, code review requests, or any other casual interaction — respond normally. **Do not** read `docs/tasks.json` or start working on pending tasks.
-
----
-
-## Agent Roles
-
-| Agent | Mode | Description |
-|-------|------|-------------|
-| **orchestrator** | primary | Coordinates the workflow: reads `docs/tasks.json`, finds the first pending task, delegates to Programmer, delegates to Reviewer, then updates task status. |
-| **programmer** | subagent | Implements the current task by writing code. Reports created/modified files. |
-| **reviewer** | subagent | Verifies that the Programmer's implementation meets all acceptance criteria. Reports PASS or FAIL. |
-
----
-
-## Available Commands
-
-### `/next-task`
-Find the first pending task in `docs/tasks.json`, implement it, verify every acceptance criterion, and mark it `"done"` only if all criteria pass. If any criterion fails, mark it `"failed"`.
-
----
-
-## Available Skills
-
-| Skill | Location | Purpose |
-|-------|----------|---------|
-| **task-workflow** | `.opencode/skills/task-workflow/` | Guides the overall task workflow process: finding, implementing, and verifying tasks in sequence. |
-| **localstorage-review** | `.opencode/skills/localstorage-review/` | Reviews localStorage usage: safe access, try/catch wrapping, data validation, handling corrupted or missing data, and safe defaults. |
-| **minimal-usable-design** | `.opencode/skills/project-design/` | Ensures clean, minimal, usable design: simple layouts, adequate spacing, readable fonts, touch-friendly buttons, and consistent color palettes. |
-| **code-review** | `.opencode/skills/code-review/` | Reviews code quality: acceptance criteria verification, regression checks, semantic HTML, readable CSS/JS, scope discipline, and localStorage safety. |
-
----
-
-## MCP: task-contract
-
-**`docs/task-contract`** is the MCP (Model Context Protocol) server for task reports.
-
-- Tool: `submit_task_report` — accepts `taskId`, `status`, `changedFiles`, `verification` checks, and optional `notes`.
-- Appends structured JSONL reports to `.opencode/mcp/task-contract/reports.jsonl`.
-- Setup: `cd .opencode/mcp/task-contract && npm install && npm start`
-
----
-
-## Project Structure
+## Workflow (triggered by `/next-task`)
 
 ```
-projecteOpenCode/
-├── AGENTS.md              # This file
-├── docs/
-│   └── tasks.json         # Task source of truth
-├── webs/                  # Web app source (HTML, CSS, JS)
-├── .opencode/
-│   ├── agents/
-│   │   ├── orchestrator.md
-│   │   ├── programmer.md
-│   │   └── reviewer.md
-│   ├── commands/
-│   │   └── next-task.md
-│   ├── mcp/
-│   │   └── task-contract/ # MCP server for task reports
-│   └── skills/
-│       ├── code-review/
-│       └── project-design/
-├── opencode.json          # OpenCode configuration
-└── run_opencode.sh        # Launch script
+┌─────────────┐     task details     ┌──────────────┐
+│ Orchestrator │ ──────────────────→ │  Programmer  │
+│  (reads      │                     │  (implements)│
+│   tasks.json)│ ←────────────────── │              │
+└──────┬───────┘   changed files     └──────────────┘
+       │
+       │  changed files + criteria
+       ▼
+┌──────────────┐     pass/fail       ┌──────────────┐
+│   Reviewer   │ ──────────────────→ │ Orchestrator │
+│  (verifies)  │                     │  (decides)   │
+└──────────────┘                     └──────────────┘
 ```
 
----
+1. Orchestrator reads `docs/tasks.json` and picks the first `"pending"` task.
+2. Orchestrator asks Programmer to implement it.
+3. Programmer implements and reports the changed files.
+4. Orchestrator asks Reviewer to verify the changed files against the task's acceptance criteria.
+5. Reviewer returns a pass/fail JSON report.
+6. If all criteria pass → Orchestrator updates task status to `"done"`.
+7. If any criteria fail → Orchestrator sends the task back to the Programmer.
+8. When no pending tasks remain → Orchestrator reports completion.
 
-## Rules
+## Available skills
 
-1. **One task at a time.** Never implement more than the first pending task.
-2. **Never skip tasks.** Always work on the first pending task in `docs/tasks.json`.
-3. **Verify before marking done.** Every acceptance criterion must pass before updating status to `"done"`.
-4. **No external dependencies.** Use vanilla HTML, CSS, and JavaScript only.
-5. **Keep changes focused.** Only modify what is necessary for the current task.
-6. **Normal prompts are normal.** Do not start the task workflow unless explicitly triggered.
+| Skill | Description |
+|---|---|
+| `task-workflow` | Workflow for implementing tasks from `docs/tasks.json` using `/next-task`. |
+| `localstorage-review` | Review guidelines for localStorage usage, null-safety, JSON.parse error handling, and key namespacing. |
+| `minimal-usable-design` | Design principles for simple, accessible, responsive interfaces with minimal CSS. |
+| `code-review` | Review code changes in the notes web app — acceptance criteria, existing features, readability, localStorage safety, minimal diffs. |
+
+## Available commands
+
+| Command | Description |
+|---|---|
+| `/next-task` | Picks the next pending task, implements it, verifies it, and marks it done on success. |
+| `/review-current-task` | Re-verifies the most recently implemented task without re-implementation. |
