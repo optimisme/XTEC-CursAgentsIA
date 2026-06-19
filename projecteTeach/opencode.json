@@ -2,7 +2,23 @@
   "$schema": "https://opencode.ai/config.json",
   "model": "opencode/big-pickle",
   "default_agent": "guided-teacher",
-  "enabled_providers": ["ieti-agents", "opencode"],
+  "agent": {
+    "guided-teacher": {
+      "mode": "primary"
+    },
+    "lesson-selector": {
+      "mode": "subagent"
+    },
+    "lesson-reviewer": {
+      "mode": "subagent"
+    },
+    "build": {
+      "disable": true
+    },
+    "plan": {
+      "disable": true
+    }
+  },
   "permission": {
     "read": "allow",
     "grep": "allow",
@@ -22,6 +38,13 @@
     "AGENTS.md"
   ],
   "provider": {
+    "opencode": {
+      "options": {
+        "apiKey": "{env:OPENCODE_ZEN_API_KEY}",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      }
+    },
     "ieti-agents": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "IETI Agents",

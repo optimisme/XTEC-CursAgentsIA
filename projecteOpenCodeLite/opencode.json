@@ -26,6 +26,13 @@
     "AGENTS.md"
   ],
   "provider": {
+    "opencode": {
+      "options": {
+        "apiKey": "{env:OPENCODE_ZEN_API_KEY}",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      }
+    },
     "ieti-agents": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "IETI Agents",
@@ -87,6 +94,28 @@
             "output": 8192
           },
           "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": false
+        }
+      }
+    },
+    "vram16-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "16GB vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8002/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 32768,
+            "output": 4096
+          },
+          "max_tokens": 4096,
           "tool_call": true,
           "reasoning": false
         }
