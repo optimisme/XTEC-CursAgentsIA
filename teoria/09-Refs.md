@@ -22,6 +22,14 @@
 
 - [How LLMs actually work](https://www.0xkato.xyz/how-llms-actually-work/), explicació teòrica sobre LLMs
 
+- [WTF is a loop](https://x.com/mvanhorn/status/2068426104088748331), 15 arquitectures amb agents
+
+- [GPU Memory math for LLMs](https://x.com/TheAhmadOsman/status/2040103488714068245)
+
+- [Memory bandwith for local AI](https://x.com/TheAhmadOsman/status/2041331757329285589)
+
+- [Inference for LLMs and local hardware](https://x.com/TheAhmadOsman/status/2057183854444843202)
+
 # Vídeos
 
 - [Esto es lo que Aprendí Adaptando Claude Code para SDD](https://www.youtube.com/watch?v=ElGlTv2A_bM&t=11s), explicació arnés amb "Spec driven development"

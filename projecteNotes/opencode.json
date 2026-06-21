@@ -47,7 +47,7 @@
           },
           "max_tokens": 8192,
           "tool_call": true,
-          "reasoning": false
+          "reasoning": true
         }
       }
     },
@@ -69,7 +69,7 @@
           },
           "max_tokens": 4096,
           "tool_call": true,
-          "reasoning": false
+          "reasoning": true
         }
       }
     },
@@ -91,7 +91,7 @@
           },
           "max_tokens": 8192,
           "tool_call": true,
-          "reasoning": false
+          "reasoning": true
         }
       }
     }
