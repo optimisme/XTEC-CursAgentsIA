@@ -26,6 +26,43 @@ amb `-p vllm` o directament des d'aquest directori:
 Els compose declaren aquests volums com a externs. `modelctl.sh start ...` els crea
 automaticament abans d'arrencar el servei si encara no existeixen.
 
+## Tokens privats
+
+Els models amb pesos restringits, com alguns Gemma o Mistral, necessiten un token
+de Hugging Face. El token no es desa dins dels `compose-*.yml`: es posa en un
+fitxer local `docker/tokens.env`, que no s'ha de publicar.
+
+Format esperat:
+
+```bash
+HUGGINGFACE_ACCESS_TOKENS=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+Els compose munten aquest fitxer com a `/run/secrets/tokens.env` i, abans
+d'executar el runtime, fan:
+
+- carrega de `/run/secrets/tokens.env`
+- lectura de `HUGGINGFACE_ACCESS_TOKENS`
+- exportacio de `HF_TOKEN` i `HUGGING_FACE_HUB_TOKEN`
+
+Aixo fa que `huggingface_hub`, vLLM i llama.cpp rebin el token amb els noms que
+esperen internament.
+
+`modelctl.sh start ...` i `modelctl.sh restart ...` preparen `tokens.env` abans
+d'executar Docker Compose:
+
+- si `HUGGINGFACE_ACCESS_TOKENS` ja existeix a l'entorn, l'escriu a
+  `docker/tokens.env` i la fa servir;
+- si no existeix pero `docker/tokens.env` ja conte la variable, fa servir aquest
+  fitxer;
+- si no existeix enlloc i l'script s'executa en una terminal interactiva,
+  pregunta en angles si vols introduir el token;
+- si no hi ha terminal interactiva, continua sense token i mostra un avis.
+
+Per tant, en una maquina remota pots desplegar el token de dues maneres: sincronitzar
+`docker/tokens.env` abans d'arrencar el model, o executar `modelctl.sh` amb
+`HUGGINGFACE_ACCESS_TOKENS` definida a l'entorn remot.
+
 ## Comandes principals
 
 Llista els models configurats:

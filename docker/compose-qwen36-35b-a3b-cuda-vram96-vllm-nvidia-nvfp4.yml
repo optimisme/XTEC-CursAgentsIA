@@ -45,9 +45,9 @@ services:
         set -a
         . /run/secrets/tokens.env
         set +a
-        if [ -n "$${HUGGINGFACE:-}" ]; then
-          export HF_TOKEN="$${HUGGINGFACE}"
-          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
+        if [ -n "$${HUGGINGFACE_ACCESS_TOKENS:-}" ]; then
+          export HF_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
+          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
         fi
         exec vllm serve nvidia/Qwen3.6-35B-A3B-NVFP4 \
           --served-model-name active-model \

@@ -287,7 +287,7 @@ amb una variable d'entorn per al token de Hugging Face.
 Exemple de format:
 
 ```bash
-HUGGINGFACE=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+HUGGINGFACE_ACCESS_TOKENS=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 > **Nota:** No s'ha de publicar mai un token real dins del repositori. Si un token s'ha compartit per error, cal revocar-lo i generar-ne un de nou.

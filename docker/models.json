@@ -1,6 +1,6 @@
 {
   "compose_project": "vllm",
-  "default_model": "gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16",
+  "default_model": "ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8",
   "endpoint": "http://127.0.0.1:8000/v1",
   "volumes": {
     "xtec-hf-cache": {
@@ -32,7 +32,7 @@
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Gemma 4 31B QAT W4A16 cuda-vram128 profile with 64k context, one image per prompt, Gemma 4 MTP speculative decoding, thinking, and temperature 0."
+      "description": "Gemma 4 31B QAT W4A16 cuda-vram128 profile with 32k context, one image per prompt, Gemma 4 MTP speculative decoding, thinking, and temperature 0."
     },
     "gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16": {
       "compose": "compose-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml",
@@ -43,6 +43,16 @@
         "xtec-vllm-cache"
       ],
       "description": "Gemma 4 26B A4B cuda-vram128 BF16 profile."
+    },
+    "gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image": {
+      "compose": "compose-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image.yml",
+      "container": "gemma4_26b_a4b_it_cuda_vram128_vllm_google_bf16_64k_image",
+      "engine": "vllm",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Gemma 4 26B A4B cuda-vram128 BF16 profile with 32k context and one image per prompt."
     },
     "gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16": {
       "compose": "compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16.yml",
@@ -104,6 +114,17 @@
       ],
       "description": "Gemma 4 E4B cuda-vram128 BF16 vLLM profile."
     },
+    "qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image": {
+      "compose": "compose-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image.yml",
+      "container": "qwen3_vl_2b_instruct_cuda_vram8_vllm_qwen_fp8_image_64k",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Qwen3-VL 2B Instruct FP8 image-only vLLM profile with 32k context on port 8000."
+    },
     "qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp": {
       "compose": "compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp.yml",
       "container": "qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp",
@@ -143,6 +164,50 @@
         "xtec-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B official Qwen FP8 vLLM profile for CUDA 128GB VRAM."
+    },
+    "ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k": {
+      "compose": "compose-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k.yml",
+      "container": "ministral3_3b_instruct_cuda_vram16_vllm_mistral_fp8_128k",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Ministral 3 3B Instruct FP8 text-only vLLM profile with 128k context and tool calling on port 8000."
+    },
+    "ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8": {
+      "compose": "compose-ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8.yml",
+      "container": "ministral3_14b_instruct_cuda_vram32_vllm_mistral_fp8",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Ministral 3 14B Instruct FP8 text-only vLLM profile with 32k context and tool calling on port 8000."
+    },
+    "ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8": {
+      "compose": "compose-ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8.yml",
+      "container": "ministral3_8b_instruct_cuda_vram32_vllm_mistral_fp8",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Ministral 3 8B Instruct FP8 text-only vLLM profile with 32k context and tool calling on port 8000."
+    },
+    "ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8": {
+      "compose": "compose-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8.yml",
+      "container": "ministral3_3b_instruct_cuda_vram16_vllm_mistral_fp8",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Ministral 3 3B Instruct FP8 text-only vLLM profile with 32k context and tool calling on port 8000."
     }
   }
 }

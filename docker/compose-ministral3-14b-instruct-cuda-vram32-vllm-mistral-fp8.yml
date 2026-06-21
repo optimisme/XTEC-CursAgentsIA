@@ -1,12 +1,13 @@
-# Stop:    docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml down
-# Restart: docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml up -d
-# Logs:    docker logs -f --tail 80 qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8
-# Note:    Official Qwen FP8 checkpoint for cuda-vram128 testing.
+# Stop:    docker compose -f compose-ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8.yml down
+# Restart: docker compose -f compose-ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8.yml up -d
+# Logs:    docker logs -f --tail 80 ministral3_14b_instruct_cuda_vram32_vllm_mistral_fp8
+# Note:    Ministral 3 14B Instruct FP8 vLLM profile for CUDA cuda-vram128 hosts.
+#          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
 services:
-  qwen-vllm:
-    image: vllm/vllm-openai@sha256:4cebac8c03f2cd9f5fabe72ac7c2a0b3aaa8450ef8f0e47429425fd1bfb83d42
-    pull_policy: always
-    container_name: qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8
+  ministral-vllm:
+    image: vllm/vllm-openai:v0.23.0
+    pull_policy: missing
+    container_name: ministral3_14b_instruct_cuda_vram32_vllm_mistral_fp8
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -48,24 +49,25 @@ services:
           export HF_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
         fi
-        exec vllm serve Qwen/Qwen3.6-35B-A3B-FP8 \
+        exec vllm serve mistralai/Ministral-3-14B-Instruct-2512 \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --tensor-parallel-size 1 \
           --trust-remote-code \
+          --tokenizer-mode mistral \
+          --config-format mistral \
+          --load-format mistral \
           --dtype auto \
-          --kv-cache-dtype fp8 \
-          --attention-backend flashinfer \
           --gpu-memory-utilization 0.85 \
           --max-model-len 32768 \
-          --max-num-seqs 8 \
+          --max-num-seqs 4 \
           --max-num-batched-tokens 8192 \
           --enable-chunked-prefill \
           --async-scheduling \
           --enable-prefix-caching \
-          --reasoning-parser qwen3 \
-          --tool-call-parser qwen3_xml \
+          --language-model-only \
+          --tool-call-parser mistral \
           --enable-auto-tool-choice
 
 volumes:

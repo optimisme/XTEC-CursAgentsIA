@@ -1,12 +1,13 @@
-# Stop:    docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml down
-# Restart: docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml up -d
-# Logs:    docker logs -f --tail 80 qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8
-# Note:    Official Qwen FP8 checkpoint for cuda-vram128 testing.
+# Stop:    docker compose -f compose-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image.yml down
+# Restart: docker compose -f compose-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image.yml up -d
+# Logs:    docker logs -f --tail 80 qwen3_vl_2b_instruct_cuda_vram8_vllm_qwen_fp8_image_64k
+# Note:    Qwen3-VL 2B Instruct FP8 image-only vLLM profile. Remote service listens on port 8000.
+name: qwen3-vl-2b-fp8-image-64k
 services:
   qwen-vllm:
-    image: vllm/vllm-openai@sha256:4cebac8c03f2cd9f5fabe72ac7c2a0b3aaa8450ef8f0e47429425fd1bfb83d42
-    pull_policy: always
-    container_name: qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8
+    image: vllm/vllm-openai:v0.23.0
+    pull_policy: missing
+    container_name: qwen3_vl_2b_instruct_cuda_vram8_vllm_qwen_fp8_image_64k
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -26,7 +27,7 @@ services:
       interval: 30s
       timeout: 30s
       retries: 5
-      start_period: 30m
+      start_period: 20m
     ipc: host
     deploy:
       resources:
@@ -48,7 +49,7 @@ services:
           export HF_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
         fi
-        exec vllm serve Qwen/Qwen3.6-35B-A3B-FP8 \
+        exec vllm serve Qwen/Qwen3-VL-2B-Instruct-FP8 \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
@@ -56,17 +57,13 @@ services:
           --trust-remote-code \
           --dtype auto \
           --kv-cache-dtype fp8 \
-          --attention-backend flashinfer \
-          --gpu-memory-utilization 0.85 \
-          --max-model-len 32768 \
-          --max-num-seqs 8 \
+          --gpu-memory-utilization 0.18 \
+          --max-model-len 65536 \
+          --max-num-seqs 1 \
           --max-num-batched-tokens 8192 \
           --enable-chunked-prefill \
-          --async-scheduling \
           --enable-prefix-caching \
-          --reasoning-parser qwen3 \
-          --tool-call-parser qwen3_xml \
-          --enable-auto-tool-choice
+          --limit-mm-per-prompt '{"image": 1, "video": 0, "audio": 0}'
 
 volumes:
   xtec-hf-cache:

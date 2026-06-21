@@ -40,9 +40,9 @@ services:
         set -a
         . /run/secrets/tokens.env
         set +a
-        if [ -n "$${HUGGINGFACE:-}" ]; then
-          export HF_TOKEN="$${HUGGINGFACE}"
-          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
+        if [ -n "$${HUGGINGFACE_ACCESS_TOKENS:-}" ]; then
+          export HF_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
+          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
         fi
         echo "Starting llama.cpp server for localweights/Qwen3.6-35B-A3B-MTP-IQ4_XS-GGUF:IQ4_XS on 0.0.0.0:8000"
         echo "Model cache: $${LLAMA_CACHE}"

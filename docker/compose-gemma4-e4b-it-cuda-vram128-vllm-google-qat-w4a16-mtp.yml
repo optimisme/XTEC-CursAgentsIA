@@ -44,9 +44,9 @@ services:
         set -a
         . /run/secrets/tokens.env
         set +a
-        if [ -n "$${HUGGINGFACE:-}" ]; then
-          export HF_TOKEN="$${HUGGINGFACE}"
-          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
+        if [ -n "$${HUGGINGFACE_ACCESS_TOKENS:-}" ]; then
+          export HF_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
+          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
         fi
         python3 - <<'PY'
         import json

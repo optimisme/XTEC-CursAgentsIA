@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE="${MODELCTL_CONFIG:-$ROOT_DIR/models.json}"
+TOKENS_FILE="${MODELCTL_TOKENS_FILE:-$ROOT_DIR/tokens.env}"
 
 usage() {
   cat <<EOF
@@ -112,6 +113,64 @@ endpoint() {
   json_query endpoint
 }
 
+write_hf_token() {
+  local token="$1"
+  local tmp
+
+  if [[ "$token" == *$'\n'* || "$token" == *$'\r'* ]]; then
+    echo "Refusing to write HUGGINGFACE_ACCESS_TOKENS because it contains a newline." >&2
+    exit 2
+  fi
+
+  tmp="$(mktemp "${TOKENS_FILE}.tmp.XXXXXX")"
+  if [[ -f "$TOKENS_FILE" ]]; then
+    grep -v '^HUGGINGFACE_ACCESS_TOKENS=' "$TOKENS_FILE" >"$tmp" || true
+  fi
+  printf 'HUGGINGFACE_ACCESS_TOKENS=%s\n' "$token" >>"$tmp"
+  chmod 600 "$tmp"
+  mv "$tmp" "$TOKENS_FILE"
+}
+
+ensure_tokens_env() {
+  if [[ -n "${HUGGINGFACE_ACCESS_TOKENS:-}" ]]; then
+    write_hf_token "$HUGGINGFACE_ACCESS_TOKENS"
+    echo "Using HUGGINGFACE_ACCESS_TOKENS from the current environment."
+    return
+  fi
+
+  if [[ -f "$TOKENS_FILE" ]] && grep -q '^HUGGINGFACE_ACCESS_TOKENS=' "$TOKENS_FILE"; then
+    echo "Using HUGGINGFACE_ACCESS_TOKENS from $TOKENS_FILE."
+    return
+  fi
+
+  if [[ ! -f "$TOKENS_FILE" ]]; then
+    install -m 600 /dev/null "$TOKENS_FILE"
+  fi
+
+  if [[ -t 0 && -t 1 ]]; then
+    local answer token
+    read -r -p "No HUGGINGFACE_ACCESS_TOKENS found. Add one to $TOKENS_FILE now? [y/N] " answer
+    case "$answer" in
+      y|Y|yes|YES)
+        read -r -s -p "Hugging Face token: " token
+        printf '\n'
+        if [[ -n "$token" ]]; then
+          write_hf_token "$token"
+          echo "Saved HUGGINGFACE_ACCESS_TOKENS to $TOKENS_FILE."
+        else
+          echo "Empty token; continuing without HUGGINGFACE_ACCESS_TOKENS."
+        fi
+        ;;
+      *)
+        echo "Continuing without HUGGINGFACE_ACCESS_TOKENS."
+        ;;
+    esac
+  else
+    echo "No HUGGINGFACE_ACCESS_TOKENS found in the environment or $TOKENS_FILE." >&2
+    echo "Continuing without a Hugging Face token." >&2
+  fi
+}
+
 normalize_args() {
   ACTION="${1:-restart}"
   MODEL="${2:-$(default_model)}"
@@ -190,6 +249,7 @@ start_model() {
   container="$(container_for "$model")"
 
   echo "Starting $model with $file..."
+  ensure_tokens_env
   python3 - "$CONFIG_FILE" "$model" <<'PY' | while IFS= read -r volume; do
 import json
 import sys
