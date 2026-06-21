@@ -174,6 +174,16 @@
       ],
       "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram128 vLLM profile with MTP speculative decoding."
     },
+    "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4": {
+      "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4.yml",
+      "container": "qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4",
+      "engine": "vllm",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile."
+    },
     "qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml",
       "container": "qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8",
