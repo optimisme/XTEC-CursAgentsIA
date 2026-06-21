@@ -43,6 +43,10 @@
             "context": 32768,
             "output": 4096
           },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
           "max_tokens": 4096,
           "tool_call": true,
           "reasoning": true
@@ -64,6 +68,10 @@
           "limit": {
             "context": 32768,
             "output": 4096
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
           },
           "max_tokens": 4096,
           "tool_call": true,

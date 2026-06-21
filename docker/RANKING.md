@@ -22,7 +22,7 @@
 
 # Recordatori
 
-- Qwen36 programa millor que Gemma4
+- Qwen36 programa millor que Gemma4 (gemma 4 tendeix a fer bucles infinits)
 
 - gemma-4-31B-it és 'dense' ofereix més qualitat però més lent
 
