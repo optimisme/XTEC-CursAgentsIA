@@ -9,8 +9,8 @@
 
 ## vram 96gb-128gb (64k + image)
 
-1. compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml (Gemma 4 31B dense QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, context 32k + image)
-2. compose-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image.yml (Gemma 4 26B A4B MoE BF16, vLLM 0.23.0, thinking, context 32k + image; desplegat a Spark però pendent de confirmar health perquè queda carregant el model)
+1. compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml (Gemma 4 31B dense QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, context 64k + image)
+2. compose-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image.yml (Gemma 4 26B A4B MoE BF16, vLLM 0.23.0, thinking, context 64k + image; desplegat a Spark però pendent de confirmar health perquè queda carregant el model)
 
 ## vram 32gb
 
@@ -27,12 +27,12 @@
 
 ## vram 16gb (64k + image)
 
-1. compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image.yml (Gemma 4 12B QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, context 32k + image)
-2. compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image.yml (Gemma 4 E4B QAT W4A16 MTP, temperature 0, context 32k + image)
+1. compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image.yml (Gemma 4 12B QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, context 64k + image)
+2. compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image.yml (Gemma 4 E4B QAT W4A16 MTP, temperature 0, context 64k + image)
 
 ## vram 8gb (64k + image)
 
-1. compose-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image.yml (Qwen3-VL 2B Instruct FP8, vLLM 0.23.0, model només d'imatge, context 32k, KV cache FP8, port 8000; deixat aturat a Spark) : IMAGE ONLY
+1. compose-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image.yml (Qwen3-VL 2B Instruct FP8, vLLM 0.23.0, model només d'imatge, context 64k, KV cache FP8, port 8000; deixat aturat a Spark) : IMAGE ONLY
 
 # Recordatori
 
@@ -46,7 +46,7 @@
 
 - 64k més context i lentitud
 
-- Per imatges fa falta un context mínim de 64k
+- Per imatges cal servir el model amb 64k (`--max-model-len 65536`) i configurar també el client a 64k. Amb 32k les imatges poden fallar per falta de context.
 
 ### Configurar context a opencode.json
 

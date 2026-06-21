@@ -4,6 +4,8 @@ Aquest directori separa dues responsabilitats:
 
 - `compose-*.yml`: defineixen com arrenca cada servei Docker.
 - `models.json`: es el cataleg operatiu de models.
+- `RANKING.md`: ordena els perfils recomanats per programacio, VRAM i modalitat.
+- `CONFIGS.md`: resumeix context, concurrencia, VRAM, imatge i puntuacio dels compose actius.
 - `modelctl.sh`: es el gestor unic per listar, arrencar, parar, veure logs i gestionar caches.
 
 `run_docker.sh` ha quedat retirat. Fes servir sempre `modelctl.sh`.
@@ -25,6 +27,22 @@ amb `-p vllm` o directament des d'aquest directori:
 
 Els compose declaren aquests volums com a externs. `modelctl.sh start ...` els crea
 automaticament abans d'arrencar el servei si encara no existeixen.
+
+## Estat actual
+
+El model per defecte de `models.json` es:
+
+```text
+ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8
+```
+
+Tots els `compose-*.yml` que es mantenen en aquesta carpeta han d'apareixer a
+`RANKING.md`, i tots els compose del ranking han de tenir entrada a `models.json`.
+`CONFIGS.md` es la vista rapida per comparar perfils abans de desplegar.
+
+Els perfils amb imatge han de servir-se amb 64k de context
+(`--max-model-len 65536`) i el client tambe s'ha de configurar a 64k. Amb 32k
+les imatges poden fallar per falta de context.
 
 ## Tokens privats
 
@@ -74,19 +92,19 @@ Llista els models configurats:
 Arrenca un model sense parar altres serveis:
 
 ```bash
-./docker/modelctl.sh start gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16
+./docker/modelctl.sh start ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8
 ```
 
 Reinicia un model aturant abans tots els contenidors configurats:
 
 ```bash
-./docker/modelctl.sh restart gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16
+./docker/modelctl.sh restart ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8
 ```
 
 Segueix els logs:
 
 ```bash
-./docker/modelctl.sh logs gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16
+./docker/modelctl.sh logs ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8
 ```
 
 El perfil arrencat exposa el model com `active-model` a
@@ -140,10 +158,30 @@ Atura primer els serveis amb `./docker/modelctl.sh stop` si cal.
    - `xtec-vllm-cache` per vLLM.
    - `xtec-gguf-cache` per llama.cpp/GGUF.
 3. Afegeix l'entrada corresponent a `models.json`.
-4. Valida:
+4. Documenta el compose a `RANKING.md` i actualitza `CONFIGS.md`.
+5. Valida:
 
 ```bash
 python3 -m json.tool docker/models.json >/tmp/models_valid.json
 for f in docker/compose-*.yml; do docker compose -f "$f" config --quiet; done
 ./docker/modelctl.sh list
+```
+
+Comprovacio de consistencia entre ranking i cataleg:
+
+```bash
+node - <<'NODE'
+const fs = require('fs');
+const ranking = fs.readFileSync('docker/RANKING.md', 'utf8');
+const ranked = new Set([...ranking.matchAll(/compose-[A-Za-z0-9._-]+\.yml/g)].map(m => m[0]));
+const models = JSON.parse(fs.readFileSync('docker/models.json', 'utf8')).models;
+const catalog = new Set(Object.values(models).map(m => m.compose));
+for (const compose of ranked) {
+  if (!catalog.has(compose)) throw new Error(`Missing in models.json: ${compose}`);
+}
+for (const compose of catalog) {
+  if (!ranked.has(compose)) throw new Error(`Missing in RANKING.md: ${compose}`);
+}
+console.log('Ranking and models.json are aligned');
+NODE
 ```

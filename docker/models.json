@@ -158,6 +158,28 @@
         "xtec-vllm-cache"
       ],
       "description": "Ministral 3 3B Instruct FP8 text-only vLLM profile with 32k context and tool calling on port 8000."
+    },
+    "gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image": {
+      "compose": "compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image.yml",
+      "container": "gemma4_12b_it_cuda_vram16_vllm_google_qat_w4a16_64k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Gemma 4 12B QAT W4A16 vLLM image profile with 64k context, one image per prompt, MTP, thinking, and temperature 0."
+    },
+    "gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image": {
+      "compose": "compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image.yml",
+      "container": "gemma4_e4b_it_cuda_vram16_vllm_google_qat_w4a16_mtp_64k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Gemma 4 E4B QAT W4A16 MTP vLLM image profile with 64k context, one image per prompt, thinking, and temperature 0."
     }
   }
 }
