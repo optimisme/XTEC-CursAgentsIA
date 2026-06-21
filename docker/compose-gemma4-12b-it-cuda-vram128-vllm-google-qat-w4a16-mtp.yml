@@ -1,14 +1,14 @@
-# Stop:    docker compose -f compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-spark.yml down
-# Restart: docker compose -f compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-spark.yml up -d
-# Logs:    docker logs -f --tail 80 gemma4_e4b_qat_w4a16_mtp_it_vllm_spark
-# Note:    Gemma 4 E4B QAT compressed-tensors checkpoint for NVIDIA Spark / GB10 hosts.
+# Stop:    docker compose -f compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-mtp.yml down
+# Restart: docker compose -f compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-mtp.yml up -d
+# Logs:    docker logs -f --tail 80 gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16_mtp
+# Note:    Gemma 4 12B QAT compressed-tensors checkpoint for CUDA cuda-vram128 hosts.
 #          This variant enables Gemma 4 MTP speculative decoding with the paired assistant drafter.
 #          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
 services:
   gemma-vllm:
     image: vllm/vllm-openai:cu129-nightly
-    pull_policy: missing
-    container_name: gemma4_e4b_qat_w4a16_mtp_it_vllm_spark
+    pull_policy: always
+    container_name: gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16_mtp
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -52,7 +52,7 @@ services:
         import json
         from pathlib import Path
 
-        snapshot_root = Path("/root/.cache/huggingface/hub/models--google--gemma-4-E4B-it-qat-w4a16-ct/snapshots")
+        snapshot_root = Path("/root/.cache/huggingface/hub/models--google--gemma-4-12B-it-qat-w4a16-ct/snapshots")
         for config_path in snapshot_root.glob("*/config.json"):
             config = json.loads(config_path.read_text())
             vision_config = config.get("vision_config")
@@ -63,7 +63,7 @@ services:
                     config_path.write_text(json.dumps(config, indent=2) + "\n")
                     print(f"Patched {config_path}: vision_config.num_soft_tokens={num_soft_tokens}")
         PY
-        exec vllm serve google/gemma-4-E4B-it-qat-w4a16-ct \
+        exec vllm serve google/gemma-4-12B-it-qat-w4a16-ct \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
@@ -79,7 +79,7 @@ services:
           --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
           --generation-config auto \
           --spec-method mtp \
-          --spec-model google/gemma-4-E4B-it-qat-q4_0-unquantized-assistant \
+          --spec-model google/gemma-4-12B-it-qat-q4_0-unquantized-assistant \
           --spec-tokens 1 \
           --override-generation-config '{"temperature": 1.0, "top_p": 0.95, "top_k": 64}' \
           --reasoning-parser gemma4 \

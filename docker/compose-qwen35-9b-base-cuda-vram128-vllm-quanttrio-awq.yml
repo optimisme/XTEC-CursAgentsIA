@@ -1,11 +1,11 @@
-# Stop:    docker compose -f compose-qwen35-9b-awq-quanttrio-base-vllm-spark.yml down
-# Restart: docker compose -f compose-qwen35-9b-awq-quanttrio-base-vllm-spark.yml up -d
-# Logs:    docker logs -f --tail 20 qwen35_9b_awq_quanttrio_base_vllm_spark
-# Note:    optimized for NVIDIA Spark / GB10 hosts. Remote service listens on port 8000.
+# Stop:    docker compose -f compose-qwen35-9b-base-cuda-vram128-vllm-quanttrio-awq.yml down
+# Restart: docker compose -f compose-qwen35-9b-base-cuda-vram128-vllm-quanttrio-awq.yml up -d
+# Logs:    docker logs -f --tail 20 qwen35_9b_base_cuda_vram128_vllm_quanttrio_awq
+# Note:    optimized for CUDA cuda-vram128 hosts. Remote service listens on port 8000.
 services:
   qwen-vllm:
     image: vllm/vllm-openai:cu130-nightly
-    container_name: qwen35_9b_awq_quanttrio_base_vllm_spark
+    container_name: qwen35_9b_base_cuda_vram128_vllm_quanttrio_awq
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub

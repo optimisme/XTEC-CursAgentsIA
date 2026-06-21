@@ -25,8 +25,8 @@ Actions:
 
 Examples:
   ./docker/modelctl.sh list
-  ./docker/modelctl.sh start qwen36-35b-a3b-iq4-mtp-base-llamacpp-16gb
-  ./docker/modelctl.sh qwen36-35b-a3b-iq4-mtp-base-llamacpp-16gb logs
+  ./docker/modelctl.sh start qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp
+  ./docker/modelctl.sh qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp logs
   ./docker/modelctl.sh cache du
   ./docker/modelctl.sh cache rm xtec-gguf-cache --force
 EOF

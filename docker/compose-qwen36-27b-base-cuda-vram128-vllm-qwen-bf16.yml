@@ -1,11 +1,11 @@
-# Stop:    docker compose -f compose-qwen35-9b-awq-base-vllm-16gb.yml down
-# Restart: docker compose -f compose-qwen35-9b-awq-base-vllm-16gb.yml up -d
-# Logs:    docker logs -f --tail 20 qwen35_9b_awq_base_vllm_16gb
-# Note:    this service is published on host port 8000.
+# Stop:    docker compose -f compose-qwen36-27b-base-cuda-vram128-vllm-qwen-bf16.yml down
+# Restart: docker compose -f compose-qwen36-27b-base-cuda-vram128-vllm-qwen-bf16.yml up -d
+# Logs:    docker logs -f --tail 20 qwen36_27b_base_cuda_vram128_vllm_qwen_bf16
+# Note:    optimized for CUDA cuda-vram128 hosts. Remote service listens on port 8000.
 services:
   qwen-vllm:
     image: vllm/vllm-openai:cu130-nightly
-    container_name: qwen35_9b_awq_base_vllm_16gb
+    container_name: qwen36_27b_base_cuda_vram128_vllm_qwen_bf16
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -45,14 +45,13 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        exec vllm serve QuantTrio/Qwen3.5-9B-AWQ \
+        exec vllm serve Qwen/Qwen3.6-27B \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --dtype bfloat16 \
           --max-model-len 32768 \
-          --gpu-memory-utilization 0.85 \
-          --quantization awq_marlin \
+          --gpu-memory-utilization 0.90 \
           --attention-backend FLASH_ATTN \
           --reasoning-parser qwen3 \
           --enable-auto-tool-choice \
@@ -60,11 +59,12 @@ services:
           --language-model-only \
           --skip-mm-profiling \
           --enable-chunked-prefill \
-          --max-num-seqs 2 \
-          --max-num-batched-tokens 2048 \
+          --max-num-seqs 8 \
+          --max-num-batched-tokens 8192 \
           --enable-prefix-caching \
           --enforce-eager \
-          --trust-remote-code
+          --override-generation-config '{"temperature": 0.6, "top_p": 0.95, "top_k": 20, "min_p": 0.0, "presence_penalty": 0.0, "repetition_penalty": 1.0}' \
+          --speculative-config '{"method":"qwen3_next_mtp","num_speculative_tokens":2}'
 
 volumes:
   xtec-hf-cache:

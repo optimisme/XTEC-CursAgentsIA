@@ -1,11 +1,13 @@
-# Stop:    docker compose -f compose-gemma4-e4b-bf16-it-vllm-16gb.yml down
-# Restart: docker compose -f compose-gemma4-e4b-bf16-it-vllm-16gb.yml up -d
-# Logs:    docker logs -f --tail 20 gemma4_e4b_bf16_it_vllm_16gb
-# Note:    optimized for RTX 4060 Ti 16GB. Stop any other vLLM service using port 8000 before starting this one.
+# Stop:    docker compose -f compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16.yml down
+# Restart: docker compose -f compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16.yml up -d
+# Logs:    docker logs -f --tail 80 gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16
+# Note:    Gemma 4 12B QAT compressed-tensors checkpoint for CUDA cuda-vram128 hosts.
+#          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
 services:
   gemma-vllm:
-    image: vllm/vllm-openai:latest
-    container_name: gemma4_e4b_bf16_it_vllm_16gb
+    image: vllm/vllm-openai:cu129-nightly
+    pull_policy: always
+    container_name: gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -23,7 +25,7 @@ services:
       interval: 30s
       timeout: 30s
       retries: 5
-      start_period: 20m
+      start_period: 30m
     ipc: host
     deploy:
       resources:
@@ -45,23 +47,37 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        exec vllm serve google/gemma-4-E4B-it \
+        python3 - <<'PY'
+        import json
+        from pathlib import Path
+
+        snapshot_root = Path("/root/.cache/huggingface/hub/models--google--gemma-4-12B-it-qat-w4a16-ct/snapshots")
+        for config_path in snapshot_root.glob("*/config.json"):
+            config = json.loads(config_path.read_text())
+            vision_config = config.get("vision_config")
+            if isinstance(vision_config, dict) and "num_soft_tokens" not in vision_config:
+                num_soft_tokens = vision_config.get("mm_posemb_size")
+                if num_soft_tokens is not None:
+                    vision_config["num_soft_tokens"] = num_soft_tokens
+                    config_path.write_text(json.dumps(config, indent=2) + "\n")
+                    print(f"Patched {config_path}: vision_config.num_soft_tokens={num_soft_tokens}")
+        PY
+        exec vllm serve google/gemma-4-12B-it-qat-w4a16-ct \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
+          --dtype bfloat16 \
           --max-model-len 32768 \
-          --gpu-memory-utilization 0.85 \
-          --load-format bitsandbytes \
-          --quantization bitsandbytes \
+          --gpu-memory-utilization 0.90 \
           --kv-cache-dtype fp8 \
-          --max-num-seqs 2 \
-          --max-num-batched-tokens 2048 \
+          --max-num-seqs 4 \
+          --max-num-batched-tokens 4096 \
           --enable-prefix-caching \
           --enable-chunked-prefill \
-          --enforce-eager \
           --trust-remote-code \
           --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
-          --generation-config vllm \
+          --generation-config auto \
+          --override-generation-config '{"temperature": 1.0, "top_p": 0.95, "top_k": 64}' \
           --reasoning-parser gemma4 \
           --enable-auto-tool-choice \
           --tool-call-parser gemma4 \

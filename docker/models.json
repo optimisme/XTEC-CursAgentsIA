@@ -1,6 +1,6 @@
 {
   "compose_project": "vllm",
-  "default_model": "gemma4-31b-qat-w4a16-it-vllm-spark",
+  "default_model": "gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16",
   "endpoint": "http://127.0.0.1:8000/v1",
   "volumes": {
     "xtec-hf-cache": {
@@ -14,79 +14,89 @@
     }
   },
   "models": {
-    "gemma4-31b-qat-w4a16-it-vllm-spark": {
-      "compose": "compose-gemma4-31b-qat-w4a16-it-vllm-spark.yml",
-      "container": "gemma4_31b_qat_w4a16_it_vllm_spark",
+    "gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16": {
+      "compose": "compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16.yml",
+      "container": "gemma4_31b_it_cuda_vram128_vllm_google_qat_w4a16",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Default Gemma 4 31B QAT W4A16 Spark profile."
+      "description": "Default Gemma 4 31B QAT W4A16 cuda-vram128 profile."
     },
-    "gemma4-26b-a4b-it-vllm-spark": {
-      "compose": "compose-gemma4-26b-a4b-it-vllm-spark.yml",
-      "container": "gemma4_26b_a4b_it_vllm_spark",
+    "gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16": {
+      "compose": "compose-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml",
+      "container": "gemma4_26b_a4b_it_cuda_vram128_vllm_google_bf16",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Gemma 4 26B A4B Spark BF16 profile."
+      "description": "Gemma 4 26B A4B cuda-vram128 BF16 profile."
     },
-    "gemma4-26b-a4b-qat-q4_0-it-llamacpp-16gb": {
-      "compose": "compose-gemma4-26b-a4b-qat-q4_0-it-llamacpp-16gb.yml",
-      "container": "gemma4_26b_a4b_qat_q4_0_it_llamacpp_16gb",
+    "gemma4-26b-a4b-it-cuda-vram16-llamacpp-google-qat-q4_0": {
+      "compose": "compose-gemma4-26b-a4b-it-cuda-vram16-llamacpp-google-qat-q4_0.yml",
+      "container": "gemma4_26b_a4b_it_cuda_vram16_llamacpp_google_qat_q4_0",
       "engine": "llamacpp",
       "volumes": [
         "xtec-hf-cache",
         "xtec-gguf-cache"
       ],
-      "description": "Gemma 4 26B A4B QAT Q4_0 GGUF local llama.cpp profile for 16GB VRAM."
+      "description": "Gemma 4 26B A4B QAT Q4_0 GGUF local llama.cpp profile for cuda-vram16."
     },
-    "diffusiongemma-26b-a4b-it-vllm-spark": {
-      "compose": "compose-diffusiongemma-26b-a4b-it-vllm-spark.yml",
-      "container": "diffusiongemma_26b_a4b_it_vllm_spark",
+    "gemma4-12b-it-cuda-vram16-llamacpp-unsloth-qat-ud-q4-k-xl-turbo3": {
+      "compose": "compose-gemma4-12b-it-cuda-vram16-llamacpp-unsloth-qat-ud-q4-k-xl-turbo3.yml",
+      "container": "gemma4_12b_it_cuda_vram16_llamacpp_unsloth_qat_ud_q4_k_xl_turbo3",
+      "engine": "llamacpp",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-gguf-cache"
+      ],
+      "description": "Gemma 4 12B QAT dense UD-Q4_K_XL GGUF llama.cpp TurboQuant profile for cuda-vram16, no MTP."
+    },
+    "diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16": {
+      "compose": "compose-diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml",
+      "container": "diffusiongemma_26b_a4b_it_cuda_vram128_vllm_google_bf16",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "DiffusionGemma 26B A4B Spark vLLM profile."
+      "description": "DiffusionGemma 26B A4B cuda-vram128 vLLM profile."
     },
-    "gemma4-12b-qat-w4a16-it-vllm-spark": {
-      "compose": "compose-gemma4-12b-qat-w4a16-it-vllm-spark.yml",
-      "container": "gemma4_12b_qat_w4a16_it_vllm_spark",
+    "gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16": {
+      "compose": "compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16.yml",
+      "container": "gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Gemma 4 12B QAT W4A16 Spark profile."
+      "description": "Gemma 4 12B QAT W4A16 cuda-vram128 profile."
     },
-    "gemma4-12b-qat-w4a16-mtp-it-vllm-spark": {
-      "compose": "compose-gemma4-12b-qat-w4a16-mtp-it-vllm-spark.yml",
-      "container": "gemma4_12b_qat_w4a16_mtp_it_vllm_spark",
+    "gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-mtp": {
+      "compose": "compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-mtp.yml",
+      "container": "gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16_mtp",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Gemma 4 12B QAT W4A16 Spark profile with Gemma 4 MTP speculative decoding enabled."
+      "description": "Gemma 4 12B QAT W4A16 cuda-vram128 profile with Gemma 4 MTP speculative decoding enabled."
     },
-    "gemma4-12b-qat-w4a16-no-mtp-it-vllm-spark": {
-      "compose": "compose-gemma4-12b-qat-w4a16-no-mtp-it-vllm-spark.yml",
-      "container": "gemma4_12b_qat_w4a16_no_mtp_it_vllm_spark",
+    "gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-no-mtp": {
+      "compose": "compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-no-mtp.yml",
+      "container": "gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16_no_mtp",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Gemma 4 12B QAT W4A16 Spark profile with speculative/MTP decoding explicitly disabled."
+      "description": "Gemma 4 12B QAT W4A16 cuda-vram128 profile with speculative/MTP decoding explicitly disabled."
     },
-    "gemma4-12b-qat-w4a16-it-vllm-16gb": {
-      "compose": "compose-gemma4-12b-qat-w4a16-it-vllm-16gb.yml",
-      "container": "gemma4_12b_qat_w4a16_it_vllm_16gb",
+    "gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16": {
+      "compose": "compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16.yml",
+      "container": "gemma4_12b_it_cuda_vram16_vllm_google_qat_w4a16",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
@@ -94,39 +104,39 @@
       ],
       "description": "Gemma 4 12B QAT W4A16 local vLLM profile."
     },
-    "gemma4-e4b-qat-w4a16-mtp-it-vllm-16gb": {
-      "compose": "compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-16gb.yml",
-      "container": "gemma4_e4b_qat_w4a16_mtp_it_vllm_16gb",
+    "gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp": {
+      "compose": "compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp.yml",
+      "container": "gemma4_e4b_it_cuda_vram16_vllm_google_qat_w4a16_mtp",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Gemma 4 E4B QAT W4A16 local vLLM profile for 16GB VRAM with Gemma 4 MTP speculative decoding enabled."
+      "description": "Gemma 4 E4B QAT W4A16 local vLLM profile for cuda-vram16 with Gemma 4 MTP speculative decoding enabled."
     },
-    "gemma4-e4b-qat-w4a16-mtp-it-vllm-spark": {
-      "compose": "compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-spark.yml",
-      "container": "gemma4_e4b_qat_w4a16_mtp_it_vllm_spark",
+    "gemma4-e4b-it-cuda-vram128-vllm-google-qat-w4a16-mtp": {
+      "compose": "compose-gemma4-e4b-it-cuda-vram128-vllm-google-qat-w4a16-mtp.yml",
+      "container": "gemma4_e4b_it_cuda_vram128_vllm_google_qat_w4a16_mtp",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Gemma 4 E4B QAT W4A16 Spark vLLM profile with Gemma 4 MTP speculative decoding enabled."
+      "description": "Gemma 4 E4B QAT W4A16 cuda-vram128 vLLM profile with Gemma 4 MTP speculative decoding enabled."
     },
-    "vibethinker-3b-reasoning-base-vllm-16gb": {
-      "compose": "compose-vibethinker-3b-reasoning-base-vllm-16gb.yml",
-      "container": "vibethinker_3b_reasoning_base_vllm_16gb",
+    "vibethinker-3b-reasoning-cuda-vram16-vllm-weiboai-bf16": {
+      "compose": "compose-vibethinker-3b-reasoning-cuda-vram16-vllm-weiboai-bf16.yml",
+      "container": "vibethinker_3b_reasoning_cuda_vram16_vllm_weiboai_bf16",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "WeiboAI VibeThinker 3B vLLM profile for 16GB VRAM."
+      "description": "WeiboAI VibeThinker 3B vLLM profile for cuda-vram16."
     },
-    "gemma4-e4b-bf16-it-vllm-16gb": {
-      "compose": "compose-gemma4-e4b-bf16-it-vllm-16gb.yml",
-      "container": "gemma4_e4b_bf16_it_vllm_16gb",
+    "gemma4-e4b-it-cuda-vram16-vllm-google-bf16": {
+      "compose": "compose-gemma4-e4b-it-cuda-vram16-vllm-google-bf16.yml",
+      "container": "gemma4_e4b_it_cuda_vram16_vllm_google_bf16",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
@@ -134,19 +144,19 @@
       ],
       "description": "Gemma 4 E4B local BF16 vLLM profile."
     },
-    "gemma4-e4b-bf16-it-vllm-spark": {
-      "compose": "compose-gemma4-e4b-bf16-it-vllm-spark.yml",
-      "container": "gemma4_e4b_bf16_it_vllm_spark",
+    "gemma4-e4b-it-cuda-vram128-vllm-google-bf16": {
+      "compose": "compose-gemma4-e4b-it-cuda-vram128-vllm-google-bf16.yml",
+      "container": "gemma4_e4b_it_cuda_vram128_vllm_google_bf16",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Gemma 4 E4B Spark BF16 vLLM profile."
+      "description": "Gemma 4 E4B cuda-vram128 BF16 vLLM profile."
     },
-    "qwen36-35b-a3b-iq4-mtp-base-llamacpp-16gb": {
-      "compose": "compose-qwen36-35b-a3b-iq4-mtp-base-llamacpp-16gb.yml",
-      "container": "qwen36_35b_a3b_iq4_mtp_base_llamacpp_16gb",
+    "qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp": {
+      "compose": "compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp.yml",
+      "container": "qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp",
       "engine": "llamacpp",
       "volumes": [
         "xtec-hf-cache",
@@ -154,29 +164,49 @@
       ],
       "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile."
     },
-    "qwen36-35b-a3b-iq4-mtp-base-llamacpp-spark": {
-      "compose": "compose-qwen36-35b-a3b-iq4-mtp-base-llamacpp-spark.yml",
-      "container": "qwen36_35b_a3b_iq4_mtp_base_llamacpp_spark",
+    "qwen36-35b-a3b-base-cuda-vram128-llamacpp-localweights-iq4-mtp": {
+      "compose": "compose-qwen36-35b-a3b-base-cuda-vram128-llamacpp-localweights-iq4-mtp.yml",
+      "container": "qwen36_35b_a3b_base_cuda_vram128_llamacpp_localweights_iq4_mtp",
       "engine": "llamacpp",
       "volumes": [
         "xtec-hf-cache",
         "xtec-gguf-cache"
       ],
-      "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF Spark llama.cpp profile."
+      "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF cuda-vram128 llama.cpp profile."
     },
-    "qwen36-27b-bf16-base-vllm-spark": {
-      "compose": "compose-qwen36-27b-bf16-base-vllm-spark.yml",
-      "container": "qwen36_27b_bf16_base_vllm_spark",
+    "qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4": {
+      "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4.yml",
+      "container": "qwen36_35b_a3b_cuda_vram128_vllm_nvidia_nvfp4",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Qwen3.6 27B Spark vLLM profile."
+      "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram128 vLLM profile with MTP speculative decoding."
     },
-    "qwen35-9b-awq-base-vllm-16gb": {
-      "compose": "compose-qwen35-9b-awq-base-vllm-16gb.yml",
-      "container": "qwen35_9b_awq_base_vllm_16gb",
+    "qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8": {
+      "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml",
+      "container": "qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8",
+      "engine": "vllm",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Qwen3.6 35B A3B official Qwen FP8 vLLM profile for CUDA 128GB VRAM."
+    },
+    "qwen36-27b-base-cuda-vram128-vllm-qwen-bf16": {
+      "compose": "compose-qwen36-27b-base-cuda-vram128-vllm-qwen-bf16.yml",
+      "container": "qwen36_27b_base_cuda_vram128_vllm_qwen_bf16",
+      "engine": "vllm",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Qwen3.6 27B cuda-vram128 vLLM profile."
+    },
+    "qwen35-9b-base-cuda-vram16-vllm-quanttrio-awq-legacy": {
+      "compose": "compose-qwen35-9b-base-cuda-vram16-vllm-quanttrio-awq-legacy.yml",
+      "container": "qwen35_9b_base_cuda_vram16_vllm_quanttrio_awq_legacy",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
@@ -184,9 +214,9 @@
       ],
       "description": "Qwen3.5 9B AWQ local vLLM profile."
     },
-    "qwen35-9b-awq-quanttrio-base-vllm-16gb": {
-      "compose": "compose-qwen35-9b-awq-quanttrio-base-vllm-16gb.yml",
-      "container": "qwen35_9b_awq_quanttrio_base_vllm_16gb",
+    "qwen35-9b-base-cuda-vram16-vllm-quanttrio-awq": {
+      "compose": "compose-qwen35-9b-base-cuda-vram16-vllm-quanttrio-awq.yml",
+      "container": "qwen35_9b_base_cuda_vram16_vllm_quanttrio_awq",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
@@ -194,29 +224,29 @@
       ],
       "description": "QuantTrio Qwen3.5 9B AWQ local vLLM profile."
     },
-    "qwen35-9b-awq-quanttrio-base-vllm-spark": {
-      "compose": "compose-qwen35-9b-awq-quanttrio-base-vllm-spark.yml",
-      "container": "qwen35_9b_awq_quanttrio_base_vllm_spark",
+    "qwen35-9b-base-cuda-vram128-vllm-quanttrio-awq": {
+      "compose": "compose-qwen35-9b-base-cuda-vram128-vllm-quanttrio-awq.yml",
+      "container": "qwen35_9b_base_cuda_vram128_vllm_quanttrio_awq",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "QuantTrio Qwen3.5 9B AWQ Spark vLLM profile."
+      "description": "QuantTrio Qwen3.5 9B AWQ cuda-vram128 vLLM profile."
     },
-    "qwen3-14b-awq-base-vllm-spark": {
-      "compose": "compose-qwen3-14b-awq-base-vllm-spark.yml",
-      "container": "qwen3_14b_awq_base_vllm_spark",
+    "qwen3-14b-base-cuda-vram128-vllm-qwen-awq": {
+      "compose": "compose-qwen3-14b-base-cuda-vram128-vllm-qwen-awq.yml",
+      "container": "qwen3_14b_base_cuda_vram128_vllm_qwen_awq",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Qwen3 14B AWQ Spark vLLM profile."
+      "description": "Qwen3 14B AWQ cuda-vram128 vLLM profile."
     },
-    "qwen3-8b-awq-base-vllm-16gb": {
-      "compose": "compose-qwen3-8b-awq-base-vllm-16gb.yml",
-      "container": "qwen3_8b_awq_base_vllm_16gb",
+    "qwen3-8b-base-cuda-vram16-vllm-qwen-awq": {
+      "compose": "compose-qwen3-8b-base-cuda-vram16-vllm-qwen-awq.yml",
+      "container": "qwen3_8b_base_cuda_vram16_vllm_qwen_awq",
       "engine": "vllm",
       "volumes": [
         "xtec-hf-cache",

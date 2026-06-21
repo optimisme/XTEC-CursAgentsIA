@@ -1,14 +1,13 @@
-# Stop:    docker compose -f compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-16gb.yml down
-# Restart: docker compose -f compose-gemma4-e4b-qat-w4a16-mtp-it-vllm-16gb.yml up -d
-# Logs:    docker logs -f --tail 80 gemma4_e4b_qat_w4a16_mtp_it_vllm_16gb
-# Note:    Gemma 4 E4B QAT compressed-tensors checkpoint for native vLLM serving.
-#          This 16GB VRAM profile enables Gemma 4 MTP with the paired assistant drafter.
+# Stop:    docker compose -f compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16.yml down
+# Restart: docker compose -f compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16.yml up -d
+# Logs:    docker logs -f --tail 80 gemma4_12b_it_cuda_vram16_vllm_google_qat_w4a16
+# Note:    Gemma 4 12B QAT compressed-tensors checkpoint for native vLLM serving.
 #          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
 services:
   gemma-vllm:
     image: vllm/vllm-openai:cu129-nightly
-    pull_policy: missing
-    container_name: gemma4_e4b_qat_w4a16_mtp_it_vllm_16gb
+    pull_policy: always
+    container_name: gemma4_12b_it_cuda_vram16_vllm_google_qat_w4a16
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -53,7 +52,7 @@ services:
         import json
         from pathlib import Path
 
-        snapshot_root = Path("/root/.cache/huggingface/hub/models--google--gemma-4-E4B-it-qat-w4a16-ct/snapshots")
+        snapshot_root = Path("/root/.cache/huggingface/hub/models--google--gemma-4-12B-it-qat-w4a16-ct/snapshots")
         for config_path in snapshot_root.glob("*/config.json"):
             config = json.loads(config_path.read_text())
             vision_config = config.get("vision_config")
@@ -64,24 +63,19 @@ services:
                     config_path.write_text(json.dumps(config, indent=2) + "\n")
                     print(f"Patched {config_path}: vision_config.num_soft_tokens={num_soft_tokens}")
         PY
-        exec vllm serve google/gemma-4-E4B-it-qat-w4a16-ct \
+        exec vllm serve google/gemma-4-12B-it-qat-w4a16-ct \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
-          --dtype bfloat16 \
           --max-model-len 32768 \
-          --gpu-memory-utilization 0.92 \
-          --kv-cache-dtype fp8 \
+          --gpu-memory-utilization 0.90 \
           --max-num-seqs 1 \
-          --max-num-batched-tokens 3072 \
+          --max-num-batched-tokens 4096 \
           --enable-prefix-caching \
           --enable-chunked-prefill \
           --trust-remote-code \
           --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
           --generation-config auto \
-          --spec-method mtp \
-          --spec-model google/gemma-4-E4B-it-qat-q4_0-unquantized-assistant \
-          --spec-tokens 1 \
           --override-generation-config '{"temperature": 1.0, "top_p": 0.95, "top_k": 64}' \
           --reasoning-parser gemma4 \
           --enable-auto-tool-choice \

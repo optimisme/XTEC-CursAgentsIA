@@ -1,14 +1,14 @@
-# Stop:    docker compose -f compose-vibethinker-3b-reasoning-base-vllm-16gb.yml down
-# Restart: docker compose -f compose-vibethinker-3b-reasoning-base-vllm-16gb.yml up -d
-# Logs:    docker logs -f --tail 80 vibethinker_3b_reasoning_base_vllm_16gb
-# Note:    VibeThinker-3B is a compact reasoning/code model based on Qwen2.5-Coder-3B.
-#          The upstream model card warns it was not trained for tool-calling or autonomous agents.
-#          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
+# Local:   DIFFUSIONGEMMA_HOST_PORT=8002 docker compose -f compose-diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml up -d
+# Stop:    docker compose -f compose-diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml down
+# Restart: docker compose -f compose-diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml up -d
+# Logs:    docker logs -f --tail 80 diffusiongemma_26b_a4b_it_cuda_vram128_vllm_google_bf16
+# Note:    DiffusionGemma is currently published as a 26B/4B-active Gemma 4 MoE model,
+#          not as a 12B checkpoint. Remote service listens on port 8000.
 services:
-  vibethinker-vllm:
-    image: vllm/vllm-openai:latest
-    pull_policy: missing
-    container_name: vibethinker_3b_reasoning_base_vllm_16gb
+  diffusiongemma-vllm:
+    image: vllm/vllm-openai:gemma
+    pull_policy: always
+    container_name: diffusiongemma_26b_a4b_it_cuda_vram128_vllm_google_bf16
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -20,13 +20,13 @@ services:
       - xtec-hf-cache:/root/.cache/huggingface
       - xtec-vllm-cache:/root/.cache/vllm
     ports:
-      - "8000:8000"
+      - "${DIFFUSIONGEMMA_HOST_PORT:-8000}:8000"
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8000/v1/models"]
       interval: 30s
       timeout: 30s
       retries: 5
-      start_period: 20m
+      start_period: 30m
     ipc: host
     deploy:
       resources:
@@ -48,23 +48,28 @@ services:
           export HF_TOKEN="$${HUGGINGFACE}"
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE}"
         fi
-        exec vllm serve WeiboAI/VibeThinker-3B \
+        exec vllm serve google/diffusiongemma-26B-A4B-it \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --dtype bfloat16 \
-          --max-model-len 8192 \
+          --max-model-len 65536 \
+          --max-num-seqs 4 \
           --gpu-memory-utilization 0.85 \
-          --max-num-seqs 2 \
+          --kv-cache-dtype fp8 \
           --max-num-batched-tokens 4096 \
-          --enable-prefix-caching \
+          --attention-backend TRITON_ATTN \
+          --generation-config vllm \
+          --hf-overrides '{"diffusion_sampler": "entropy_bound", "diffusion_entropy_bound": 0.1}' \
+          --diffusion-config '{"canvas_length": 256}' \
           --enable-chunked-prefill \
-          --enforce-eager \
           --trust-remote-code \
-          --generation-config auto \
-          --override-generation-config '{"temperature": 1.0, "top_p": 0.95, "top_k": -1}' \
+          --limit-mm-per-prompt '{"image": 0, "video": 0}' \
+          --reasoning-parser gemma4 \
           --enable-auto-tool-choice \
-          --tool-call-parser hermes
+          --tool-call-parser gemma4 \
+          --chat-template examples/tool_chat_template_gemma4.jinja \
+          --default-chat-template-kwargs '{"enable_thinking": true}'
 
 volumes:
   xtec-hf-cache:

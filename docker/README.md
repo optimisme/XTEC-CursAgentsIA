@@ -37,19 +37,19 @@ Llista els models configurats:
 Arrenca un model sense parar altres serveis:
 
 ```bash
-./docker/modelctl.sh start gemma4-31b-qat-w4a16-it-vllm-spark
+./docker/modelctl.sh start gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16
 ```
 
 Reinicia un model aturant abans tots els contenidors configurats:
 
 ```bash
-./docker/modelctl.sh restart gemma4-31b-qat-w4a16-it-vllm-spark
+./docker/modelctl.sh restart gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16
 ```
 
 Segueix els logs:
 
 ```bash
-./docker/modelctl.sh logs gemma4-31b-qat-w4a16-it-vllm-spark
+./docker/modelctl.sh logs gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16
 ```
 
 El perfil arrencat exposa el model com `active-model` a
@@ -98,7 +98,7 @@ Atura primer els serveis amb `./docker/modelctl.sh stop` si cal.
 
 ## Afegir un model
 
-1. Crea el fitxer `compose-<model>-<quantization>-<features>-<prediction>-<runner>-<device>.yml`.
+1. Crea el fitxer `compose-{model}-{target}-{runtime}-{origin}-{quant}.yml`. Exemple: `compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml`.
 2. Munta `xtec-hf-cache` i el runtime que pertoqui:
    - `xtec-vllm-cache` per vLLM.
    - `xtec-gguf-cache` per llama.cpp/GGUF.
