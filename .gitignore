@@ -3,7 +3,9 @@
 
 # Environment variables
 .env
+keys.env
 *.env
+!keys.env.example
 !*.env.example
 
 # Python cache
