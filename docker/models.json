@@ -34,16 +34,6 @@
       ],
       "description": "Gemma 4 26B A4B cuda-vram128 BF16 profile."
     },
-    "diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16": {
-      "compose": "compose-diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml",
-      "container": "diffusiongemma_26b_a4b_it_cuda_vram128_vllm_google_bf16",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "DiffusionGemma 26B A4B cuda-vram128 vLLM profile."
-    },
     "gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16": {
       "compose": "compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16.yml",
       "container": "gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16",
@@ -104,16 +94,6 @@
       ],
       "description": "Gemma 4 E4B QAT W4A16 cuda-vram128 vLLM profile with Gemma 4 MTP speculative decoding enabled."
     },
-    "vibethinker-3b-reasoning-cuda-vram16-vllm-weiboai-bf16": {
-      "compose": "compose-vibethinker-3b-reasoning-cuda-vram16-vllm-weiboai-bf16.yml",
-      "container": "vibethinker_3b_reasoning_cuda_vram16_vllm_weiboai_bf16",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "WeiboAI VibeThinker 3B vLLM profile for cuda-vram16."
-    },
     "gemma4-e4b-it-cuda-vram128-vllm-google-bf16": {
       "compose": "compose-gemma4-e4b-it-cuda-vram128-vllm-google-bf16.yml",
       "container": "gemma4_e4b_it_cuda_vram128_vllm_google_bf16",
@@ -133,16 +113,6 @@
         "xtec-gguf-cache"
       ],
       "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile."
-    },
-    "qwen36-35b-a3b-base-cuda-vram128-llamacpp-localweights-iq4-mtp": {
-      "compose": "compose-qwen36-35b-a3b-base-cuda-vram128-llamacpp-localweights-iq4-mtp.yml",
-      "container": "qwen36_35b_a3b_base_cuda_vram128_llamacpp_localweights_iq4_mtp",
-      "engine": "llamacpp",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-gguf-cache"
-      ],
-      "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF cuda-vram128 llama.cpp profile."
     },
     "qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4.yml",
@@ -173,66 +143,6 @@
         "xtec-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B official Qwen FP8 vLLM profile for CUDA 128GB VRAM."
-    },
-    "qwen36-27b-base-cuda-vram128-vllm-qwen-bf16": {
-      "compose": "compose-qwen36-27b-base-cuda-vram128-vllm-qwen-bf16.yml",
-      "container": "qwen36_27b_base_cuda_vram128_vllm_qwen_bf16",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "Qwen3.6 27B cuda-vram128 vLLM profile."
-    },
-    "qwen35-9b-base-cuda-vram16-vllm-quanttrio-awq-legacy": {
-      "compose": "compose-qwen35-9b-base-cuda-vram16-vllm-quanttrio-awq-legacy.yml",
-      "container": "qwen35_9b_base_cuda_vram16_vllm_quanttrio_awq_legacy",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "Qwen3.5 9B AWQ local vLLM profile."
-    },
-    "qwen35-9b-base-cuda-vram16-vllm-quanttrio-awq": {
-      "compose": "compose-qwen35-9b-base-cuda-vram16-vllm-quanttrio-awq.yml",
-      "container": "qwen35_9b_base_cuda_vram16_vllm_quanttrio_awq",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "QuantTrio Qwen3.5 9B AWQ local vLLM profile."
-    },
-    "qwen35-9b-base-cuda-vram128-vllm-quanttrio-awq": {
-      "compose": "compose-qwen35-9b-base-cuda-vram128-vllm-quanttrio-awq.yml",
-      "container": "qwen35_9b_base_cuda_vram128_vllm_quanttrio_awq",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "QuantTrio Qwen3.5 9B AWQ cuda-vram128 vLLM profile."
-    },
-    "qwen3-14b-base-cuda-vram128-vllm-qwen-awq": {
-      "compose": "compose-qwen3-14b-base-cuda-vram128-vllm-qwen-awq.yml",
-      "container": "qwen3_14b_base_cuda_vram128_vllm_qwen_awq",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "Qwen3 14B AWQ cuda-vram128 vLLM profile."
-    },
-    "qwen3-8b-base-cuda-vram16-vllm-qwen-awq": {
-      "compose": "compose-qwen3-8b-base-cuda-vram16-vllm-qwen-awq.yml",
-      "container": "qwen3_8b_base_cuda_vram16_vllm_qwen_awq",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "Qwen3 8B AWQ local vLLM profile."
     }
   }
 }

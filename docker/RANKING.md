@@ -10,11 +10,15 @@
 
 1. compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp.yml (llama.cpp GGUF, NVIDIA CUDA)
 
-2. gemma4_12b_it_cuda_vram16_vllm_google_qat_w4a16 (Gemma 4 12B QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, text-only)
+2. compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16.yml (Gemma 4 12B QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, text-only)
 
-3. compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp.yml (Gemma 4 E4B QAT W4A16 MTP, temperature 0)
+3. compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp.yml (Gemma 4 E4B QAT W4A16 MTP, temperature 0, text-only)
 
-4. compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image (context 64k + image)
+## vram 16gb (64k + image)
+
+1. compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image.yml (Gemma 4 12B QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, context 64k + image)
+
+2. compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image.yml (Gemma 4 E4B QAT W4A16 MTP, temperature 0, context 64k + image)
 
 # Recordatori
 
