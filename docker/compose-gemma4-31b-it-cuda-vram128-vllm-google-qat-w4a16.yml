@@ -2,11 +2,12 @@
 # Restart: docker compose -f compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16.yml up -d
 # Logs:    docker logs -f --tail 80 gemma4_31b_it_cuda_vram128_vllm_google_qat_w4a16
 # Note:    Gemma 4 31B QAT compressed-tensors checkpoint for CUDA cuda-vram128 hosts.
+#          This cuda-vram128 profile enables Gemma 4 MTP, thinking, and temperature 0.
 #          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
 services:
   gemma-vllm:
-    image: vllm/vllm-openai:cu129-nightly
-    pull_policy: always
+    image: vllm/vllm-openai:v0.23.0
+    pull_policy: missing
     container_name: gemma4_31b_it_cuda_vram128_vllm_google_qat_w4a16
     environment:
       - HF_HOME=/root/.cache/huggingface
@@ -76,7 +77,9 @@ services:
           --enable-chunked-prefill \
           --trust-remote-code \
           --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
-          --generation-config vllm \
+          --generation-config auto \
+          --speculative-config '{"method":"mtp","model":"google/gemma-4-31B-it-qat-q4_0-unquantized-assistant","num_speculative_tokens":1}' \
+          --override-generation-config '{"temperature": 0, "top_p": 0.95, "top_k": 64}' \
           --reasoning-parser gemma4 \
           --enable-auto-tool-choice \
           --tool-call-parser gemma4 \

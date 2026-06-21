@@ -22,7 +22,17 @@
         "xtec-hf-cache",
         "xtec-vllm-cache"
       ],
-      "description": "Default Gemma 4 31B QAT W4A16 cuda-vram128 profile."
+      "description": "Default Gemma 4 31B QAT W4A16 cuda-vram128 profile with Gemma 4 MTP speculative decoding, thinking, and temperature 0."
+    },
+    "gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image": {
+      "compose": "compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml",
+      "container": "gemma4_31b_it_cuda_vram128_vllm_google_qat_w4a16_64k_image",
+      "engine": "vllm",
+      "volumes": [
+        "xtec-hf-cache",
+        "xtec-vllm-cache"
+      ],
+      "description": "Gemma 4 31B QAT W4A16 cuda-vram128 profile with 64k context, one image per prompt, Gemma 4 MTP speculative decoding, thinking, and temperature 0."
     },
     "gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16": {
       "compose": "compose-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml",
@@ -53,16 +63,6 @@
         "xtec-vllm-cache"
       ],
       "description": "Gemma 4 12B QAT W4A16 cuda-vram128 profile with Gemma 4 MTP speculative decoding enabled."
-    },
-    "gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-no-mtp": {
-      "compose": "compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-no-mtp.yml",
-      "container": "gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16_no_mtp",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
-      ],
-      "description": "Gemma 4 12B QAT W4A16 cuda-vram128 profile with speculative/MTP decoding explicitly disabled."
     },
     "gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16": {
       "compose": "compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16.yml",

@@ -24,6 +24,10 @@
 
 - Qwen36 programa millor que Gemma4
 
+- gemma-4-31B-it és 'dense' ofereix més qualitat però més lent
+
+- gemma-4-26B-A4B-it és 'MoE' menys qualitat però més ràpid i més usuaris
+
 - 35b més capacitat de rahonament
 
 - 64k més context i lentitud

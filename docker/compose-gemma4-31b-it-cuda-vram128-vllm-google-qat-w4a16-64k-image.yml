@@ -1,14 +1,14 @@
-# Stop:    docker compose -f compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-no-mtp.yml down
-# Restart: docker compose -f compose-gemma4-12b-it-cuda-vram128-vllm-google-qat-w4a16-no-mtp.yml up -d
-# Logs:    docker logs -f --tail 80 gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16_no_mtp
-# Note:    Gemma 4 12B QAT compressed-tensors checkpoint for CUDA cuda-vram128 hosts.
-#          This variant explicitly disables speculative/MTP decoding with --spec-method None.
+# Stop:    docker compose -f compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml down
+# Restart: docker compose -f compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml up -d
+# Logs:    docker logs -f --tail 80 gemma4_31b_it_cuda_vram128_vllm_google_qat_w4a16_64k_image
+# Note:    Gemma 4 31B QAT compressed-tensors checkpoint for CUDA cuda-vram128 hosts.
+#          This cuda-vram128 profile enables 64k context, one image per prompt, Gemma 4 MTP, thinking, and temperature 0.
 #          Remote host port 8000 maps to the OpenAI-compatible vLLM API.
 services:
   gemma-vllm:
     image: vllm/vllm-openai:v0.23.0
-    pull_policy: always
-    container_name: gemma4_12b_it_cuda_vram128_vllm_google_qat_w4a16_no_mtp
+    pull_policy: missing
+    container_name: gemma4_31b_it_cuda_vram128_vllm_google_qat_w4a16_64k_image
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -52,7 +52,7 @@ services:
         import json
         from pathlib import Path
 
-        snapshot_root = Path("/root/.cache/huggingface/hub/models--google--gemma-4-12B-it-qat-w4a16-ct/snapshots")
+        snapshot_root = Path("/root/.cache/huggingface/hub/models--google--gemma-4-31B-it-qat-w4a16-ct/snapshots")
         for config_path in snapshot_root.glob("*/config.json"):
             config = json.loads(config_path.read_text())
             vision_config = config.get("vision_config")
@@ -63,23 +63,23 @@ services:
                     config_path.write_text(json.dumps(config, indent=2) + "\n")
                     print(f"Patched {config_path}: vision_config.num_soft_tokens={num_soft_tokens}")
         PY
-        exec vllm serve google/gemma-4-12B-it-qat-w4a16-ct \
+        exec vllm serve google/gemma-4-31B-it-qat-w4a16-ct \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --dtype bfloat16 \
-          --max-model-len 32768 \
+          --max-model-len 65536 \
           --gpu-memory-utilization 0.90 \
           --kv-cache-dtype fp8 \
-          --max-num-seqs 4 \
+          --max-num-seqs 2 \
           --max-num-batched-tokens 4096 \
           --enable-prefix-caching \
           --enable-chunked-prefill \
           --trust-remote-code \
-          --limit-mm-per-prompt '{"image": 0, "audio": 0}' \
+          --limit-mm-per-prompt '{"image": 1, "audio": 0}' \
           --generation-config auto \
-          --spec-method None \
-          --override-generation-config '{"temperature": 1.0, "top_p": 0.95, "top_k": 64}' \
+          --speculative-config '{"method":"mtp","model":"google/gemma-4-31B-it-qat-q4_0-unquantized-assistant","num_speculative_tokens":1}' \
+          --override-generation-config '{"temperature": 0, "top_p": 0.95, "top_k": 64}' \
           --reasoning-parser gemma4 \
           --enable-auto-tool-choice \
           --tool-call-parser gemma4 \
