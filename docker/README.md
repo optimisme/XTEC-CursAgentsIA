@@ -44,11 +44,13 @@ Els perfils amb imatge han de servir-se amb 64k de context
 (`--max-model-len 65536`) i el client tambe s'ha de configurar a 64k. Amb 32k
 les imatges poden fallar per falta de context.
 
-## Tokens privats
+## Tokens privats de HuggingFace
 
 Els models amb pesos restringits, com alguns Gemma o Mistral, necessiten un token
-de Hugging Face. El token no es desa dins dels `compose-*.yml`: es posa en un
+de [HuggingFace](https://huggingface.co). El token no es desa dins dels `compose-*.yml`: es posa en un
 fitxer local `docker/tokens.env`, que no s'ha de publicar.
+
+Pots aconseguir un "Access Token" a l'espai "Settings" del teu compte personal de ["Hugging Face Settings"](https://huggingface.co/settings/profile)
 
 Format esperat:
 
