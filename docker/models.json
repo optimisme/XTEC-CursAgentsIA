@@ -44,16 +44,6 @@
       ],
       "description": "Gemma 4 26B A4B QAT Q4_0 GGUF local llama.cpp profile for cuda-vram16."
     },
-    "gemma4-12b-it-cuda-vram16-llamacpp-unsloth-qat-ud-q4-k-xl-turbo3": {
-      "compose": "compose-gemma4-12b-it-cuda-vram16-llamacpp-unsloth-qat-ud-q4-k-xl-turbo3.yml",
-      "container": "gemma4_12b_it_cuda_vram16_llamacpp_unsloth_qat_ud_q4_k_xl_turbo3",
-      "engine": "llamacpp",
-      "volumes": [
-        "xtec-hf-cache",
-        "xtec-gguf-cache"
-      ],
-      "description": "Gemma 4 12B QAT dense UD-Q4_K_XL GGUF llama.cpp TurboQuant profile for cuda-vram16, no MTP."
-    },
     "diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16": {
       "compose": "compose-diffusiongemma-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml",
       "container": "diffusiongemma_26b_a4b_it_cuda_vram128_vllm_google_bf16",
