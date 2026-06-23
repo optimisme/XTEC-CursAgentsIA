@@ -61,6 +61,10 @@
             "context": 65536,
             "output": 8192
           },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
           "max_tokens": 8192,
           "tool_call": true,
           "reasoning": true
