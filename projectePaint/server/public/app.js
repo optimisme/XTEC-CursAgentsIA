@@ -11,6 +11,7 @@ const MAX_CHAT_ITEMS = 25;
 const MAX_HISTORY_MESSAGES = 25;
 const history = [];
 let canvasBackground = "#ffffff";
+let isConfigured = true;
 
 setupCanvas();
 loadSettings();
@@ -34,18 +35,25 @@ form.addEventListener("submit", async (event) => {
       body: JSON.stringify({ message, history: history.slice(0, -1).slice(-MAX_HISTORY_MESSAGES) })
     });
 
-    const payload = await response.json();
+    const payload = await readJsonResponse(response);
     if (!response.ok) {
       throw new Error(payload.error || "The request failed.");
     }
 
-    for (const command of payload.commands || []) {
+    const commands = payload.commands || [];
+
+    for (const command of commands) {
       applyCommand(command);
     }
 
-    const reply = payload.reply || "Fet.";
-    addMessage("assistant", reply);
-    addToolCallTrace(payload.modelToolCalls || []);
+    const reply = payload.reply || "Done.";
+    if (commands.length > 0) {
+      addToolCallTrace(commands.map(commandToToolCallTrace));
+    } else {
+      addMessage("assistant", reply);
+      addToolCallTrace(payload.modelToolCalls || []);
+    }
+
     history.push({ role: "assistant", content: reply });
     pruneHistory();
   } catch (error) {
@@ -71,10 +79,40 @@ function setupCanvas() {
 async function loadSettings() {
   try {
     const response = await fetch("/api/settings");
-    const settings = await response.json();
+    const settings = await readJsonResponse(response);
+
+    if (!settings.configured) {
+      isConfigured = false;
+      input.disabled = true;
+      sendButton.disabled = true;
+      modelStatus.textContent = "Configuration missing";
+      addMessage("error", `Missing configuration: ${settings.missing.join(", ")}. Create or edit server/settings.env.`);
+      return;
+    }
+
+    isConfigured = true;
     modelStatus.textContent = `${settings.model} - ${settings.baseUrl}`;
   } catch {
+    isConfigured = false;
+    input.disabled = true;
+    sendButton.disabled = true;
     modelStatus.textContent = "Configuration unavailable";
+    addMessage("error", "Configuration unavailable. The server could not return /api/settings.");
+  }
+}
+
+async function readJsonResponse(response) {
+  const text = await response.text();
+  if (!text) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {
+      error: `Server returned ${response.status}: ${text}`,
+    };
   }
 }
 
@@ -113,6 +151,75 @@ function addToolCallTrace(toolCalls) {
   scrollMessagesToBottom();
 }
 
+function commandToToolCallTrace(command) {
+  return {
+    name: commandToFunctionName(command),
+    arguments: commandToFunctionArguments(command)
+  };
+}
+
+function commandToFunctionName(command) {
+  const names = {
+    line: "draw_line",
+    circle: "draw_circle",
+    rectangle: "draw_rectangle",
+    square: "draw_square",
+    oval: "draw_oval",
+    triangle: "draw_triangle",
+    star: "draw_star",
+    background: "set_canvas_background",
+    clear: "clear_canvas"
+  };
+
+  return names[command.type] || command.type || "unknown_function";
+}
+
+function commandToFunctionArguments(command) {
+  if (command.type === "line") {
+    return pick(command, ["x1", "y1", "x2", "y2", "color", "width"]);
+  }
+
+  if (command.type === "circle") {
+    return pick(command, ["x", "y", "radius", "fillColor", "strokeColor", "strokeWidth"]);
+  }
+
+  if (command.type === "rectangle") {
+    return pick(command, ["x", "y", "width", "height", "fillColor", "strokeColor", "strokeWidth"]);
+  }
+
+  if (command.type === "square") {
+    return pick(command, ["x", "y", "size", "fillColor", "strokeColor", "strokeWidth"]);
+  }
+
+  if (command.type === "oval") {
+    return pick(command, ["x", "y", "radiusX", "radiusY", "fillColor", "strokeColor", "strokeWidth"]);
+  }
+
+  if (command.type === "triangle") {
+    return pick(command, ["x", "y", "size", "rotation", "fillColor", "strokeColor", "strokeWidth"]);
+  }
+
+  if (command.type === "star") {
+    return pick(command, ["x", "y", "outerRadius", "innerRadius", "points", "rotation", "fillColor", "strokeColor", "strokeWidth"]);
+  }
+
+  if (command.type === "background") {
+    return pick(command, ["color"]);
+  }
+
+  return {};
+}
+
+function pick(source, keys) {
+  const result = {};
+  for (const key of keys) {
+    if (source[key] !== undefined) {
+      result[key] = source[key];
+    }
+  }
+  return result;
+}
+
 function pruneChatItems() {
   while (messagesEl.children.length > MAX_CHAT_ITEMS) {
     messagesEl.firstElementChild.remove();
@@ -130,8 +237,8 @@ function scrollMessagesToBottom() {
 }
 
 function setBusy(isBusy) {
-  input.disabled = isBusy;
-  sendButton.disabled = isBusy;
+  input.disabled = isBusy || !isConfigured;
+  sendButton.disabled = isBusy || !isConfigured;
   sendButton.textContent = isBusy ? "Thinking..." : "Send";
 }
 

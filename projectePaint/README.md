@@ -1,13 +1,13 @@
 # Function Calling Project
 
-Node.js and Express server with a web UI on port 3000. The app converts natural-language drawing requests into function calls against a local vLLM model compatible with the OpenAI API.
+Node.js and Express server with a web UI on port 3000. The app converts natural-language drawing requests into OpenAI-compatible function calls.
 
 The user may write in any language, but the model is instructed to normalize requests internally to English and return function arguments using English conventions. Color values should be valid CSS color names in English or hexadecimal values. Missing numeric values should be returned as the exact string `"random"` so the server can choose valid random values.
 
 ## Development
 
 ```bash
-cd projecteFunctionCalling
+cd projectePaint
 npm install
 npm run dev
 ```
@@ -25,19 +25,19 @@ npm run pm2stop
 
 ## Configuration
 
-Edit `settings.env`:
+Edit `server/settings.env`:
 
 ```env
 PORT=3000
-VLLM_BASE_URL=http://127.0.0.1:8002/v1
-VLLM_API_KEY=local
-VLLM_MODEL=active-model
-VLLM_TIMEOUT_MS=900000
+OPENAI_BASE_URL="http://127.0.0.1:8002/v1/chat/completions"
+OPENAI_API_KEY=""
+OPENAI_MODEL="active-model"
+OPENAI_TIMEOUT_MS=900000
 MAX_TOKENS=700
 TEMPERATURE=0.1
 ```
 
-The default values target the local 16 GB VRAM vLLM provider used in this repository.
+The settings follow the same structure as `projecteCMD`: `OPENAI_BASE_URL` points to the chat completions endpoint and `OPENAI_MODEL` selects the model. `OPENAI_API_KEY` is optional; leave it empty for local providers such as Ollama.
 
 ## Test Prompts
 
