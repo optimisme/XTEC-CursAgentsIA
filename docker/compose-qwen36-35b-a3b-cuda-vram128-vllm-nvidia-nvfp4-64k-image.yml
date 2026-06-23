@@ -1,11 +1,11 @@
 # Stop:    docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml down
-# Restart: docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml up -d
+# Start:   docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml up -d
 # Logs:    docker logs -f --tail 80 qwen36_35b_a3b_cuda_vram128_vllm_nvidia_nvfp4_64k_image
-# Note:    NVIDIA Qwen3.6 35B A3B NVFP4 profile with 64k context and image
-#          input. Remote host port 8000 maps to the OpenAI-compatible vLLM API.
+# Note:    NVIDIA Qwen3.6 35B A3B NVFP4 profile using vLLM 0.23.0
+#          and the Marlin MoE backend recommended by NVIDIA for DGX Spark.
 services:
   qwen-vllm:
-    image: vllm/vllm-openai@sha256:4cebac8c03f2cd9f5fabe72ac7c2a0b3aaa8450ef8f0e47429425fd1bfb83d42
+    image: vllm/vllm-openai:v0.23.0
     pull_policy: always
     container_name: qwen36_35b_a3b_cuda_vram128_vllm_nvidia_nvfp4_64k_image
     environment:
@@ -62,12 +62,12 @@ services:
           --quantization modelopt \
           --kv-cache-dtype fp8 \
           --attention-backend flashinfer \
-          --gpu-memory-utilization 0.70 \
+          --moe-backend marlin \
+          --gpu-memory-utilization 0.80 \
           --max-model-len 65536 \
-          --max-num-seqs 32 \
-          --max-num-batched-tokens 65536 \
+          --max-num-seqs 4 \
+          --max-num-batched-tokens 8192 \
           --enable-chunked-prefill \
-          --async-scheduling \
           --enable-prefix-caching \
           --limit-mm-per-prompt '{"image":4,"video":0}' \
           --enable-auto-tool-choice \

@@ -8,7 +8,7 @@ La columna `VRAM req.` surt del perfil del nom del compose i representa el marge
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
 | `compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml` | Qwen3.6 35B A3B NVIDIA NVFP4 | vLLM | 128 GB | 64k | 32 | 65536 | 0.70 | Si | 10 | Perfil actiu validat a Spark: model servit com `active-model`, `qwen3_xml`, KV cache FP8, entrada d'imatge habilitada i vídeo desactivat; vLLM calcula 4.36M tokens de KV i concurrència màxima teòrica 66.66x a 64k, però el límit pràctic és throughput. |
 | `compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4.yml` | Qwen3.6 35B A3B NVIDIA NVFP4 | vLLM | 128 GB | 32k | 8 | 8192 | 0.85 | No | 10 | Millor perfil de programació segons ranking. MTP/speculative. |
-| `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4.yml` | Qwen3.6 35B A3B NVIDIA NVFP4 | vLLM | 96 GB | 32k | 8 | 8192 | 0.85 | No | 10 | Mateix checkpoint NVFP4 amb perfil de VRAM més ajustat. |
+| `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image.yml` | Qwen3.6 35B A3B NVIDIA NVFP4 | vLLM | 96 GB | 32k | 8 | 8192 | 0.85 | No | 10 | Mateix checkpoint NVFP4 amb perfil de VRAM més ajustat. |
 | `compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml` | Qwen3.6 35B A3B Qwen FP8 | vLLM | 128 GB | 32k | 8 | 8192 | 0.85 | No | 9 | FP8 oficial Qwen; bona alternativa al NVFP4. |
 | `compose-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml` | Gemma 4 26B A4B BF16 | vLLM | 128 GB | 32k | 4 | 4096 | 0.90 | No | 6 | MoE, text-only, amb risc observat de bucles. |
 | `compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml` | Gemma 4 31B QAT W4A16 | vLLM | 128 GB | 64k | 2 | 4096 | 0.90 | Si | 7 | Dense, image, MTP, thinking, temperatura 0. |

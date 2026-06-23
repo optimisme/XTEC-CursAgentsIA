@@ -4,7 +4,7 @@
 
 1. compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml (Qwen3.6 35B A3B NVIDIA NVFP4, vLLM 0.21.1rc1, context 64k + image, qwen3_xml tools, KV cache FP8, max-num-seqs 32; health confirmat a Spark, OpenCode write provat)
 2. compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4.yml (checkpoint NVIDIA NVFP4, text-only, context 32k)
-3. compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4.yml (checkpoint NVIDIA NVFP4)
+3. compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image.yml (checkpoint NVIDIA NVFP4)
 4. compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml (checkpoint Qwen FP8)
 5. compose-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16.yml (Gemma 4 26B A4B MoE BF16, vLLM gemma4-cu130, thinking, text-only, context 32k)
 
