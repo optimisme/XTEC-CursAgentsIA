@@ -11,6 +11,7 @@ Usage:
   ./docker/modelctl.sh [action] [model]
   ./docker/modelctl.sh [model] [action]
   ./docker/modelctl.sh cache [ls|du|rm] [volume|all] [--force]
+  ./docker/modelctl.sh cache rm-model [model] --force
 
 Actions:
   list          list configured models
@@ -23,6 +24,7 @@ Actions:
   cache ls      list configured cache volumes
   cache du      show configured cache volume sizes
   cache rm      remove one configured cache volume, or all, requires --force
+  cache rm-model remove all cache volumes associated with a model, requires --force
 
 Examples:
   ./docker/modelctl.sh list
@@ -30,6 +32,7 @@ Examples:
   ./docker/modelctl.sh qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp logs
   ./docker/modelctl.sh cache du
   ./docker/modelctl.sh cache rm xtec-gguf-cache --force
+  ./docker/modelctl.sh cache rm-model qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp --force
 EOF
 }
 
@@ -95,6 +98,9 @@ elif cmd == "volume_exists":
         print(f"Unknown configured volume: {name}", file=sys.stderr)
         sys.exit(2)
     print(name)
+elif cmd == "model_volumes":
+    for volume in require_model(args[0]).get("volumes", []):
+        print(volume)
 else:
     print(f"Unknown json query: {cmd}", file=sys.stderr)
     sys.exit(2)
@@ -310,11 +316,32 @@ cache_rm() {
   docker volume rm "$target"
 }
 
+cache_rm_model() {
+  local model="${1:-}"
+  local force="${2:-}"
+
+  if [[ -z "$model" || "$force" != "--force" ]]; then
+    echo "Refusing to remove model cache volumes without an explicit model and --force." >&2
+    echo "Usage: ./docker/modelctl.sh cache rm-model [model] --force" >&2
+    exit 2
+  fi
+
+  compose_file_for "$model" >/dev/null
+  while IFS= read -r volume; do
+    if docker volume inspect "$volume" >/dev/null 2>&1; then
+      docker volume rm "$volume"
+    else
+      printf '%-18s missing\n' "$volume"
+    fi
+  done < <(json_query model_volumes "$model")
+}
+
 if [[ "${1:-}" == "cache" ]]; then
   case "${2:-ls}" in
     ls) cache_ls ;;
     du) cache_du ;;
     rm) cache_rm "${3:-}" "${4:-}" ;;
+    rm-model) cache_rm_model "${3:-}" "${4:-}" ;;
     -h|--help|help) usage ;;
     *)
       echo "Unknown cache action: ${2:-}" >&2

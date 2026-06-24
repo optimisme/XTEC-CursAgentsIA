@@ -16,17 +16,21 @@ Els serveis continuen arrencant amb Docker Compose, pero els noms curts, conteni
 fitxers compose i volums associats viuen a `models.json`. Aixi evitem mantenir la
 mateixa informacio duplicada dins d'un script amb blocs `case`.
 
-Els volums son globals i estables, independentment de si Docker Compose s'executa
-amb `-p vllm` o directament des d'aquest directori:
+Els volums de cache son especifics de cada perfil/model i es declaren a
+`models.json`. Aixo fa mes facil esborrar totes les dades d'un perfil concret
+quan ja no es fa servir, sense barrejar-les amb caches d'altres proves.
 
 | Volum | Us |
 |---|---|
-| `xtec-hf-cache` | Cache compartida de Hugging Face: pesos, tokenizers i snapshots |
-| `xtec-vllm-cache` | Cache/runtime dels serveis vLLM |
-| `xtec-gguf-cache` | Models GGUF i cache de llama.cpp |
+| `xtec-<model>-hf-cache` | Cache de Hugging Face del perfil: pesos, tokenizers i snapshots |
+| `xtec-<model>-vllm-cache` | Cache/runtime vLLM del perfil |
+| `xtec-<model>-gguf-cache` | Models GGUF i cache llama.cpp del perfil, nomes en perfils GGUF |
 
 Els compose declaren aquests volums com a externs. `modelctl.sh start ...` els crea
 automaticament abans d'arrencar el servei si encara no existeixen.
+
+Els volums globals antics `xtec-hf-cache`, `xtec-vllm-cache` i `xtec-gguf-cache`
+es mantenen al cataleg nomes com a objectius de neteja despres de la migracio.
 
 ## Estat actual
 
@@ -144,6 +148,12 @@ Esborra un volum de cache. Aquesta operacio requereix `--force`:
 ./docker/modelctl.sh cache rm xtec-gguf-cache --force
 ```
 
+Esborra tots els volums de cache associats a un model concret:
+
+```bash
+./docker/modelctl.sh cache rm-model qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image --force
+```
+
 Esborra totes les caches configurades:
 
 ```bash
@@ -156,9 +166,10 @@ Atura primer els serveis amb `./docker/modelctl.sh stop` si cal.
 ## Afegir un model
 
 1. Crea el fitxer `compose-{model}-{target}-{runtime}-{origin}-{quant}.yml`. Exemple: `compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml`.
-2. Munta `xtec-hf-cache` i el runtime que pertoqui:
-   - `xtec-vllm-cache` per vLLM.
-   - `xtec-gguf-cache` per llama.cpp/GGUF.
+2. Munta els volums especifics del model i conserva els punts interns:
+   - `xtec-<model>-hf-cache:/root/.cache/huggingface`.
+   - `xtec-<model>-vllm-cache:/root/.cache/vllm` per vLLM.
+   - `xtec-<model>-gguf-cache:/root/.cache/llama.cpp` per llama.cpp/GGUF.
 3. Afegeix l'entrada corresponent a `models.json`.
 4. Documenta el compose a `RANKING.md` i actualitza `CONFIGS.md`.
 5. Valida:

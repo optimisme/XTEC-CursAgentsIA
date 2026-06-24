@@ -21,8 +21,8 @@ services:
       - TORCH_MATMUL_PRECISION=high
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - xtec-hf-cache:/root/.cache/huggingface
-      - xtec-vllm-cache:/root/.cache/vllm
+      - xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-hf-cache:/root/.cache/huggingface
+      - xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache:/root/.cache/vllm
     ports:
       - "8000:8000"
     healthcheck:
@@ -62,7 +62,8 @@ services:
           --quantization modelopt \
           --kv-cache-dtype fp8 \
           --attention-backend flashinfer \
-          --moe-backend marlin \
+          --moe-backend flashinfer_b12x \
+          --linear-backend flashinfer_cutlass \
           --gpu-memory-utilization 0.80 \
           --max-model-len 65536 \
           --max-num-seqs 32 \
@@ -75,9 +76,9 @@ services:
           --reasoning-parser qwen3
 
 volumes:
-  xtec-hf-cache:
-    name: xtec-hf-cache
+  xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-hf-cache:
+    name: xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-hf-cache
     external: true
-  xtec-vllm-cache:
-    name: xtec-vllm-cache
+  xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache:
+    name: xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache
     external: true

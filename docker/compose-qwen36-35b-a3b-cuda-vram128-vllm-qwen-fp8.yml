@@ -17,8 +17,8 @@ services:
       - CUTE_DSL_ARCH=sm_121a
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - xtec-hf-cache:/root/.cache/huggingface
-      - xtec-vllm-cache:/root/.cache/vllm
+      - xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-hf-cache:/root/.cache/huggingface
+      - xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-vllm-cache:/root/.cache/vllm
     ports:
       - "8000:8000"
     healthcheck:
@@ -69,9 +69,9 @@ services:
           --enable-auto-tool-choice
 
 volumes:
-  xtec-hf-cache:
-    name: xtec-hf-cache
+  xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-hf-cache:
+    name: xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-hf-cache
     external: true
-  xtec-vllm-cache:
-    name: xtec-vllm-cache
+  xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-vllm-cache:
+    name: xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-vllm-cache
     external: true

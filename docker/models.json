@@ -4,13 +4,115 @@
   "endpoint": "http://127.0.0.1:8000/v1",
   "volumes": {
     "xtec-hf-cache": {
-      "description": "Shared Hugging Face cache for model weights, tokenizers, and snapshots."
+      "description": "Legacy shared Hugging Face cache kept for cleanup after per-compose cache migration."
     },
     "xtec-vllm-cache": {
-      "description": "Runtime cache used by vLLM containers."
+      "description": "Legacy shared vLLM runtime cache kept for cleanup after per-compose cache migration."
     },
     "xtec-gguf-cache": {
-      "description": "GGUF and llama.cpp cache used by llama.cpp containers."
+      "description": "Legacy shared GGUF cache kept for cleanup after per-compose cache migration."
+    },
+    "xtec-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image-hf-cache": {
+      "description": "Hugging Face cache for gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image."
+    },
+    "xtec-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image."
+    },
+    "xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-hf-cache": {
+      "description": "Hugging Face cache for gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16."
+    },
+    "xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-vllm-cache": {
+      "description": "vLLM runtime cache for gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16."
+    },
+    "xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-hf-cache": {
+      "description": "Hugging Face cache for gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image."
+    },
+    "xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image."
+    },
+    "xtec-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-hf-cache": {
+      "description": "Hugging Face cache for gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16."
+    },
+    "xtec-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-vllm-cache": {
+      "description": "vLLM runtime cache for gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16."
+    },
+    "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-hf-cache": {
+      "description": "Hugging Face cache for gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp."
+    },
+    "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-vllm-cache": {
+      "description": "vLLM runtime cache for gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp."
+    },
+    "xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-hf-cache": {
+      "description": "Hugging Face cache for qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image."
+    },
+    "xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image."
+    },
+    "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache": {
+      "description": "Hugging Face cache for qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp."
+    },
+    "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache": {
+      "description": "GGUF/llama.cpp cache for qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-hf-cache": {
+      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-vllm-cache": {
+      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-hf-cache": {
+      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-hf-cache": {
+      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-vllm-cache": {
+      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-hf-cache": {
+      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-vllm-cache": {
+      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8."
+    },
+    "xtec-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k-hf-cache": {
+      "description": "Hugging Face cache for ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k."
+    },
+    "xtec-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k-vllm-cache": {
+      "description": "vLLM runtime cache for ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k."
+    },
+    "xtec-ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8-hf-cache": {
+      "description": "Hugging Face cache for ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8."
+    },
+    "xtec-ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8-vllm-cache": {
+      "description": "vLLM runtime cache for ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8."
+    },
+    "xtec-ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8-hf-cache": {
+      "description": "Hugging Face cache for ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8."
+    },
+    "xtec-ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8-vllm-cache": {
+      "description": "vLLM runtime cache for ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8."
+    },
+    "xtec-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-hf-cache": {
+      "description": "Hugging Face cache for ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8."
+    },
+    "xtec-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-vllm-cache": {
+      "description": "vLLM runtime cache for ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8."
+    },
+    "xtec-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image-hf-cache": {
+      "description": "Hugging Face cache for gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image."
+    },
+    "xtec-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image."
+    },
+    "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image-hf-cache": {
+      "description": "Hugging Face cache for gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image."
+    },
+    "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image."
     }
   },
   "models": {
@@ -19,8 +121,8 @@
       "container": "gemma4_31b_it_cuda_vram128_vllm_google_qat_w4a16_64k_image",
       "engine": "vllm",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image-hf-cache",
+        "xtec-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image-vllm-cache"
       ],
       "description": "Gemma 4 31B QAT W4A16 cuda-vram128 profile with 32k context, one image per prompt, Gemma 4 MTP speculative decoding, thinking, and temperature 0."
     },
@@ -29,8 +131,8 @@
       "container": "gemma4_26b_a4b_it_cuda_vram128_vllm_google_bf16",
       "engine": "vllm",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-hf-cache",
+        "xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-vllm-cache"
       ],
       "description": "Gemma 4 26B A4B cuda-vram128 BF16 profile."
     },
@@ -39,8 +141,8 @@
       "container": "gemma4_26b_a4b_it_cuda_vram128_vllm_google_bf16_64k_image",
       "engine": "vllm",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-hf-cache",
+        "xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-vllm-cache"
       ],
       "description": "Gemma 4 26B A4B cuda-vram128 BF16 profile with 32k context and one image per prompt."
     },
@@ -49,8 +151,8 @@
       "container": "gemma4_12b_it_cuda_vram16_vllm_google_qat_w4a16",
       "engine": "vllm",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-hf-cache",
+        "xtec-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-vllm-cache"
       ],
       "description": "Gemma 4 12B QAT W4A16 local vLLM profile."
     },
@@ -59,8 +161,8 @@
       "container": "gemma4_e4b_it_cuda_vram16_vllm_google_qat_w4a16_mtp",
       "engine": "vllm",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-hf-cache",
+        "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-vllm-cache"
       ],
       "description": "Gemma 4 E4B QAT W4A16 local vLLM profile for cuda-vram16 with Gemma 4 MTP speculative decoding enabled."
     },
@@ -70,8 +172,8 @@
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-hf-cache",
+        "xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-vllm-cache"
       ],
       "description": "Qwen3-VL 2B Instruct FP8 image-only vLLM profile with 32k context on port 8000."
     },
@@ -80,8 +182,8 @@
       "container": "qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp",
       "engine": "llamacpp",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-gguf-cache"
+        "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache",
+        "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache"
       ],
       "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile."
     },
@@ -90,8 +192,8 @@
       "container": "qwen36_35b_a3b_cuda_vram128_vllm_nvidia_nvfp4",
       "engine": "vllm",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-hf-cache",
+        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram128 vLLM profile with MTP speculative decoding."
     },
@@ -101,8 +203,8 @@
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-hf-cache",
+        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram128 vLLM profile with 64k context, image input, KV cache FP8, and qwen3_xml tool calling."
     },
@@ -111,8 +213,8 @@
       "container": "qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4",
       "engine": "vllm",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-hf-cache",
+        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile."
     },
@@ -121,8 +223,8 @@
       "container": "qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8",
       "engine": "vllm",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-hf-cache",
+        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B official Qwen FP8 vLLM profile for CUDA 128GB VRAM."
     },
@@ -132,8 +234,8 @@
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k-hf-cache",
+        "xtec-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k-vllm-cache"
       ],
       "description": "Ministral 3 3B Instruct FP8 text-only vLLM profile with 128k context and tool calling on port 8000."
     },
@@ -143,8 +245,8 @@
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8-hf-cache",
+        "xtec-ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8-vllm-cache"
       ],
       "description": "Ministral 3 14B Instruct FP8 text-only vLLM profile with 32k context and tool calling on port 8000."
     },
@@ -154,8 +256,8 @@
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8-hf-cache",
+        "xtec-ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8-vllm-cache"
       ],
       "description": "Ministral 3 8B Instruct FP8 text-only vLLM profile with 32k context and tool calling on port 8000."
     },
@@ -165,8 +267,8 @@
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-hf-cache",
+        "xtec-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-vllm-cache"
       ],
       "description": "Ministral 3 3B Instruct FP8 text-only vLLM profile with 32k context and tool calling on port 8000."
     },
@@ -176,8 +278,8 @@
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image-hf-cache",
+        "xtec-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image-vllm-cache"
       ],
       "description": "Gemma 4 12B QAT W4A16 vLLM image profile with 64k context, one image per prompt, MTP, thinking, and temperature 0."
     },
@@ -187,8 +289,8 @@
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
-        "xtec-hf-cache",
-        "xtec-vllm-cache"
+        "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image-hf-cache",
+        "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image-vllm-cache"
       ],
       "description": "Gemma 4 E4B QAT W4A16 MTP vLLM image profile with 64k context, one image per prompt, thinking, and temperature 0."
     }

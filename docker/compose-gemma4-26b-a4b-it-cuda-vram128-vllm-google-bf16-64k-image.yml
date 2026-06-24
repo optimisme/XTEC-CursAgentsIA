@@ -17,8 +17,8 @@ services:
       - HF_HUB_DISABLE_XET=1
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - xtec-hf-cache:/root/.cache/huggingface
-      - xtec-vllm-cache:/root/.cache/vllm
+      - xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-hf-cache:/root/.cache/huggingface
+      - xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-vllm-cache:/root/.cache/vllm
     ports:
       - "8000:8000"
     healthcheck:
@@ -70,9 +70,9 @@ services:
           --default-chat-template-kwargs '{"enable_thinking": true}'
 
 volumes:
-  xtec-hf-cache:
-    name: xtec-hf-cache
+  xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-hf-cache:
+    name: xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-hf-cache
     external: true
-  xtec-vllm-cache:
-    name: xtec-vllm-cache
+  xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-vllm-cache:
+    name: xtec-gemma4-26b-a4b-it-cuda-vram128-vllm-google-bf16-64k-image-vllm-cache
     external: true

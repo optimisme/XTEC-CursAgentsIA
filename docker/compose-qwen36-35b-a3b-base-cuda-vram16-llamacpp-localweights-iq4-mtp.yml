@@ -13,8 +13,8 @@ services:
       - LLAMA_CACHE=/root/.cache/llama.cpp
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - xtec-hf-cache:/root/.cache/huggingface
-      - xtec-gguf-cache:/root/.cache/llama.cpp
+      - xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache:/root/.cache/huggingface
+      - xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache:/root/.cache/llama.cpp
     ports:
       - "8000:8000"
     healthcheck:
@@ -69,9 +69,9 @@ services:
           --chat-template-kwargs '{"enable_thinking":true}'
 
 volumes:
-  xtec-hf-cache:
-    name: xtec-hf-cache
+  xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache:
+    name: xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache
     external: true
-  xtec-gguf-cache:
-    name: xtec-gguf-cache
+  xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache:
+    name: xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache
     external: true

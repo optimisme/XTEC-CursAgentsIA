@@ -18,8 +18,8 @@ services:
       - CUTE_DSL_ARCH=sm_121a
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - xtec-hf-cache:/root/.cache/huggingface
-      - xtec-vllm-cache:/root/.cache/vllm
+      - xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-hf-cache:/root/.cache/huggingface
+      - xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-vllm-cache:/root/.cache/vllm
     ports:
       - "8000:8000"
     healthcheck:
@@ -66,9 +66,9 @@ services:
           --limit-mm-per-prompt '{"image": 1, "video": 0, "audio": 0}'
 
 volumes:
-  xtec-hf-cache:
-    name: xtec-hf-cache
+  xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-hf-cache:
+    name: xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-hf-cache
     external: true
-  xtec-vllm-cache:
-    name: xtec-vllm-cache
+  xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-vllm-cache:
+    name: xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-vllm-cache
     external: true
