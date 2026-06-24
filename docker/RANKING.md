@@ -3,13 +3,16 @@
 ## vram 96gb-128gb
 
 1. compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml (Qwen3.6 35B A3B NVIDIA NVFP4, vLLM 0.23.0, context 64k + image, qwen3_xml tools, KV cache FP8, FlashInfer B12X MoE, max-num-seqs 32; health confirmat a Spark, OpenCode write provat)
-2. compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4.yml (checkpoint NVIDIA NVFP4, text-only, context 32k, perfil ajustat per 96GB)
-3. compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml (checkpoint Qwen FP8, fallback si NVFP4 dona regressions)
+2. compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image.yml (checkpoint NVIDIA NVFP4, context 64k + image, perfil ajustat per 96GB, FlashInfer B12X MoE, max-num-seqs 20)
+3. compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image.yml (mateix checkpoint NVIDIA NVFP4, context 64k + image, backend Marlin, max-num-seqs 20; variant de compatibilitat/prova)
+4. compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml (checkpoint Qwen FP8, fallback si NVFP4 dona regressions)
 
 ## vram 96gb-128gb (64k + image)
 
 1. compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml (Qwen3.6 35B A3B NVIDIA NVFP4, vLLM 0.23.0, context 64k + image, qwen3_xml tools, KV cache FP8, FlashInfer B12X MoE, max-num-seqs 32; health confirmat a Spark, OpenCode write provat)
-2. compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml (Gemma 4 31B dense QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, context 64k + image)
+2. compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image.yml (Qwen3.6 35B A3B NVIDIA NVFP4, context 64k + image, qwen3_xml tools, KV cache FP8, FlashInfer B12X MoE, max-num-seqs 20)
+3. compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image.yml (Qwen3.6 35B A3B NVIDIA NVFP4, context 64k + image, qwen3_xml tools, KV cache FP8, backend Marlin, max-num-seqs 20)
+4. compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml (Gemma 4 31B dense QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, context 64k + image)
 
 ## vram 32gb
 
