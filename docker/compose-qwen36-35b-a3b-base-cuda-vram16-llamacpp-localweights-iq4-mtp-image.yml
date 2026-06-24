@@ -1,21 +1,21 @@
-# Stop:    docker compose -f compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp.yml down
-# Restart: docker compose -f compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp.yml up -d
-# Logs:    docker logs -f --tail 80 qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp
+# Stop:    docker compose -f compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml down
+# Restart: docker compose -f compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml up -d
+# Logs:    docker logs -f --tail 80 qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp_image
 # Note:    llama.cpp / GGUF service, not vLLM. RTX 4060 Ti 16 GB with partial GPU offload.
 #          Image input uses the Unsloth Qwen3.6 mmproj with CPU mmproj execution to save VRAM.
 services:
   qwen-llamacpp:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
     pull_policy: always
-    container_name: qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp
+    container_name: qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp_image
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
       - LLAMA_CACHE=/root/.cache/llama.cpp
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache:/root/.cache/huggingface
-      - xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache:/root/.cache/llama.cpp
+      - xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-hf-cache:/root/.cache/huggingface
+      - xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache:/root/.cache/llama.cpp
     ports:
       - "8000:8000"
     healthcheck:
@@ -72,9 +72,9 @@ services:
           --chat-template-kwargs '{"enable_thinking":true}'
 
 volumes:
-  xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache:
-    name: xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache
+  xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-hf-cache:
+    name: xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-hf-cache
     external: true
-  xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache:
-    name: xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache
+  xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache:
+    name: xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache
     external: true

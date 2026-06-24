@@ -30,12 +30,12 @@ Actions:
 Examples:
   ./docker/modelctl.sh list
   ./docker/modelctl.sh list-full
-  ./docker/modelctl.sh restart qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp
-  ./docker/modelctl.sh start qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp
-  ./docker/modelctl.sh qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp logs
+  ./docker/modelctl.sh restart qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image
+  ./docker/modelctl.sh start qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image
+  ./docker/modelctl.sh qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image logs
   ./docker/modelctl.sh cache du
   ./docker/modelctl.sh cache rm xtec-gguf-cache --force
-  ./docker/modelctl.sh cache rm-model qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp --force
+  ./docker/modelctl.sh cache rm-model qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image --force
 EOF
 }
 
