@@ -14,7 +14,8 @@ Usage:
   ./docker/modelctl.sh cache rm-model [model] --force
 
 Actions:
-  list          list configured models
+  list          list configured model names
+  list-full     list configured models with engine, container, and compose file
   start         start selected model without stopping others
   restart       stop all configured model containers, then start selected model
   stop          stop all configured model containers
@@ -28,6 +29,8 @@ Actions:
 
 Examples:
   ./docker/modelctl.sh list
+  ./docker/modelctl.sh list-full
+  ./docker/modelctl.sh restart qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp
   ./docker/modelctl.sh start qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp
   ./docker/modelctl.sh qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp logs
   ./docker/modelctl.sh cache du
@@ -66,6 +69,9 @@ elif cmd == "compose_project":
 elif cmd == "endpoint":
     print(cfg.get("endpoint", "http://127.0.0.1:8000/v1"))
 elif cmd == "list_models":
+    for name in sorted(models):
+        print(name)
+elif cmd == "list_models_full":
     default = cfg["default_model"]
     for name in sorted(models):
         model = models[name]
@@ -178,18 +184,18 @@ ensure_tokens_env() {
 }
 
 normalize_args() {
-  ACTION="${1:-restart}"
-  MODEL="${2:-$(default_model)}"
+  ACTION=""
+  MODEL=""
 
   if [[ $# -eq 0 ]]; then
-    ACTION="restart"
-    MODEL="$(default_model)"
-    return
+    echo "Missing action." >&2
+    usage >&2
+    exit 2
   fi
 
   if [[ $# -eq 1 ]]; then
     case "$1" in
-      list|stop|ps|cache|-h|--help|help)
+      list|list-full|stop|ps|cache|-h|--help|help)
         ACTION="$1"
         MODEL="$(default_model)"
         ;;
@@ -198,8 +204,15 @@ normalize_args() {
         MODEL="$(default_model)"
         ;;
       *)
-        ACTION="restart"
-        MODEL="$1"
+        if json_query compose "$1" >/dev/null 2>&1; then
+          echo "Missing action for model: $1" >&2
+          echo "Use one of: start, restart, logs, info." >&2
+          echo "Example: ./docker/modelctl.sh restart $1" >&2
+        else
+          echo "Unknown action or model: $1" >&2
+          usage >&2
+        fi
+        exit 2
         ;;
     esac
     return
@@ -215,6 +228,11 @@ normalize_args() {
         start|restart|logs|info)
           ACTION="$2"
           MODEL="$1"
+          ;;
+        *)
+          echo "Unknown action: $2" >&2
+          usage >&2
+          exit 2
           ;;
       esac
       ;;
@@ -357,6 +375,9 @@ normalize_args "$@"
 case "$ACTION" in
   list)
     json_query list_models
+    ;;
+  list-full)
+    json_query list_models_full
     ;;
   restart)
     compose_file_for "$MODEL" >/dev/null
