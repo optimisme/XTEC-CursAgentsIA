@@ -13,7 +13,7 @@ La columna `VRAM req.` surt del perfil del nom del compose i representa el marge
 | `compose-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image.yml` | Gemma 4 31B QAT W4A16 | vLLM | 128 GB | 64k | 2 | 4096 | 0.90 | Si | 7 | Dense, image, MTP, thinking, temperatura 0. |
 | `compose-ministral3-14b-instruct-cuda-vram32-vllm-mistral-fp8.yml` | Ministral 3 14B Instruct FP8 | vLLM | 32 GB | 32k | 4 | 8192 | 0.85 | No | 8 | Més capacitat que 8B; text-only en aquest stack. |
 | `compose-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k.yml` | Ministral 3 3B Instruct FP8 | vLLM | 16 GB | 128k | 8 | 16384 | 0.85 | No | 5 | Variant de context llarg; més memòria KV i latència. |
-| `compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp.yml` | Qwen3.6 35B A3B GGUF IQ4_XS | llama.cpp | 16 GB | 64k | 1 | n/d | n/d | No | 10 | Mateixa capacitat alta de programació i més context; menys concurrència i throughput per `-np 1` i offload parcial (`-ngl 24`). |
+| `compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp.yml` | Qwen3.6 35B A3B GGUF IQ4_XS | llama.cpp | 16 GB | 64k | 1 | n/d | n/d | Si | 10 | Mateixa capacitat alta de programació i més context; menys concurrència i throughput per `-np 1` i offload parcial (`-ngl 24`). Imatge habilitada amb `mmproj-BF16.gguf` d'Unsloth i `--no-mmproj-offload` per reduir VRAM. |
 | `compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16.yml` | Gemma 4 12B QAT W4A16 | vLLM | 16 GB | 32k | 1 | 4096 | 0.90 | No | 5 | Text-only; image desactivada amb `image: 0`. |
 | `compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16-64k-image.yml` | Gemma 4 12B QAT W4A16 | vLLM | 16 GB | 64k | 1 | 4096 | 0.90 | Si | 5 | Variant image amb context llarg i KV cache FP8. |
 | `compose-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image.yml` | Gemma 4 E4B QAT W4A16 | vLLM | 16 GB | 64k | 1 | 4096 | 0.92 | Si | 4 | Variant image petita amb MTP. |
@@ -23,6 +23,6 @@ La columna `VRAM req.` surt del perfil del nom del compose i representa el marge
 
 - `Concurrència` és `--max-num-seqs` en vLLM i `-np` en llama.cpp. No equival sempre a usuaris fluids si tots fan prompts llargs alhora.
 - `Batched tokens` és `--max-num-batched-tokens` en vLLM. En llama.cpp queda com `n/d`.
-- `Imatge = Si` només quan el perfil permet imatge realment (`image > 0` o perfil `-image`). Els perfils Gemma text-only poden tenir `image: 0`, que compta com a imatge desactivada.
+- `Imatge = Si` només quan el perfil permet imatge realment (`image > 0`, perfil `-image` o `--mmproj`/`--mmproj-url` en llama.cpp). Els perfils Gemma text-only poden tenir `image: 0`, que compta com a imatge desactivada.
 - Els Ministral 3 són models oficialment multimodals, però els perfils actuals són text-only perquè el mode image ha fallat amb la imatge Docker vLLM actual.
 - Les puntuacions no són benchmarks; són una guia pràctica per triar perfil de programació dins aquest repositori.

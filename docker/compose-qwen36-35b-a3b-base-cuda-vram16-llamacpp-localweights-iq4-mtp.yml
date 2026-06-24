@@ -2,6 +2,7 @@
 # Restart: docker compose -f compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp.yml up -d
 # Logs:    docker logs -f --tail 80 qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp
 # Note:    llama.cpp / GGUF service, not vLLM. RTX 4060 Ti 16 GB with partial GPU offload.
+#          Image input uses the Unsloth Qwen3.6 mmproj with CPU mmproj execution to save VRAM.
 services:
   qwen-llamacpp:
     image: ghcr.io/ggml-org/llama.cpp:server-cuda
@@ -48,6 +49,8 @@ services:
         echo "Model cache: $${LLAMA_CACHE}"
         exec /app/llama-server \
           -hf localweights/Qwen3.6-35B-A3B-MTP-IQ4_XS-GGUF:IQ4_XS \
+          --mmproj-url https://huggingface.co/unsloth/Qwen3.6-35B-A3B-GGUF/resolve/main/mmproj-BF16.gguf \
+          --no-mmproj-offload \
           --alias active-model \
           --host 0.0.0.0 \
           --port 8000 \

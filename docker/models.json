@@ -125,7 +125,7 @@
         "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-hf-cache",
         "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-gguf-cache"
       ],
-      "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile."
+      "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile with image input through the Unsloth Qwen3.6 mmproj."
     },
     "qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml",
