@@ -37,7 +37,7 @@ es mantenen al cataleg nomes com a objectius de neteja despres de la migracio.
 El model per defecte de `models.json` es:
 
 ```text
-ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8
+qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image
 ```
 
 Tots els `compose-*.yml` que es mantenen en aquesta carpeta han d'apareixer a
@@ -95,22 +95,28 @@ Llista els models configurats:
 ./docker/modelctl.sh list
 ```
 
+Mostra la vista detallada amb motor, contenidor i compose:
+
+```bash
+./docker/modelctl.sh list-full
+```
+
 Arrenca un model sense parar altres serveis:
 
 ```bash
-./docker/modelctl.sh start ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8
+./docker/modelctl.sh start qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image
 ```
 
 Reinicia un model aturant abans tots els contenidors configurats:
 
 ```bash
-./docker/modelctl.sh restart ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8
+./docker/modelctl.sh restart qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image
 ```
 
 Segueix els logs:
 
 ```bash
-./docker/modelctl.sh logs ministral3-8b-instruct-cuda-vram32-vllm-mistral-fp8
+./docker/modelctl.sh logs qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image
 ```
 
 El perfil arrencat exposa el model com `active-model` a
