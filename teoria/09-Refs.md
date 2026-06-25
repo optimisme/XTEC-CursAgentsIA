@@ -30,6 +30,8 @@
 
 - [Inference for LLMs and local hardware](https://x.com/TheAhmadOsman/status/2057183854444843202)
 
+- [How does vLLM Work](https://x.com/amitiitbhu/article/2069384034074107905)
+
 # Vídeos
 
 - [Esto es lo que Aprendí Adaptando Claude Code para SDD](https://www.youtube.com/watch?v=ElGlTv2A_bM&t=11s), explicació arnés amb "Spec driven development"
