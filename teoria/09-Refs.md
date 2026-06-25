@@ -37,3 +37,5 @@
 - [Construyo mi propio arnés de IA](https://www.youtube.com/watch?v=2B9QTg_-nyc), explicació tool calls
 
 - [Everything looks fine at 4-bit](https://www.youtube.com/watch?v=8IzUyLLn5NA), comparació entre quantitzacions
+
+- [3 New PCs, One giant model](https://www.youtube.com/watch?v=IMJxyrD7iOs), introducció a múltiples Intel NUC executant models amb OpenVINO
