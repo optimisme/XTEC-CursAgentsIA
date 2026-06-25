@@ -21,8 +21,11 @@
 ## vram 16gb
 
 1. ⭐⭐ compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml (llama.cpp GGUF, NVIDIA CUDA, alta capacitat però poca concurrència, imatge via mmproj Unsloth en CPU)
-2. compose-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k.yml (Ministral 3 3B Instruct FP8, vLLM 0.23.0, tools, text-only, context 128k, port 8000)
-3. compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16.yml (Gemma 4 12B QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, text-only)
+2. compose-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image.yml (Ornith-1.0 9B dense Q8_0 GGUF, llama.cpp, context 64k + image, port 8000; variant de prova de qualitat/VRAM)
+3. compose-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image.yml (Ornith-1.0 9B dense Q6_K GGUF, llama.cpp, context 64k + image, port 8000)
+4. compose-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k.yml (Ornith-1.0 9B dense Q6_K GGUF, llama.cpp, context 64k, text-only, port 8000)
+5. compose-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k.yml (Ministral 3 3B Instruct FP8, vLLM 0.23.0, tools, text-only, context 128k, port 8000)
+6. compose-gemma4-12b-it-cuda-vram16-vllm-google-qat-w4a16.yml (Gemma 4 12B QAT W4A16, vLLM 0.23.0, MTP, thinking, temperature 0, text-only)
 
 ## vram 16gb (64k + image)
 

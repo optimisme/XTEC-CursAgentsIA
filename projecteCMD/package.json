@@ -1,0 +1,11 @@
+{
+  "name": "function-calling-cli",
+  "version": "1.0.0",
+  "description": "Minimal function calling demo with student data",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch ./src/app.js",
+    "start": "node ./src/app.js"
+  }
+}

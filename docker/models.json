@@ -36,6 +36,24 @@
     "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache": {
       "description": "GGUF/llama.cpp cache for qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image."
     },
+    "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image-hf-cache": {
+      "description": "Hugging Face cache for ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image."
+    },
+    "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image-gguf-cache": {
+      "description": "GGUF/llama.cpp cache for ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image."
+    },
+    "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-hf-cache": {
+      "description": "Hugging Face cache for ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k."
+    },
+    "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-gguf-cache": {
+      "description": "GGUF/llama.cpp cache for ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k."
+    },
+    "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image-hf-cache": {
+      "description": "Hugging Face cache for ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image."
+    },
+    "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image-gguf-cache": {
+      "description": "GGUF/llama.cpp cache for ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image."
+    },
     "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-hf-cache": {
       "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image."
     },
@@ -126,6 +144,39 @@
         "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache"
       ],
       "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile with image input through the Unsloth Qwen3.6 mmproj."
+    },
+    "ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image": {
+      "compose": "compose-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image.yml",
+      "container": "ornith10_9b_cuda_vram16_llamacpp_deepreinforce_gguf_q6k_image",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image-hf-cache",
+        "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-image-gguf-cache"
+      ],
+      "description": "DeepReinforce Ornith-1.0 9B Q6_K GGUF llama.cpp image profile with 64k context, OpenAI-compatible API, and Qwen3.5 mmproj."
+    },
+    "ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k": {
+      "compose": "compose-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k.yml",
+      "container": "ornith10_9b_cuda_vram16_llamacpp_deepreinforce_gguf_q6k",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-hf-cache",
+        "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q6k-gguf-cache"
+      ],
+      "description": "DeepReinforce Ornith-1.0 9B Q6_K GGUF llama.cpp text-only profile with 64k context and OpenAI-compatible API."
+    },
+    "ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image": {
+      "compose": "compose-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image.yml",
+      "container": "ornith10_9b_cuda_vram16_llamacpp_deepreinforce_gguf_q8_image",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image-hf-cache",
+        "xtec-ornith10-9b-cuda-vram16-llamacpp-deepreinforce-gguf-q8-image-gguf-cache"
+      ],
+      "description": "DeepReinforce Ornith-1.0 9B Q8_0 GGUF llama.cpp image profile with 64k context, OpenAI-compatible API, and Qwen3.5 mmproj."
     },
     "qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml",

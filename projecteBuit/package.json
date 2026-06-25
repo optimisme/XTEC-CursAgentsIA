@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@opencode-ai/plugin": "1.17.9"
+  },
+  "devDependencies": {
+    "htmlhint": "^1.9.2"
+  }
+}

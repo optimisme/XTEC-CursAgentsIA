@@ -1,0 +1,19 @@
+{
+  "name": "projecterag",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local RAG workflow with OpenCode-style agent and MCP server",
+  "type": "module",
+  "scripts": {
+    "start:mcp": "node .opencode/mcp/document-rag/server.js",
+    "ingest": "node .opencode/mcp/document-rag/src/ingest.js",
+    "search": "node .opencode/mcp/document-rag/src/search.js",
+    "test": "npm run test --prefix .opencode/mcp/document-rag"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "mammoth": "^1.6.0",
+    "pdf-parse": "^1.1.1",
+    "xlsx": "^0.18.5"
+  }
+}
