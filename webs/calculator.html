@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santronic 90S Calculator</title>
+    <link rel="stylesheet" href="calculator.css">
+</head>
+<body>
+    <div class="calculator-body">
+        <div class="calculator-bezel">
+            <div class="screen" id="screen">
+                <span id="display">0</span>
+            </div>
+        </div>
+        <div class="calculator-panel">
+            <div class="power-section">
+                <span class="power-label">ON</span>
+                <div class="switch-container">
+                    <input type="checkbox" class="power-switch" id="powerSwitch" checked>
+                    <div class="switch-track"></div>
+                </div>
+                <span class="power-label">OFF</span>
+            </div>
+            <span class="brand">SANTRONIC 90S</span>
+            <div class="buttons-grid">
+                <div class="row top-row">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <button class="btn btn-red" data-action="ce">CE</button>
+                    <button class="btn btn-red" data-action="clear">C</button>
+                </div>
+                <div class="row">
+                    <button class="btn btn-black" data-action="percent">%</button>
+                    <button class="btn btn-gray" data-value="7">7</button>
+                    <button class="btn btn-gray" data-value="8">8</button>
+                    <button class="btn btn-gray" data-value="9">9</button>
+                    <button class="btn btn-black" data-action="operator" data-value="÷">÷</button>
+                </div>
+                <div class="row">
+                    <button class="btn btn-black" data-action="sqrt">√x</button>
+                    <button class="btn btn-gray" data-value="4">4</button>
+                    <button class="btn btn-gray" data-value="5">5</button>
+                    <button class="btn btn-gray" data-value="6">6</button>
+                    <button class="btn btn-black" data-action="operator" data-value="×">×</button>
+                </div>
+                <div class="row">
+                    <button class="btn btn-black" data-action="pi">π</button>
+                    <button class="btn btn-gray" data-value="1">1</button>
+                    <button class="btn btn-gray" data-value="2">2</button>
+                    <button class="btn btn-gray" data-value="3">3</button>
+                    <button class="btn btn-black" data-action="operator" data-value="+">+</button>
+                </div>
+                <div class="row">
+                    <button class="btn btn-black" data-action="sign">+/−</button>
+                    <button class="btn btn-gray" data-value="0">0</button>
+                    <button class="btn btn-gray" data-value=".">.</button>
+                    <button class="btn btn-black" data-action="operator" data-value="-">−</button>
+                    <button class="btn btn-black" data-action="equals">=</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="calculator.js"></script>
+</body>
+</html>
