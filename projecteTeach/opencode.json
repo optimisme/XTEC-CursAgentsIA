@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode/big-pickle",
+  "model": "agents-duckdns/active-model",
   "default_agent": "guided-teacher",
   "agent": {
     "guided-teacher": {
@@ -51,6 +51,32 @@
       "options": {
         "baseURL": "https://agents.ieti.site/v1",
         "apiKey": "{env:IETI_AGENT_KEY}",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 65536,
+            "output": 8192
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": true
+        }
+      }
+    },
+    "agents-duckdns": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "DuckDNS Agents",
+      "options": {
+        "baseURL": "http://www.cursagents.duckdns.org/v1",
+        "apiKey": "{env:DUCKDNS_AGENT_KEY}",
         "timeout": 900000,
         "chunkTimeout": 600000
       },

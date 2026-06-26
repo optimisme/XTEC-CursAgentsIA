@@ -2,7 +2,7 @@
 # Start:   docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml up -d
 # Logs:    docker logs -f --tail 80 qwen36_35b_a3b_cuda_vram128_vllm_nvidia_nvfp4_64k_image
 # Note:    NVIDIA Qwen3.6 35B A3B NVFP4 profile using vLLM 0.23.0
-#          and the Marlin MoE backend recommended by NVIDIA for DGX Spark.
+#          with FlashInfer B12X MoE and FlashInfer CUTLASS linear backends.
 services:
   qwen-vllm:
     image: vllm/vllm-openai:v0.23.0
