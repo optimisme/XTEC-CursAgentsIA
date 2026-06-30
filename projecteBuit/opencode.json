@@ -1,6 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "agents-duckdns/active-model",
+  "model": "agents-ieti/active-model",
   "default_agent": "build",
   "enabled_providers": ["ieti-agents", "agents-duckdns", "opencode", "vram16-vllm", "spark-vllm", "ollama"],
   "permission": {
@@ -50,6 +50,20 @@
       },
       "models": {
         "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 65536,
+            "output": 8192
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": true
+        },
+        "music-model": {
           "name": "Active Model",
           "limit": {
             "context": 65536,

@@ -1,24 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "agents-duckdns/active-model",
-  "default_agent": "guided-teacher",
-  "agent": {
-    "guided-teacher": {
-      "mode": "primary"
-    },
-    "lesson-selector": {
-      "mode": "subagent"
-    },
-    "lesson-reviewer": {
-      "mode": "subagent"
-    },
-    "build": {
-      "disable": true
-    },
-    "plan": {
-      "disable": true
-    }
-  },
+  "model": "agents-ieti/active-model",
+  "default_agent": "build",
+  "enabled_providers": ["ieti-agents", "agents-duckdns", "opencode", "vram16-vllm", "spark-vllm", "ollama"],
   "permission": {
     "read": "allow",
     "grep": "allow",
@@ -34,10 +18,20 @@
     "reserved": 4096
   },
   "snapshot": false,
-  "instructions": [
-    "AGENTS.md"
-  ],
+  "instructions": [],
   "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "granite4.1:3b": {
+          "name": "granite4.1:3b"
+        }
+      }
+    },
     "opencode": {
       "options": {
         "apiKey": "{env:OPENCODE_ZEN_API_KEY}",
@@ -56,6 +50,20 @@
       },
       "models": {
         "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 65536,
+            "output": 8192
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": true
+        },
+        "music-model": {
           "name": "Active Model",
           "limit": {
             "context": 65536,
@@ -92,6 +100,58 @@
             "output": ["text"]
           },
           "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": true
+        }
+      }
+    },
+    "vram16-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "16GB vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8002/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 32768,
+            "output": 4096
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "max_tokens": 4096,
+          "tool_call": true,
+          "reasoning": true
+        }
+      }
+    },
+    "spark-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Spark vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8001/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "Active Model",
+          "limit": {
+            "context": 32768,
+            "output": 4096
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "max_tokens": 4096,
           "tool_call": true,
           "reasoning": true
         }

@@ -32,6 +32,8 @@
 
 - [How does vLLM Work](https://x.com/amitiitbhu/article/2069384034074107905)
 
+- [AEON Hugging Face](https://huggingface.co/AEON-7/models)
+
 # Vídeos
 
 - [Esto es lo que Aprendí Adaptando Claude Code para SDD](https://www.youtube.com/watch?v=ElGlTv2A_bM&t=11s), explicació arnés amb "Spec driven development"

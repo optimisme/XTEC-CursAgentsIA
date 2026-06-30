@@ -60,6 +60,12 @@
     "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache": {
       "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image."
     },
+    "xtec-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image-hf-cache": {
+      "description": "Hugging Face cache for qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image."
+    },
+    "xtec-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image."
+    },
     "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-hf-cache": {
       "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8."
     },
@@ -188,6 +194,17 @@
         "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram128 vLLM profile with 64k context, image input, KV cache FP8, and qwen3_xml tool calling."
+    },
+    "qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image": {
+      "compose": "compose-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image.yml",
+      "container": "qwen36_27b_aeon_ultimate_uncensored_multimodal_cuda_vram128_vllm_aeon_nvfp4_mtp_xs_64k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image-hf-cache",
+        "xtec-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image-vllm-cache"
+      ],
+      "description": "AEON Qwen3.6 27B Ultimate Uncensored Multimodal NVFP4 MTP-XS cuda-vram128 vLLM profile with 64k context, image input, KV cache FP8, and qwen3_xml tool calling."
     },
     "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image.yml",
