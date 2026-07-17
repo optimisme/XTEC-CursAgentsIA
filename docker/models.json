@@ -107,6 +107,30 @@
     },
     "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image-vllm-cache": {
       "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image."
+    },
+    "xtec-agents-a1-4b-cuda-vram128-vllm-internscience-fp8-64k-image-hf-cache": {
+      "description": "Hugging Face cache for Agents-A1-4B official FP8 64k image profile."
+    },
+    "xtec-agents-a1-4b-cuda-vram128-vllm-internscience-fp8-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for Agents-A1-4B official FP8 64k image profile."
+    },
+    "xtec-agents-a1-4b-cuda-vram16-vllm-internscience-fp8-64k-image-hf-cache": {
+      "description": "Hugging Face cache for Agents-A1-4B official FP8 64k image profile tuned for 16 GiB VRAM."
+    },
+    "xtec-agents-a1-4b-cuda-vram16-vllm-internscience-fp8-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for Agents-A1-4B official FP8 64k image profile tuned for 16 GiB VRAM."
+    },
+    "xtec-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q1_0-64k-image-hf-cache": {
+      "description": "Hugging Face cache for the upstream llama.cpp Bonsai 27B Q1_0 profile."
+    },
+    "xtec-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q1_0-64k-image-gguf-cache": {
+      "description": "GGUF/llama.cpp cache for the upstream llama.cpp Bonsai 27B Q1_0 profile."
+    },
+    "xtec-ternary-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q2_0-64k-image-hf-cache": {
+      "description": "Hugging Face cache for the Prism llama.cpp Ternary Bonsai 27B Q2_0 profile."
+    },
+    "xtec-ternary-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q2_0-64k-image-gguf-cache": {
+      "description": "GGUF/llama.cpp cache for the Prism llama.cpp Ternary Bonsai 27B Q2_0 profile."
     }
   },
   "models": {
@@ -281,6 +305,50 @@
         "xtec-gemma4-e4b-it-cuda-vram16-vllm-google-qat-w4a16-mtp-64k-image-vllm-cache"
       ],
       "description": "Gemma 4 E4B QAT W4A16 MTP vLLM image profile with 64k context, one image per prompt, thinking, and temperature 0."
+    },
+    "agents-a1-4b-cuda-vram128-vllm-internscience-fp8-64k-image": {
+      "compose": "compose-agents-a1-4b-cuda-vram128-vllm-internscience-fp8-64k-image.yml",
+      "container": "agents_a1_4b_cuda_vram128_vllm_internscience_fp8_64k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-agents-a1-4b-cuda-vram128-vllm-internscience-fp8-64k-image-hf-cache",
+        "xtec-agents-a1-4b-cuda-vram128-vllm-internscience-fp8-64k-image-vllm-cache"
+      ],
+      "description": "InternScience Agents-A1-4B official W8A8 FP8 vLLM profile with 64k context, image input, reasoning, tools, and recommended sampling."
+    },
+    "agents-a1-4b-cuda-vram16-vllm-internscience-fp8-64k-image": {
+      "compose": "compose-agents-a1-4b-cuda-vram16-vllm-internscience-fp8-64k-image.yml",
+      "container": "agents_a1_4b_cuda_vram16_vllm_internscience_fp8_64k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-agents-a1-4b-cuda-vram16-vllm-internscience-fp8-64k-image-hf-cache",
+        "xtec-agents-a1-4b-cuda-vram16-vllm-internscience-fp8-64k-image-vllm-cache"
+      ],
+      "description": "InternScience Agents-A1-4B official W8A8 FP8 vLLM profile tuned for 16 GiB VRAM with 64k maximum context, four sequences, one image, reasoning, tools, and recommended sampling."
+    },
+    "bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q1_0-64k-image": {
+      "compose": "compose-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q1_0-64k-image.yml",
+      "container": "bonsai_27b_cuda_vram128_llamacpp_prism_gguf_q1_0_64k_image",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q1_0-64k-image-hf-cache",
+        "xtec-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q1_0-64k-image-gguf-cache"
+      ],
+      "description": "Bonsai 27B binary Q1_0 profile using official upstream llama.cpp CUDA 13, four 64k slots, reasoning, tools, and image input."
+    },
+    "ternary-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q2_0-64k-image": {
+      "compose": "compose-ternary-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q2_0-64k-image.yml",
+      "container": "ternary_bonsai_27b_cuda_vram128_llamacpp_prism_gguf_q2_0_64k_image",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-ternary-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q2_0-64k-image-hf-cache",
+        "xtec-ternary-bonsai-27b-cuda-vram128-llamacpp-prism-gguf-q2_0-64k-image-gguf-cache"
+      ],
+      "description": "Ternary Bonsai 27B Q2_0 profile using the pinned Prism llama.cpp CUDA fork, four 64k slots, reasoning, tools, and image input."
     }
   }
 }
