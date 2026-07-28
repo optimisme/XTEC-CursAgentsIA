@@ -1,6 +1,6 @@
 {
   "compose_project": "vllm",
-  "default_model": "qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image",
+  "default_model": "kat-coder-v2.5-dev-cuda-vram128-vllm-kwaipilot-nvfp4-64k",
   "endpoint": "http://127.0.0.1:8000/v1",
   "volumes": {
     "xtec-hf-cache": {
@@ -11,6 +11,12 @@
     },
     "xtec-gguf-cache": {
       "description": "Legacy shared GGUF cache kept for cleanup after per-compose cache migration."
+    },
+    "xtec-kat-coder-v2.5-dev-cuda-vram128-vllm-kwaipilot-nvfp4-64k-hf-cache": {
+      "description": "Hugging Face cache for sakamakismile KAT-Coder-V2.5-Dev NVFP4 text-only vLLM profile."
+    },
+    "xtec-kat-coder-v2.5-dev-cuda-vram128-vllm-kwaipilot-nvfp4-64k-vllm-cache": {
+      "description": "vLLM runtime cache for sakamakismile KAT-Coder-V2.5-Dev NVFP4 text-only vLLM profile."
     },
     "xtec-gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image-hf-cache": {
       "description": "Hugging Face cache for gemma4-31b-it-cuda-vram128-vllm-google-qat-w4a16-64k-image."
@@ -261,6 +267,17 @@
         "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B official Qwen FP8 vLLM profile for CUDA 128GB VRAM."
+    },
+    "kat-coder-v2.5-dev-cuda-vram128-vllm-kwaipilot-nvfp4-64k": {
+      "compose": "compose-kat-coder-v2.5-dev-cuda-vram128-vllm-kwaipilot-nvfp4-64k.yml",
+      "container": "kat_coder_v2_5_dev_cuda_vram128_vllm_kwaipilot_nvfp4_64k",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-kat-coder-v2.5-dev-cuda-vram128-vllm-kwaipilot-nvfp4-64k-hf-cache",
+        "xtec-kat-coder-v2.5-dev-cuda-vram128-vllm-kwaipilot-nvfp4-64k-vllm-cache"
+      ],
+      "description": "Kwaipilot KAT-Coder-V2.5-Dev 35B-A3B NVFP4 (W4A4 compressed-tensors) text-only vLLM profile by sakamakismile with 64k context, thinking, and qwen3_coder tool calling on port 8000."
     },
     "ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k": {
       "compose": "compose-ministral3-3b-instruct-cuda-vram16-vllm-mistral-fp8-128k.yml",
