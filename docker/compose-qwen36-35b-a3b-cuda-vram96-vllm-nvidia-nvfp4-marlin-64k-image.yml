@@ -5,7 +5,7 @@
 #          Uses 64k context, image input, and Marlin MoE backend instead of the native FlashInfer B12X path.
 services:
   qwen-vllm:
-    image: vllm/vllm-openai:v0.23.0
+    image: vllm/vllm-openai:v0.26.0
     pull_policy: always
     container_name: qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_marlin_64k_image
     environment:
@@ -65,6 +65,7 @@ services:
           --max-num-batched-tokens 65536 \
           --enable-chunked-prefill \
           --enable-prefix-caching \
+          --prefix-match-unit 16 \
           --limit-mm-per-prompt '{"image":4,"video":0}' \
           --reasoning-parser qwen3 \
           --tool-call-parser qwen3_xml \

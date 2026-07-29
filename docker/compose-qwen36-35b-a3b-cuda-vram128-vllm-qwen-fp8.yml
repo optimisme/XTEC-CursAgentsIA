@@ -4,7 +4,7 @@
 # Note:    Official Qwen FP8 checkpoint for cuda-vram128 testing.
 services:
   qwen-vllm:
-    image: vllm/vllm-openai@sha256:4cebac8c03f2cd9f5fabe72ac7c2a0b3aaa8450ef8f0e47429425fd1bfb83d42
+    image: vllm/vllm-openai:v0.26.0
     pull_policy: always
     container_name: qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8
     environment:
@@ -64,6 +64,7 @@ services:
           --enable-chunked-prefill \
           --async-scheduling \
           --enable-prefix-caching \
+          --prefix-match-unit 16 \
           --reasoning-parser qwen3 \
           --tool-call-parser qwen3_xml \
           --enable-auto-tool-choice

@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+7P&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'Press Start 7P', 'Courier New', monospace;
+}
+
+#game-container {
+    position: relative;
+    border: 2px solid #333;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.02);
+}
+
+canvas {
+    display: block;
+    background-color: #000000;
+}

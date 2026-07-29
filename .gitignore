@@ -7,6 +7,7 @@ keys.env
 *.env
 !keys.env.example
 !*.env.example
+explain-docker.md
 
 # Python cache
 __pycache__/
