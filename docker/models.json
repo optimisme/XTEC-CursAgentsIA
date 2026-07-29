@@ -114,6 +114,12 @@
     "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image-vllm-cache": {
       "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image."
     },
+    "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-hf-cache": {
+      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image."
+    },
+    "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-vllm-cache": {
+      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image."
+    },
     "xtec-agents-a1-4b-cuda-vram128-vllm-internscience-fp8-64k-image-hf-cache": {
       "description": "Hugging Face cache for Agents-A1-4B official FP8 64k image profile."
     },
@@ -257,6 +263,17 @@
         "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile with 64k context, image input, KV cache FP8, Marlin MoE backend, and qwen3_xml tool calling."
+    },
+    "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image": {
+      "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image.yml",
+      "container": "qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_dflash_64k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-hf-cache",
+        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-vllm-cache"
+      ],
+      "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile with 64k context, image input, KV cache FP8, DFlash speculative decoding, FlashInfer B12X MoE, and qwen3_xml tool calling."
     },
     "qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml",
