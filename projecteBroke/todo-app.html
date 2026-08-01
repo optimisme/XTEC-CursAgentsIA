@@ -165,8 +165,8 @@
       list.innerHTML = "";
 
       const visibleTasks = tasks.filter(task => {
-        if (currentFilter === "pending") return task.completed;
-        if (currentFilter === "completed") return !task.completed;
+        if (currentFilter === "pending") return !task.completed;
+        if (currentFilter === "completed") return task.completed;
         return true;
       });
 
@@ -200,7 +200,7 @@
         list.appendChild(item);
       });
 
-      const pending = tasks.filter(task => task.completed).length;
+      const pending = tasks.filter(task => !task.completed).length;
       counter.textContent = `${pending} tasques pendents`;
     }
 
