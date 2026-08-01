@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo App amb bugs</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: system-ui, sans-serif;
+      background: #eef2f7;
+      color: #1f2937;
+    }
+
+    .app {
+      width: min(92vw, 520px);
+      padding: 24px;
+      border-radius: 16px;
+      background: white;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+    }
+
+    .new-task {
+      display: flex;
+      gap: 10px;
+    }
+
+    input,
+    button {
+      font: inherit;
+    }
+
+    #taskInput {
+      flex: 1;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #2563eb;
+      color: white;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin: 18px 0;
+    }
+
+    .filters button {
+      flex: 1;
+      background: #64748b;
+    }
+
+    .filters button.active {
+      background: #0f172a;
+    }
+
+    #taskList {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .task {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 4px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .task span {
+      flex: 1;
+    }
+
+    .task.completed span {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+
+    .delete {
+      background: #dc2626;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 18px;
+      font-size: 0.95rem;
+    }
+
+    #clearCompleted {
+      background: #7c3aed;
+    }
+
+    .empty {
+      padding: 20px;
+      text-align: center;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>Llista de tasques</h1>
+
+    <form id="taskForm" class="new-task">
+      <input id="taskInput" type="text" placeholder="Escriu una tasca">
+      <button type="submit">Afegir</button>
+    </form>
+
+    <div class="filters">
+      <button class="active" data-filter="all">Totes</button>
+      <button data-filter="pending">Pendents</button>
+      <button data-filter="completed">Completades</button>
+    </div>
+
+    <ul id="taskList"></ul>
+
+    <div class="footer">
+      <span id="taskCounter">0 tasques pendents</span>
+      <button id="clearCompleted">Esborra completades</button>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById("taskForm");
+    const input = document.getElementById("taskInput");
+    const list = document.getElementById("taskList");
+    const counter = document.getElementById("taskCounter");
+    const clearCompleted = document.getElementById("clearCompleted");
+    const filterButtons = document.querySelectorAll("[data-filter]");
+
+    let tasks = JSON.parse(localStorage.getItem("todoTasks")) || [];
+    let currentFilter = "all";
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      list.innerHTML = "";
+
+      const visibleTasks = tasks.filter(task => {
+        if (currentFilter === "pending") return task.completed;
+        if (currentFilter === "completed") return !task.completed;
+        return true;
+      });
+
+      if (visibleTasks.length === 0) {
+        list.innerHTML = '<li class="empty">No hi ha tasques</li>';
+      }
+
+      visibleTasks.forEach(task => {
+        const item = document.createElement("li");
+        item.className = "task";
+        if (task.completed) item.classList.add("completed");
+
+        item.innerHTML = `
+          <input type="checkbox" ${task.completed ? "checked" : ""}>
+          <span>${task.text}</span>
+          <button class="delete">Esborra</button>
+        `;
+
+        item.querySelector("input").addEventListener("change", () => {
+          task.completed = !task.completed;
+          saveTasks();
+          renderTasks();
+        });
+
+        item.querySelector(".delete").addEventListener("click", () => {
+          tasks = tasks.filter(item => item.id === task.id);
+          saveTasks();
+          renderTasks();
+        });
+
+        list.appendChild(item);
+      });
+
+      const pending = tasks.filter(task => task.completed).length;
+      counter.textContent = `${pending} tasques pendents`;
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const text = input.value;
+
+      if (text.trim() === "") {
+        alert("Escriu una tasca.");
+      }
+
+      tasks.push({
+        id: Date.now(),
+        text,
+        completed: false
+      });
+
+      saveTasks();
+      input.value = "";
+      renderTasks();
+    });
+
+    filterButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        currentFilter = button.dataset.filter;
+
+        filterButtons.forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+
+        renderTasks();
+      });
+    });
+
+    clearCompleted.addEventListener("click", () => {
+      tasks = tasks.filter(task => task.completed);
+      saveTasks();
+      renderTasks();
+    });
+
+    renderTasks();
+  </script>
+</body>
+</html>

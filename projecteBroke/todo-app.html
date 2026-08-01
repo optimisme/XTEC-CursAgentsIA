@@ -237,7 +237,7 @@
     });
 
     clearCompleted.addEventListener("click", () => {
-      tasks = tasks.filter(task => task.completed);
+      tasks = tasks.filter(task => !task.completed);
       saveTasks();
       renderTasks();
     });
