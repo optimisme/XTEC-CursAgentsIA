@@ -192,7 +192,7 @@
         });
 
         item.querySelector(".delete").addEventListener("click", () => {
-          tasks = tasks.filter(item => item.id === task.id);
+          tasks = tasks.filter(item => item.id !== task.id);
           saveTasks();
           renderTasks();
         });
