@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Search input for filtering notes -->
+  <input type="search" id="search-input" class="search-input" placeholder="Search notes...">
+
+  <!-- Form for creating a new note -->
+  <form id="note-form" class="note-form">
+    <label for="note-title">Title</label>
+    <input type="text" id="note-title" class="note-title" name="title" placeholder="Note title">
+
+    <label for="note-content">Content</label>
+    <textarea id="note-content" class="note-content" name="content" placeholder="Write your note here..." rows="6"></textarea>
+
+    <button type="submit" id="save-note" class="save-note">Save Note</button>
+  </form>
+
+  <!-- Container to display saved notes -->
+  <section id="notes-container" class="notes-container">
+    <h2 class="visually-hidden">Saved Notes</h2>
+  </section>
+
+  <!-- Edit form for modifying an existing note (hidden by default) -->
+  <form id="edit-form" class="edit-form" hidden>
+    <h3>Edit Note</h3>
+
+    <label for="edit-title">Title</label>
+    <input type="text" id="edit-title" class="edit-title" name="edit-title" placeholder="Note title">
+
+    <label for="edit-content">Content</label>
+    <textarea id="edit-content" class="edit-content" name="edit-content" placeholder="Edit your note here..." rows="6"></textarea>
+
+    <button type="submit" id="update-note" class="update-note">Update Note</button>
+    <button type="button" id="cancel-edit" class="cancel-edit">Cancel</button>
+  </form>
+
+  <script src="app.js"></script>
+</body>
+</html>

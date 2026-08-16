@@ -1,0 +1,81 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "read": {
+      "docs_curs/**": "deny"
+    },
+    "edit": {
+      "docs_curs/**": "deny"
+    },
+    "glob": {
+      "docs_curs/**": "deny"
+    },
+    "grep": {
+      "docs_curs/**": "deny"
+    },
+    "list": {
+      "docs_curs/**": "deny"
+    }
+  },
+  "provider": {
+    "ieti-agents": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "IETI Agents",
+      "options": {
+        "baseURL": "https://agents.ieti.site/v1",
+        "apiKey": "{env:PROXY_AGENTS_KEY}",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "active-model",
+          "attachment": true,
+          "temperature": true,
+          "limit": {
+            "context": 65536,
+            "output": 8192
+          },
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "disabled": true
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            },
+            "max": {
+              "disabled": true
+            }
+          },
+          "options": {
+            "reasoningEffort": "none"
+          }
+        }
+      }
+    }
+  },
+  "model": "ieti-agents/active-model"
+}

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Error Page</title>
+</head>
+<body>
+  <h1>Puppeteer MCP test page</h1>
+  <script>
+    console.log("page loaded, about to crash");
+    var undefinedVariable + "boom";
+    throw new Error("intentional test error");
+  </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560" role="img" aria-labelledby="title desc">
+  <title id="title">Fonts de context d'un agent</title>
+  <desc id="desc">Diagrama amb diferents fonts de context que entren al model: system prompt, AGENTS.md, fitxers, historial, tools, errors, documentació i memòria.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+  <rect width="980" height="560" fill="#f8fafc"/>
+  <text x="490" y="46" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#0f172a">Fonts de context</text>
+  <text x="490" y="76" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#475569">El model no rep només el missatge de l'usuari: rep un context construït.</text>
+
+  <g font-family="Arial, Helvetica, sans-serif" filter="url(#shadow)">
+    <rect x="405" y="235" width="170" height="108" rx="16" fill="#e0f2fe" stroke="#38bdf8"/>
+    <text x="490" y="278" text-anchor="middle" font-size="23" font-weight="700" fill="#0f172a">Model</text>
+    <text x="490" y="304" text-anchor="middle" font-size="14" fill="#0369a1">decideix el següent pas</text>
+
+    <g>
+      <rect x="50" y="120" width="182" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="141" y="149" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">System prompt</text>
+      <text x="141" y="171" text-anchor="middle" font-size="12" fill="#64748b">regles globals</text>
+    </g>
+    <g>
+      <rect x="50" y="212" width="182" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="141" y="241" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">AGENTS.md</text>
+      <text x="141" y="263" text-anchor="middle" font-size="12" fill="#64748b">convencions del projecte</text>
+    </g>
+    <g>
+      <rect x="50" y="304" width="182" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="141" y="333" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">Fitxers</text>
+      <text x="141" y="355" text-anchor="middle" font-size="12" fill="#64748b">codi i documentació</text>
+    </g>
+    <g>
+      <rect x="50" y="396" width="182" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="141" y="425" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">Historial</text>
+      <text x="141" y="447" text-anchor="middle" font-size="12" fill="#64748b">decisions i conversa</text>
+    </g>
+    <g>
+      <rect x="748" y="120" width="182" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="839" y="149" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">Tools</text>
+      <text x="839" y="171" text-anchor="middle" font-size="12" fill="#64748b">accions disponibles</text>
+    </g>
+    <g>
+      <rect x="748" y="212" width="182" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="839" y="241" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">Errors</text>
+      <text x="839" y="263" text-anchor="middle" font-size="12" fill="#64748b">observacions i logs</text>
+    </g>
+    <g>
+      <rect x="748" y="304" width="182" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="839" y="333" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">Docs</text>
+      <text x="839" y="355" text-anchor="middle" font-size="12" fill="#64748b">referències externes</text>
+    </g>
+    <g>
+      <rect x="748" y="396" width="182" height="68" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="839" y="425" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">Memòria</text>
+      <text x="839" y="447" text-anchor="middle" font-size="12" fill="#64748b">preferències persistents</text>
+    </g>
+  </g>
+
+  <g stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
+    <path d="M 232 154 C 330 154 335 250 405 269"/>
+    <path d="M 232 246 C 322 246 340 270 405 280"/>
+    <path d="M 232 338 C 322 338 340 300 405 292"/>
+    <path d="M 232 430 C 330 430 335 315 405 303"/>
+    <path d="M 748 154 C 650 154 645 250 575 269"/>
+    <path d="M 748 246 C 658 246 640 270 575 280"/>
+    <path d="M 748 338 C 658 338 640 300 575 292"/>
+    <path d="M 748 430 C 650 430 645 315 575 303"/>
+  </g>
+
+  <text x="490" y="510" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#475569">Context engineering = seleccionar, ordenar i limitar aquestes fonts perquè siguin útils.</text>
+</svg>

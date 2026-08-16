@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="500" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">Seqüència i bucle agentic</title>
+  <desc id="desc">Diagrama d'una seqüència agentica amb retorn: l'objectiu i el context inicial entren a la planificació; l'agent actua, observa, corregeix i pot tornar a planificar o finalitzar.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-15%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.12"/>
+    </filter>
+    <style>
+      .title { font: 700 28px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .subtitle { font: 15px Arial, Helvetica, sans-serif; fill: #475569; }
+      .label { font: 700 18px Arial, Helvetica, sans-serif; fill: #0f172a; }
+      .small { font: 13px Arial, Helvetica, sans-serif; fill: #64748b; }
+      .green-label { font: 700 18px Arial, Helvetica, sans-serif; fill: #166534; }
+      .green-small { font: 13px Arial, Helvetica, sans-serif; fill: #166534; }
+      .note { font: 13px Arial, Helvetica, sans-serif; fill: #334155; }
+    </style>
+  </defs>
+
+  <rect width="960" height="500" fill="#f8fafc"/>
+  <text x="480" y="44" text-anchor="middle" class="title">Seqüència i bucle agentic</text>
+  <text x="480" y="74" text-anchor="middle" class="subtitle">Cada iteració segueix uns passos; després de corregir, l'agent pot tornar a planificar o finalitzar.</text>
+
+  <g font-family="Arial, Helvetica, sans-serif" filter="url(#shadow)">
+    <g>
+      <rect x="80" y="124" width="190" height="88" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="175" y="158" text-anchor="middle" class="label">Objectiu + context</text>
+      <text x="175" y="181" text-anchor="middle" class="small">què cal aconseguir</text>
+      <text x="175" y="200" text-anchor="middle" class="small">i què sap l'agent</text>
+    </g>
+
+    <g>
+      <rect x="330" y="124" width="150" height="88" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="405" y="158" text-anchor="middle" class="label">Planificació</text>
+      <text x="405" y="181" text-anchor="middle" class="small">decidir el</text>
+      <text x="405" y="200" text-anchor="middle" class="small">següent pas</text>
+    </g>
+
+    <g>
+      <rect x="540" y="124" width="150" height="88" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="615" y="158" text-anchor="middle" class="label">Acció</text>
+      <text x="615" y="181" text-anchor="middle" class="small">usar eines</text>
+      <text x="615" y="200" text-anchor="middle" class="small">o editar codi</text>
+    </g>
+
+    <g>
+      <rect x="750" y="124" width="150" height="88" rx="12" fill="#ffffff" stroke="#cbd5e1"/>
+      <text x="825" y="158" text-anchor="middle" class="label">Observació</text>
+      <text x="825" y="181" text-anchor="middle" class="small">resultats, errors</text>
+      <text x="825" y="200" text-anchor="middle" class="small">i proves</text>
+    </g>
+
+    <g>
+      <rect x="540" y="286" width="190" height="88" rx="12" fill="#e0f2fe" stroke="#38bdf8"/>
+      <text x="635" y="320" text-anchor="middle" class="label">Correcció</text>
+      <text x="635" y="343" text-anchor="middle" class="small">actualitzar context</text>
+      <text x="635" y="362" text-anchor="middle" class="small">i ajustar el pla</text>
+    </g>
+
+    <g>
+      <rect x="300" y="394" width="290" height="62" rx="31" fill="#ecfdf5" stroke="#86efac"/>
+      <text x="445" y="421" text-anchor="middle" class="green-label">Finalització</text>
+      <text x="445" y="443" text-anchor="middle" class="green-small">entregar resultat o demanar decisió humana</text>
+    </g>
+  </g>
+
+  <g fill="none" stroke="#334155" stroke-width="4" marker-end="url(#arrow)">
+    <path d="M 270 168 L 326 168"/>
+    <path d="M 480 168 L 536 168"/>
+    <path d="M 690 168 L 746 168"/>
+    <path d="M 825 212 C 825 278 780 330 734 330"/>
+    <path d="M 540 330 C 405 330 405 260 405 216"/>
+  </g>
+
+  <g fill="none" stroke="#16a34a" stroke-width="4" marker-end="url(#arrow-green)">
+    <path d="M 635 374 C 610 405 570 425 594 425"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif">
+    <text x="432" y="306" text-anchor="middle" class="note">si cal una altra iteració</text>
+    <text x="655" y="410" text-anchor="start" class="note">si l'objectiu està resolt</text>
+  </g>
+</svg>

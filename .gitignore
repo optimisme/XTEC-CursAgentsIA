@@ -29,6 +29,21 @@ package-lock.json
 bun.lock
 .gitignore
 
+# OpenCode
 !.opencode/.gitignore
 !.opencode/mcp/github/package.json
 !.opencode/mcp/github/package-lock.json
+
+projecteATD/.opencode
+projecteATD/tasks
+projecteATD/AGENTS.md
+projecteATD/*.html
+projecteATD/*.css
+projecteATD/*.js
+projecteATD/*.json
+
+projecteMCP/.opencode
+projecteMCP/.rag
+projecteMCP/lancedb
+projecteMCP/models
+projecteMCP/AGENTS.md

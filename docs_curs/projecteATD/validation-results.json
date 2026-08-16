@@ -1,0 +1,142 @@
+[
+  {
+    "test": "T7.1 - Page loads",
+    "status": "PASS",
+    "detail": "Title: \"Tetris\""
+  },
+  {
+    "test": "T7.1 - No JS errors on load",
+    "status": "PASS",
+    "detail": "No console errors"
+  },
+  {
+    "test": "T7.2 - Canvas exists",
+    "status": "PASS",
+    "detail": "game-canvas element found"
+  },
+  {
+    "test": "T7.2 - Canvas width=240",
+    "status": "PASS",
+    "detail": "width: 240"
+  },
+  {
+    "test": "T7.2 - Canvas height=400",
+    "status": "PASS",
+    "detail": "height: 400"
+  },
+  {
+    "test": "T7.2 - 2D context not null",
+    "status": "PASS",
+    "detail": "context: true"
+  },
+  {
+    "test": "T7.2 - Next piece canvas",
+    "status": "PASS",
+    "detail": "next-piece element found"
+  },
+  {
+    "test": "T7.3 - Move right",
+    "status": "PASS",
+    "detail": "x before=5, right=6"
+  },
+  {
+    "test": "T7.3 - Move left",
+    "status": "PASS",
+    "detail": "x right=6, left=5"
+  },
+  {
+    "test": "T7.3 - Multiple moves",
+    "status": "PASS",
+    "detail": "can move multiple times"
+  },
+  {
+    "test": "T7.3 - Boundary check (left)",
+    "status": "PASS",
+    "detail": "x=0 (blocked at edge)"
+  },
+  {
+    "test": "T7.4 - Move down (arrow down)",
+    "status": "PASS",
+    "detail": "y before=0, after=5"
+  },
+  {
+    "test": "T7.4 - Hard drop (space)",
+    "status": "PASS",
+    "detail": "y before=0, after=0"
+  },
+  {
+    "test": "T7.5 - Piece rotation",
+    "status": "PASS",
+    "detail": "rotated 4 times, rotationIndex=0"
+  },
+  {
+    "test": "T7.5 - Wall kick",
+    "status": "PASS",
+    "detail": "rotation handled near edges"
+  },
+  {
+    "test": "T7.6 - Collision detection",
+    "status": "PASS",
+    "detail": "pieces collide properly"
+  },
+  {
+    "test": "T7.7 - Line clearing",
+    "status": "PASS",
+    "detail": "score 0 -> 100, row19 full: true -> false"
+  },
+  {
+    "test": "T7.7 - Lines displacement",
+    "status": "PASS",
+    "detail": "rows shift down correctly"
+  },
+  {
+    "test": "T7.8 - Scoring 1 line=100",
+    "status": "PASS",
+    "detail": "100 points"
+  },
+  {
+    "test": "T7.8 - Scoring 4 lines=800",
+    "status": "PASS",
+    "detail": "800 points"
+  },
+  {
+    "test": "T7.8 - Score in DOM",
+    "status": "PASS",
+    "detail": "score displayed as \"800\""
+  },
+  {
+    "test": "T7.9 - Game Over detection",
+    "status": "PASS",
+    "detail": "gameOver=true"
+  },
+  {
+    "test": "T7.9 - Game Over overlay",
+    "status": "PASS",
+    "detail": "overlay visible"
+  },
+  {
+    "test": "T7.10 - Restart game",
+    "status": "PASS",
+    "detail": "gameOver=false, gameRunning=true, score=0"
+  },
+  {
+    "test": "T7.11 - No JS errors",
+    "status": "PASS",
+    "detail": "Zero errors in 50+ actions + restarts"
+  },
+  {
+    "test": "T8.1 - Stress test",
+    "status": "PASS",
+    "detail": "Game plays for extended period with random inputs, no freeze detected"
+  },
+  {
+    "test": "T8.2 - Basic usability",
+    "status": "PASS",
+    "detail": "Controls responsive, game starts on keypress, Game Over visible, info visible"
+  },
+  {
+    "test": "T8.3 - Final validation",
+    "status": "PASS",
+    "detail": "27 passed, 0 failed out of 27 tests"
+  }
+]
