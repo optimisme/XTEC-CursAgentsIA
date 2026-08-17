@@ -2,21 +2,22 @@ Genera `PLAN.md` per al projecte.
 
 Encara no implementis cap funcionalitat.
 
-No creïs GitHub Issues ni GitHub Projects en aquesta fase. El projecte de seguiment ja existeix: `ProjecteDeures`, vinculat al repositori `RevisorDeures`; no el modifiquis en aquesta fase.
-
 Abans de començar:
 
 * consulta els skills existents a `.opencode/skills/`;
 * utilitza aquests skills com a restriccions del pla quan siguin aplicables.
 
-Important, tingues en compte:
+Important:
 
-* L'objectiu és implementar PLAN.md
-* No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
+* L'objectiu és implementar `PLAN.md`.
+* No escriguis arxius grans d'un sol cop: crea primer l'arxiu buit i afegeix el contingut per seccions petites.
 * No implementis encara cap funcionalitat.
-* No generis la carpeta "src"
-* No modifiquis .opencode/skills/.
-* No creïs agents ni AGENTS.md
+* No generis la carpeta `src`.
+* No generis encara la carpeta `tasks/`.
+* No modifiquis `.opencode/skills/`.
+* No creïs agents ni `AGENTS.md`.
+* No creïs GitHub Issues ni GitHub Projects.
+* GitHub no s'utilitzarà com a gestor de tasques.
 
 S'ha d'implementar una aplicació web amb servidor Node.js per validar entregues de pràctiques de programació.
 
@@ -70,7 +71,7 @@ No copiïs la configuració de l'arnès runtime dins del repositori temporal de 
 
 ## Separació entre OpenCode de desenvolupament i OpenCode runtime
 
-El projecte utilitza OpenCode en dos rols diferents que no s'han de confondre:
+El projecte utilitza OpenCode en dos rols diferents que no s'han de confondre.
 
 ### OpenCode de desenvolupament
 
@@ -184,15 +185,15 @@ No depenguis de text lliure ambigu per determinar el resultat.
 
 ## Resultat global de l'entrega
 
-Defineix explícitament el càlcul del resultat global a partir dels resultats dels criteris:
+Defineix explícitament el càlcul del resultat global:
 
 1. si almenys un criteri és `FAIL`, el resultat global és `FAIL`;
 2. si no hi ha cap `FAIL` però almenys un criteri és `NEEDS_REVIEW`, el resultat global és `NEEDS_REVIEW`;
 3. només si tots els criteris són `PASS`, el resultat global és `PASS`.
 
-Els errors tècnics que impedeixin completar una validació no s'han d'interpretar com a `PASS`. El pla ha de definir com es representen i es mostren sense confondre'ls amb el resultat funcional retornat per l'agent.
+Els errors tècnics que impedeixin completar una validació no s'han d'interpretar com a `PASS`.
 
-## Propòsit de PLAN.md
+## Propòsit de `PLAN.md`
 
 `PLAN.md` és la font d'autoritat sobre:
 
@@ -202,18 +203,19 @@ Els errors tècnics que impedeixin completar una validació no s'han d'interpret
 * decisions estructurals;
 * fases;
 * dependències entre fases;
+* fites (`milestones`);
 * criteris globals de finalització.
 
 No és un gestor de tasques.
 
 No incloguis:
 
-* checkboxes `[ ]`, `[p]` o `[x]`;
+* checkboxes d'estat;
 * estat operacional de tasques;
 * una llista exhaustiva de tasques atòmiques;
-* informació que hagi de mantenir-se sincronitzada amb GitHub Issues.
+* informació que s'hagi de mantenir sincronitzada amb `tasks/`.
 
-Les tasques executables es definiran posteriorment com a GitHub Issues.
+Les tasques executables es definiran posteriorment com a fitxers independents dins de `tasks/`.
 
 ## Contingut mínim
 
@@ -265,8 +267,6 @@ Inclou:
 
 No planifiquis l'execució arbitrària del codi dels repositoris entregats sense un mecanisme explícit d'aïllament.
 
-L'agent runtime ha de funcionar inicialment amb permisos de lectura sempre que sigui possible.
-
 ### Arquitectura
 
 Defineix una arquitectura prou concreta per guiar posteriorment les tasques ATD.
@@ -277,7 +277,7 @@ Descriu:
 * organització funcional;
 * interfície web;
 * persistència;
-* accés a GitHub;
+* accés als repositoris GitHub entregats;
 * obtenció temporal dels repositoris;
 * servei responsable d'invocar OpenCode;
 * projecte OpenCode runtime;
@@ -296,11 +296,9 @@ Proposa l'estructura de carpetes i responsabilitats dels components.
 
 Ha de quedar clar on resideix l'arnès OpenCode runtime de revisió.
 
-Pot ser un subdirectori propi del projecte, separat de `.opencode/agents/` utilitzat per desenvolupar l'aplicació.
+Inclou `tasks/` com a carpeta de planificació executable local, però no en generis encara el contingut.
 
-Evita compartir accidentalment agents de desenvolupament amb l'entorn runtime.
-
-No implementis encara els fitxers.
+Diferencia clarament `tasks/` del codi de l'aplicació.
 
 ### Flux principal
 
@@ -349,45 +347,84 @@ Per cada fase indica:
 
 No fixis artificialment un nombre concret de fases.
 
-Les fases han de permetre construir l'aplicació progressivament.
+## Milestones Git
+
+Defineix les milestones necessàries per dividir el desenvolupament en blocs funcionals coherents i revisables.
+
+No utilitzis una llista fixa de milestones predeterminades: deriva-les de l'arquitectura, les fases, les dependències i els resultats significatius d'aquest projecte.
+
+Cada milestone ha de:
+
+* tenir un identificador estable, preferentment `M1`, `M2`, `M3`, ...;
+* tenir un nom breu i descriptiu;
+* representar un estat funcional o arquitectònic significatiu del projecte;
+* agrupar treball relacionat que tingui sentit revisar conjuntament;
+* indicar el seu abast;
+* indicar les condicions necessàries per considerar-la completada;
+* definir el missatge exacte del commit que s'ha de crear després de superar la revisió global.
+
+Evita:
+
+* una milestone per cada tasca;
+* milestones artificials sense un resultat verificable;
+* duplicar exactament les fases si no aporta valor;
+* milestones tan grans que impedeixin revisar incrementalment el projecte.
+
+### Regla de commit
+
+No es crea cap commit quan acaba una tasca individual.
+
+Una milestone només pot generar el seu commit quan:
+
+1. totes les tasques necessàries de la milestone estan completades;
+2. no hi ha bugs bloquejants associats;
+3. el `reviewer` ha executat la revisió global de la milestone;
+4. el `reviewer` ha retornat `PASS`;
+5. l'`orchestrator` ha comprovat que els canvis acumulats corresponen a l'abast de la milestone.
+
+Cada milestone genera com a màxim un commit final.
+
+Si la revisió retorna `FAIL`, no es crea el commit: es creen o reactiven les tasques locals necessàries i la milestone es torna a revisar després de corregir-les.
 
 ### Estratègia de validació
 
-Defineix:
+Defineix una estratègia de validació coherent amb el projecte que inclogui:
 
 * validació individual de funcionalitats;
-* proves de la invocació d'OpenCode;
-* proves del contracte estructurat;
-* proves d'errors i timeouts;
-* proves de contingut no fiable;
-* ús de Puppeteer MCP;
+* proves específiques de les integracions descrites al pla;
+* proves d'errors i casos límit;
+* Puppeteer MCP quan existeixi funcionalitat observable des del navegador;
 * proves de regressió;
-* validació de fase;
+* validació de fase quan sigui útil;
+* revisió de milestone;
 * validació global final.
 
-### Estratègia GitHub
+### Estratègia de tasques i Git
 
 Explica que:
 
-* `PLAN.md` defineix el pla estable;
-* GitHub Issues representaran les tasques ATD;
-* el GitHub Project existent `ProjecteDeures`, vinculat a `RevisorDeures`, gestionarà l'estat operacional mitjançant els seus camps;
-* bugs i tasques utilitzaran el mateix flux;
-* l'estat de desenvolupament no es duplicarà dins de `PLAN.md`.
+* `PLAN.md` defineix el pla estable, les fases i les milestones;
+* `tasks/TASK-NNN.md` i `tasks/BUG-NNN.md` representaran les tasques ATD;
+* cada fitxer de tasca o bug utilitza una capçalera YAML amb, com a mínim, `id`, `type`, `title`, `status`, `priority`, `milestone`, `phase` i `dependencies`;
+* els bugs poden afegir camps específics com `severity`, `blocking` i `related-task`;
+* `priority` és numèrica i el valor més petit s'executa abans entre les tasques disponibles;
+* `tasks/` és la font d'autoritat operacional;
+* GitHub Issues i GitHub Projects no s'utilitzaran;
+* no es crearà un commit per tasca;
+* només es crearà un commit quan una milestone definida en aquest `PLAN.md` hagi superat la seva revisió global.
 
 ### Criteris globals de finalització
 
 Defineix què ha de complir el projecte abans de considerar-lo acabat.
 
-Inclou explícitament que:
+Inclou tant els requisits específics d'aquest projecte com aquests criteris generals:
 
-* el servidor invoca OpenCode i no el model directament per fer les revisions;
-* l'arnès runtime és independent dels agents de desenvolupament;
-* cada criteri produeix una resposta estructurada validada pel servidor;
-* el canvi de provider o model es pot realitzar principalment des de la configuració OpenCode sense modificar la lògica de negoci del servidor;
-* la configuració i els agents de l'arnès runtime es mantenen separats del repositori temporal de l'alumne encara que aquest sigui el directori de treball d'OpenCode;
-* el repositori de l'alumne es tracta com a contingut no fiable;
-* no queden processos ni directoris temporals abandonats després de la validació.
+* totes les tasques necessàries tenen `status: done`;
+* no queden bugs bloquejants;
+* totes les milestones han estat revisades satisfactòriament;
+* els commits de milestone corresponents s'han creat;
+* la implementació final respecta l'arquitectura i les restriccions definides en aquest `PLAN.md`;
+* no queden recursos temporals, processos o artefactes residuals que el mateix pla exigeixi netejar.
 
 ## Revisió final
 
@@ -401,11 +438,14 @@ Abans d'acabar comprova:
 * absència d'una integració directa servidor → model per a la validació;
 * possibilitat de transformar cada fase en tasques ATD petites;
 * verificabilitat dels resultats;
-* absència de tasques operacionals duplicades.
+* fites coherents i no excessivament granulars;
+* absència d'estat operacional duplicat.
 
 No implementis funcionalitats.
 
-No creïs GitHub Issues.
+No creïs la carpeta `tasks/`.
+
+No creïs GitHub Issues ni GitHub Projects.
 
 No creïs agents.
 

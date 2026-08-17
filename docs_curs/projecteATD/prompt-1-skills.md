@@ -2,14 +2,16 @@ Configura els skills del projecte a `.opencode/skills/`.
 
 Important, tingues en compte:
 
-* L'objectiu és implementar els skills de l'arnès.
+* L'objectiu és implementar els skills de l'arnès de desenvolupament.
 * No implementis l'aplicació.
 * No generis encara `PLAN.md`.
-* No creïs GitHub Issues ni GitHub Projects. El GitHub Project de seguiment ja existeix: `ProjecteDeures`, vinculat al repositori `RevisorDeures`.
+* No generis encara la carpeta `tasks/`.
+* No creïs GitHub Issues ni GitHub Projects.
+* GitHub no s'utilitza per al seguiment operacional del desenvolupament.
 * No creïs agents.
 * No modifiquis fitxers fora de `.opencode/skills/`.
 * No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
-* No creïs PLAN.md, agents ni AGENTS.md
+* No creïs `PLAN.md`, agents ni `AGENTS.md`.
 
 Crea els següents skills:
 
@@ -101,94 +103,159 @@ Inclou una checklist breu per comprovar:
 
 ---
 
-## `github-task-management`
+## `task-management`
 
-Defineix GitHub com a sistema d'execució i seguiment de les tasques ATD.
+Defineix `tasks/` com a sistema únic d'execució i seguiment operacional de les tasques ATD.
 
 El projecte utilitza:
 
-* `PLAN.md` com a pla estable i arquitectura de desenvolupament;
-* GitHub Issues com a tasques atòmiques;
-* GitHub Project com a font d'autoritat de l'estat operacional.
+* `PLAN.md` com a pla estable, arquitectura, fases i fites;
+* `tasks/TASK-NNN.md` com a definició i estat de cada tasca atòmica;
+* `tasks/BUG-NNN.md` per defectes descoberts sobre funcionalitat ja completada;
+* Git només per crear commits en fites (`milestones`) superades;
+* GitHub no s'utilitza per Issues, Projects ni seguiment de tasques.
 
-No s'han de crear fitxers `tasks/*.md`.
+### Font d'autoritat operacional
 
-### Projecte GitHub obligatori
+La carpeta `tasks/` és l'única font d'autoritat sobre l'estat operacional.
 
-El seguiment operacional s'ha de fer exclusivament al GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`.
+No mantinguis una còpia paral·lela de l'estat a:
 
-Quan un agent necessiti consultar o modificar l'estat de desenvolupament:
+* `PLAN.md`;
+* `AGENTS.md`;
+* GitHub Issues;
+* GitHub Projects;
+* labels;
+* altres checklists.
 
-* utilitza GitHub MCP per localitzar `ProjecteDeures`;
-* comprova que correspon al projecte vinculat a `RevisorDeures`;
-* utilitza els camps del Project per llegir i actualitzar `Status`, `Type`, `Phase`, `Order` i `Priority`;
-* no utilitzis labels com a substitut dels camps del Project;
-* no creïs cap Project nou ni cap sistema paral·lel de seguiment;
-* si GitHub MCP no permet localitzar o modificar `ProjecteDeures`, informa de la limitació i no inventis cap actualització.
+### Capçalera de tasques i bugs
 
+Cada `tasks/TASK-NNN.md` i `tasks/BUG-NNN.md` ha de començar amb una capçalera YAML delimitada per `---`.
 
-Cada tasca executable ha de correspondre a una GitHub Issue.
+La capçalera és la font d'autoritat per a l'estat, la prioritat i les metadades operacionals. 
 
-Les issues han de tenir, quan sigui possible:
+Per a una tasca:
 
-* identificador estable `TASK-NNN` o `BUG-NNN`;
+```yaml
+---
+id: TASK-012
+type: task
+title: Descripció breu
+status: ready
+priority: 20
+milestone: M2
+phase: F2
+dependencies:
+  - TASK-008
+---
+```
+
+Per a un bug:
+
+```yaml
+---
+id: BUG-003
+type: bug
+title: Descripció breu del defecte
+status: ready
+priority: 5
+severity: high
+blocking: true
+milestone: M2
+phase: F2
+related-task: TASK-012
+dependencies: []
+---
+```
+
+Valors permesos de `status`:
+
+* `backlog`: definit però encara no executable, normalment perquè té dependències pendents;
+* `ready`: executable;
+* `in_progress`: l'`executor` l'està implementant o corregint;
+* `in_review`: implementació pendent de validació del `validator`;
+* `done`: implementada i validada amb `PASS`.
+
+`priority` és un enter positiu. Com més petit sigui el valor, abans s'ha de prioritzar l'element entre els que siguin realment executables. La prioritat es conserva també quan `status: done`.
+
+Per als bugs:
+
+* `severity` ha de ser `critical`, `high`, `medium` o `low`;
+* `blocking` indica si el defecte impedeix completar la fita o continuar amb treball dependent;
+* `related-task` identifica, quan sigui possible, la tasca o funcionalitat completada on s'ha detectat el defecte.
+
+La prioritat numèrica no pot saltar-se dependències.
+
+### Fitxer de tasca
+
+Després de la capçalera, cada fitxer de tasca ha de contenir com a mínim:
+
 * objectiu únic;
-* descripció;
 * implementació esperada;
 * criteris de validació;
-* dependències;
-* fase;
-* ordre;
-* prioritat;
-* tipus.
+* notes només quan siguin necessàries.
 
-El GitHub Project `ProjecteDeures` ha d'utilitzar aquests camps com a font d'autoritat operacional. Els agents hi han d'accedir mitjançant GitHub MCP i no han de crear cap Project alternatiu:
+No dupliquis al cos els camps que ja formen part de la capçalera.
 
+Format recomanat:
 
-### Status
+```markdown
+---
+id: TASK-012
+type: task
+title: Descripció breu
+status: ready
+priority: 20
+milestone: M2
+phase: F2
+dependencies:
+  - TASK-008
+---
 
-* `Todo`
-* `In Progress`
-* `Done`
+# TASK-012 — Descripció breu
 
-### Type
+## Objective
+...
 
-* `Task`
-* `Bug`
+## Implementation
+...
 
-### Phase
+## Validation
+...
+```
 
-Fase definida a `PLAN.md`.
+No utilitzis checkboxes per representar l'estat.
 
-### Order
+### Transicions
 
-Valor numèric que defineix l'ordre normal de desenvolupament.
+L'`orchestrator` és l'únic agent que modifica el camp `status` de la capçalera.
 
-Utilitza preferentment increments de 10:
+Transicions normals:
 
-`10`, `20`, `30`, ...
+```text
+status: backlog → status: ready → status: in_progress → status: in_review → status: done
+```
 
-per permetre inserir posteriorment tasques intermèdies.
+També pot existir:
 
-### Priority
+```text
+status: in_review → status: in_progress
+```
 
-* `Urgent`
-* `High`
-* `Medium`
-* `Low`
+quan el `validator` retorna `FAIL`.
 
-La prioritat no substitueix les dependències ni l'ordre.
+Una tasca amb `status: backlog` passa a `status: ready` quan totes les dependències tenen `status: done`.
 
-`Priority` és principalment informativa i no altera l'ordre normal de desenvolupament, excepte per als bugs `Urgent`, especialment quan siguin bloquejants.
+### Selecció de la següent tasca
 
-Per seleccionar la següent tasca:
+1. reconcilia l'estat real amb els fitxers de `tasks/`;
+2. actualitza a `status: ready` les tasques amb `status: backlog` que ja tinguin totes les dependències amb `status: done`;
+3. considera només tasques amb `status: ready`;
+4. selecciona el valor `priority` més petit;
+5. en empat, utilitza l'identificador numèric més petit;
+6. abans de delegar-la, canvia `status` a `in_progress`.
 
-1. considera només items `Todo`;
-2. descarta els que tinguin dependències pendents;
-3. prioritza bugs `Urgent`;
-4. en la resta de casos utilitza el valor `Order` executable més baix.
-
-No mantinguis una còpia local de l'estat de les tasques.
+No hi pot haver més d'una tasca normal amb `status: in_progress` alhora.
 
 ---
 
@@ -198,15 +265,23 @@ Defineix com executar una tasca atòmica.
 
 L'agent ha de:
 
-* treballar exclusivament sobre la GitHub Issue assignada;
-* llegir-ne completament objectiu, dependències i criteris;
+* treballar exclusivament sobre el fitxer de tasca assignat;
+* llegir completament objectiu, dependències i criteris;
 * fer els canvis mínims necessaris;
 * evitar scope creep;
-* no implementar funcionalitats de futures issues;
+* no implementar funcionalitats de tasques futures;
 * respectar `PLAN.md`;
 * no considerar la tasca completada fins que hagi estat validada.
 
-Una issue `In Progress` pot passar a `Done` únicament després d'una validació `PASS`.
+L'`executor` no modifica l'estat de la tasca.
+
+Quan acaba la implementació, retorna el control a l'`orchestrator`, que canvia:
+
+```text
+status: in_progress → status: in_review
+```
+
+Una tasca només pot passar a `status: done` després d'una validació `PASS`.
 
 ---
 
@@ -256,35 +331,70 @@ Després de cada implementació:
 
 Defineix el flux Git del desenvolupament.
 
-Cada GitHub Issue completada i validada ha de correspondre a un únic commit lògic.
+### Principi
 
-Flux:
+No es crea un commit per cada tasca.
 
-1. la issue passa a `In Progress`;
-2. s'implementa;
-3. es valida;
-4. si retorna `FAIL`, no es crea cap commit final de tasca;
-5. es corregeix i torna a validar;
-6. després de `PASS`, es crea el commit corresponent;
-7. només després que el commit s'hagi creat correctament, s'actualitza la issue a `Done`.
+Els commits es creen únicament quan s'assoleix una fita (`Milestone`) definida a `PLAN.md` i aquesta fita ha superat la revisió global del `reviewer`.
 
-El commit ha d'incloure exclusivament els canvis relacionats amb aquella tasca.
+Durant les tasques individuals:
+
+* es poden modificar fitxers;
+* no es crea cap commit final de tasca;
+* els canvis validats s'acumulen fins a la fita corresponent.
+
+### Commit de fita
+
+Quan totes les tasques requerides d'una fita tenen `status: done`:
+
+1. l'`orchestrator` delega la revisió de fita al `reviewer`;
+2. si el `reviewer` detecta problemes, es creen o reactiven tasques locals i no es crea el commit;
+3. quan la revisió de fita retorna `PASS`, l'`orchestrator` comprova l'abast dels canvis;
+4. crea un únic commit coherent de fita;
+5. comprova que el commit s'ha creat correctament;
+6. continua amb la fita següent.
 
 Format recomanat:
 
-`TASK-NNN: descripció breu`
+```text
+MILESTONE-MN: descripció breu
+```
 
-o:
+Per exemple:
 
-`BUG-NNN: descripció breu`
+```text
+MILESTONE-M2: complete practice management
+```
 
-Quan sigui útil, referencia també el número de GitHub Issue.
+No utilitzis GitHub Issues ni GitHub Projects.
 
-No agrupis diverses tasques independents en un mateix commit.
+No facis `push` ni publiquis canvis remots tret que una instrucció explícita del projecte ho demani. El seguiment operacional continua residint exclusivament a `tasks/`.
 
-No incloguis canvis aliens a la tasca.
 
----
+## Milestones Git
+
+Les milestones concretes del projecte es defineixen exclusivament a `PLAN.md`.
+
+El skill no ha d'inventar, duplicar ni hardcodejar identificadors, noms, abast o missatges de commit de milestones concretes.
+
+### Regla general
+
+No es crea cap commit quan acaba una tasca individual.
+
+Quan totes les tasques necessàries d'una milestone definida a `PLAN.md` estan completades:
+
+1. l'`orchestrator` comprova que no hi hagi bugs bloquejants associats;
+2. delega una revisió global de la milestone al `reviewer`;
+3. si el `reviewer` retorna `FAIL`, no es crea cap commit i es creen o reactiven les tasques locals necessàries;
+4. després de corregir-les, la milestone es torna a revisar;
+5. només si el `reviewer` retorna `PASS`, l'`orchestrator` crea un únic commit coherent per a la milestone;
+6. el missatge del commit ha de seguir el format o missatge definit a `PLAN.md`.
+
+Cada milestone genera com a màxim un commit final.
+
+No facis `push` ni publiquis canvis remots tret que una instrucció explícita del projecte ho demani.
+
+GitHub Issues i GitHub Projects no s'utilitzen per al seguiment operacional.
 
 ## `bug-management`
 
@@ -294,26 +404,30 @@ Defineix com gestionar defectes trobats durant el desenvolupament.
 
 Si el problema forma part de la funcionalitat que s'està implementant:
 
-* no creïs una nova issue;
-* el validator retorna `FAIL`;
-* la mateixa tasca torna a l'executor.
+* no creïs un nou fitxer `BUG-NNN.md`;
+* el `validator` retorna `FAIL`;
+* l'`orchestrator` retorna la mateixa tasca a `status: in_progress`;
+* la mateixa tasca torna a l'`executor`.
 
 ### Regressió o bug en funcionalitat ja completada
 
 Si es detecta un defecte en funcionalitat anterior:
 
-1. comprova amb GitHub MCP que no existeixi ja una issue equivalent;
-2. crea una GitHub Issue de tipus `Bug`;
-3. assigna-li identificador `BUG-NNN`;
+1. comprova que no existeixi ja un `BUG-NNN.md` equivalent;
+2. crea un nou `tasks/BUG-NNN.md`;
+3. utilitza numeració global i estable;
 4. documenta reproducció, resultat esperat, resultat observat i evidències;
-5. defineix dependències, fase, ordre i prioritat;
-6. incorpora-la al GitHub Project `ProjecteDeures` mitjançant GitHub MCP.
+5. assigna fase, fita, dependències i prioritat numèrica;
+6. determina si pot començar amb `status: ready` o ha de quedar amb `status: backlog`;
+7. incorpora'l al mateix flux:
 
-El bug passa després pel mateix flux:
+```text
+orchestrator → executor → validator
+```
 
-`orchestrator → executor → validator`
+Un bug bloquejant ha de tenir `blocking: true` i rebre una `priority` numèrica prou baixa per executar-se abans de les tasques normals disponibles, sense ignorar dependències.
 
-No implementis un bug directament només perquè existeixi una incidència informal: ha d'existir una issue executable incorporada al GitHub Project `ProjecteDeures`.
+No creïs GitHub Issues per bugs.
 
 ---
 

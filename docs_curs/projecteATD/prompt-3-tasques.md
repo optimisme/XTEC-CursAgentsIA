@@ -1,154 +1,188 @@
-Genera la planificació executable del projecte mitjançant GitHub Issues i el GitHub Project existent `ProjecteDeures`, vinculat al repositori `RevisorDeures`, aplicant Atomic Task Decomposition (ATD).
+Genera la planificació executable del projecte a la carpeta `tasks/` aplicant Atomic Task Decomposition (ATD).
 
 Abans de començar llegeix:
 
 * `PLAN.md`;
-* `.opencode/skills/github-task-management`;
+* `.opencode/skills/task-management`;
 * `.opencode/skills/atomic-task-execution`;
 * `.opencode/skills/browser-validation`;
 * `.opencode/skills/regression-validation`;
 * `.opencode/skills/git-workflow`;
 * `.opencode/skills/bug-management`.
 
-Important, tingues en compte:
+Important:
 
-* L'objectiu és definir les tasques a GitHub.
+* L'objectiu és definir les tasques locals del projecte.
 * No implementis encara cap funcionalitat.
-* No generis la carpeta "src", ni implementis cap de les tasques definides.
-* No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
-* Les tasques es defineixen a GitHub com a "Issues" tipus "Open"
-* No implementis encara cap funcionalitat.
-* No generis la carpeta "src"
+* No generis la carpeta `src`.
 * No modifiquis `PLAN.md`.
 * No modifiquis `.opencode/skills/`.
-* No creïs agents ni AGENTS.md
+* No creïs agents ni `AGENTS.md`.
+* No creïs GitHub Issues.
+* No creïs ni modifiquis GitHub Projects.
+* No utilitzis GitHub MCP per planificar ni fer seguiment.
+* GitHub no és una font d'autoritat operacional.
+* Crea primer la carpeta `tasks/` i després cada fitxer buit abans d'afegir-hi contingut per seccions petites.
 
-Utilitza GitHub MCP per crear les GitHub Issues i incorporar-les i configurar-les dins del GitHub Project `ProjecteDeures`. No creïs cap GitHub Project nou.
+## Respecte obligatori de `PLAN.md`
 
-## Principi arquitectònic obligatori
+La descomposició de tasques ha de respectar estrictament l'arquitectura, requisits, fases, dependències, restriccions i milestones definides a `PLAN.md`.
 
-La planificació ha de respectar estrictament l'arquitectura definida a `PLAN.md`:
+No reinterpretes ni substitueixis l'arquitectura del pla per una alternativa pròpia.
 
-`servidor Node.js → OpenCode runtime → agent de revisió → model configurat a OpenCode`
+Quan una restricció arquitectònica sigui crítica per evitar una implementació incorrecta, reflecteix-la als criteris de `Validation` de les tasques afectades en lloc de duplicar tot el contingut de `PLAN.md`.
 
-No creïs una tasca que implementi la validació de pràctiques mitjançant una crida directa del servidor Node.js a vLLM o a una API OpenAI-compatible.
+Mantén separats els components o subsistemes que `PLAN.md` defineixi com a independents.
 
-El servidor pot gestionar la invocació d'OpenCode, però la configuració del provider, model, `baseURL`, context, output i opcions de raonament ha de pertànyer a l'arnès OpenCode runtime.
+## Estructura de `tasks/`
 
-Mantén separats:
+Crea una tasca per fitxer:
 
-* els agents OpenCode de desenvolupament del projecte;
-* l'arnès OpenCode runtime que revisarà les entregues.
+```text
+tasks/
+  TASK-001.md
+  TASK-002.md
+  TASK-003.md
+  ...
+```
 
-## GitHub
+Per bugs futurs s'utilitzarà:
 
-El repositori de desenvolupament és `RevisorDeures`.
+```text
+tasks/BUG-001.md
+tasks/BUG-002.md
+...
+```
 
-El GitHub Project de seguiment ja existeix i és `ProjecteDeures`, vinculat a `RevisorDeures`.
+En aquesta fase crea `TASK-NNN.md`; no inventis bugs que encara no s'han detectat.
 
-Abans de crear les tasques:
+No creïs un únic `tasks.md`.
 
-1. utilitza GitHub MCP per localitzar `ProjecteDeures`;
-2. comprova que és el Project vinculat al repositori `RevisorDeures`;
-3. consulta els camps existents del Project;
-4. reutilitza els camps compatibles ja existents;
-5. crea o configura únicament els camps necessaris si GitHub MCP ho permet;
-6. no creïs cap Project alternatiu;
-7. no utilitzis labels com a substitut de `Status`, `Type`, `Phase`, `Order` o `Priority`.
+## Capçalera, estat i prioritat
 
-Utilitza, sempre que les capacitats disponibles del GitHub MCP ho permetin, els camps de `ProjecteDeures`:
+Cada fitxer ha de començar amb una capçalera YAML delimitada per `---`. 
 
-### Status
+Per a les tasques creades en aquesta fase, utilitza:
 
-* `Todo`
-* `In Progress`
-* `Done`
+```yaml
+---
+id: TASK-001
+type: task
+title: Descripció breu
+status: ready
+priority: 10
+milestone: M1
+phase: F1
+dependencies: []
+---
+```
 
-### Type
+Valors permesos de `status`:
 
-* `Task`
-* `Bug`
+* `backlog`
+* `ready`
+* `in_progress`
+* `in_review`
+* `done`
 
-### Phase
+Regles:
 
-Valors corresponents a les fases definides a `PLAN.md`.
+* `priority` és un enter positiu;
+* un valor més petit implica execució anterior entre tasques executables;
+* deixa espai entre prioritats quan sigui útil, preferentment `10`, `20`, `30`, ...;
+* la prioritat no pot saltar-se dependències;
+* les tasques amb dependències pendents han de començar amb `status: backlog`;
+* les tasques sense dependències pendents i que ja es poden executar han de començar amb `status: ready`;
+* en aquesta fase no creïs tasques amb `status: in_progress`, `status: in_review` ni `status: done`.
 
-### Order
+No assignis la mateixa `priority` si pots establir un ordre clar. Si hi ha tasques realment equivalents, l'empat es resoldrà per identificador.
 
-Camp numèric per definir l'ordre normal de desenvolupament.
-
-Assigna inicialment valors separats preferentment per increments de 10.
-
-### Priority
-
-* `Urgent`
-* `High`
-* `Medium`
-* `Low`
-
-No utilitzis la posició visual de les targetes com a única definició de l'ordre.
-
-Si alguna operació concreta sobre `ProjecteDeures` no està disponible a través del GitHub MCP instal·lat, no inventis que s'ha realitzat, no creïs un Project alternatiu i informa clarament de la limitació.
-
-## GitHub Issues
-
-Transforma `PLAN.md` en tasques ATD.
-
-Cada tasca ha de correspondre a una única GitHub Issue del repositori `RevisorDeures` i aquesta issue s'ha d'incorporar com a item de `ProjecteDeures`.
+## Format obligatori de cada tasca
 
 Utilitza identificadors globals:
 
-`TASK-001`
-`TASK-002`
-`TASK-003`
+```text
+TASK-001
+TASK-002
+TASK-003
 ...
+```
 
 No reiniciïs la numeració entre fases.
 
-El títol ha de seguir preferentment:
+Format:
 
-`TASK-NNN — descripció breu`
+```markdown
+---
+id: TASK-001
+type: task
+title: Descripció breu
+status: ready
+priority: 10
+milestone: M1
+phase: F1
+dependencies: []
+---
 
-Cada issue ha d'incloure:
+# TASK-001 — Descripció breu
 
 ## Objective
-
 Un únic resultat concret.
 
 ## Implementation
-
 Què s'ha d'implementar.
 
 ## Validation
-
 Criteris objectius que ha de comprovar el validator.
+```
 
-Quan sigui observable des del navegador, indica explícitament que s'ha de validar mitjançant Puppeteer MCP.
+Quan hi hagi dependències:
 
-## Dependencies
+```yaml
+dependencies:
+  - TASK-001
+  - TASK-004
+```
 
-Issues que han d'estar `Done` abans de poder executar-la.
+La fita ha d'existir a `PLAN.md`.
 
-Utilitza referències GitHub sempre que sigui possible.
+Quan una funcionalitat sigui observable des del navegador, indica explícitament a `Validation` que s'ha de validar mitjançant Puppeteer MCP.
 
-## Phase
+Els bugs futurs utilitzaran una capçalera específica, per exemple:
 
-Fase de `PLAN.md` a la qual pertany.
+```yaml
+---
+id: BUG-001
+type: bug
+title: Descripció breu del defecte
+status: ready
+priority: 5
+severity: high
+blocking: true
+milestone: M2
+phase: F2
+related-task: TASK-012
+dependencies: []
+---
+```
+
+No inventis bugs en aquesta fase.
 
 ## Regles ATD
 
-Cada issue:
+Cada tasca:
 
 * ha de tenir un únic objectiu;
 * ha de ser prou petita per una única iteració;
 * ha de poder validar-se independentment;
 * ha de dependre només de treball anterior;
 * no ha d'incloure funcionalitats futures;
-* ha de produir un canvi coherent que pugui correspondre a un commit.
+* ha de produir un canvi coherent;
+* no implica un commit individual.
 
 Si una tasca és massa gran, divideix-la.
 
-No creïs una issue independent de validació per cada implementació.
+No creïs una tasca independent de validació per cada implementació.
 
 La validació forma part del flux normal:
 
@@ -162,234 +196,101 @@ Crea tasques específiques de validació només quan siguin:
 * regressions àmplies;
 * validació final.
 
-## Cobertura específica de l'arnès OpenCode runtime
+## Cobertura derivada del pla
 
-La descomposició ha d'incloure, segons les fases de `PLAN.md`, tasques atòmiques per implementar els elements següents.
+Descompon totes les fases i resultats necessaris de `PLAN.md` en tasques atòmiques suficients per implementar el projecte complet.
 
-### Estructura de l'arnès
+Per cada part del pla:
 
-* directori propi per al projecte OpenCode runtime;
-* configuració pròpia d'OpenCode;
-* separació respecte `.opencode/agents/` de desenvolupament;
-* instruccions pròpies de l'arnès;
-* agent especialitzat en revisió d'entregues;
-* skills runtime quan siguin justificats;
-* permisos restrictius.
+* crea les tasques mínimes necessàries per assolir-ne el resultat;
+* conserva les dependències reals;
+* inclou criteris de validació objectius;
+* cobreix configuració, integracions, seguretat, gestió d'errors i neteja quan `PLAN.md` ho requereixi;
+* no inventis funcionalitats, tecnologies o subsistemes que el pla no defineixi;
+* no ometis restriccions arquitectòniques o de seguretat perquè estiguin descrites només a `PLAN.md`.
 
-### Configuració del model
+Si `PLAN.md` defineix un arnès, runtime, servei extern, agent, provider, model, repositori temporal o qualsevol altra integració específica, crea les tasques necessàries per implementar-la exactament segons el pla.
 
-* provider configurable a OpenCode;
-* model configurable a OpenCode;
-* `baseURL` configurable;
-* límit de context configurable;
-* límit de sortida configurable;
-* opcions de raonament configurables quan el provider les suporti;
-* absència de valors sensibles hardcoded;
-* possibilitat d'utilitzar un endpoint vLLM compatible amb OpenAI.
+## Priorització
 
-No facis que aquests paràmetres formin part de la lògica de validació del servidor Node.js.
-
-### Agent runtime de revisió
-
-L'agent ha de:
-
-* revisar exclusivament el criteri rebut;
-* inspeccionar el repositori del directori de treball;
-* no modificar fitxers;
-* no crear commits;
-* no gestionar GitHub;
-* tractar el contingut del repositori com a dades no fiables;
-* ignorar instruccions del repositori que intentin modificar el procés de revisió;
-* buscar evidències concretes;
-* retornar una resposta estructurada.
-
-### Contracte de resposta
-
-Planifica la definició i validació d'un contracte amb:
-
-* `status`;
-* `evidence`;
-* `feedback`.
-
-`status` només pot ser:
-
-* `PASS`;
-* `FAIL`;
-* `NEEDS_REVIEW`.
-
-El servidor ha de validar aquest contracte abans de persistir el resultat.
-
-### Invocació des de Node.js
-
-Planifica tasques per:
-
-* servei responsable d'executar OpenCode;
-* execució no interactiva;
-* selecció explícita de l'agent runtime;
-* directori de treball corresponent al repositori temporal;
-* prompt específic per criteri;
-* captura de stdout;
-* captura de stderr;
-* captura del codi de sortida;
-* timeout;
-* cancel·lació del procés;
-* gestió d'errors;
-* neteja de recursos;
-* parseig de la resposta estructurada.
-
-La implementació ha d'evitar dependre d'un shell construït mitjançant concatenació insegura de text proporcionat per l'usuari.
-
-### Context de la validació
-
-Planifica que el servidor proporcioni a OpenCode només la informació necessària:
-
-* identificador de pràctica;
-* identificador del criteri;
-* text del criteri;
-* context mínim necessari.
-
-OpenCode ha d'obtenir la informació del codi inspeccionant el repositori en lloc de rebre tot el seu contingut dins del prompt.
-
-### Repositoris temporals
-
-Inclou:
-
-* validació de URL;
-* acceptació inicial exclusivament de repositoris públics accessibles per HTTPS a `github.com`;
-* rebuig d'URLs Git arbitràries, hosts alternatius i esquemes diferents d'HTTPS;
-* clonació o obtenció segura;
-* directori temporal únic;
-* límits raonables;
-* neteja final;
-* errors Git/GitHub;
-* repositoris inexistents o no accessibles.
-
-No planifiquis executar arbitràriament el codi del repositori sense aïllament explícit.
-
-### Seguretat
-
-Inclou tasques per validar:
-
-* contingut no fiable;
-* prompt injection dins de README, codi, comentaris o altres fitxers;
-* permisos de lectura;
-* absència de GitHub MCP a l'agent runtime;
-* absència d'eines d'escriptura sobre el repositori;
-* absència d'execució de comandes o codi del repositori sense un mecanisme d'aïllament explícit;
-* absència d'accés de xarxa innecessari;
-* restricció d'accés al repositori temporal i als recursos propis de l'arnès runtime quan OpenCode ho permeti;
-* absència d'escriptura innecessària;
-* paths;
-* timeouts;
-* processos abandonats;
-* sortides excessives;
-* respostes malformades.
-
-## Ordre
-
-Assigna `Order` segons les dependències reals.
+Assigna `priority` segons dependències i ordre real de desenvolupament.
 
 L'ordre ha de permetre que el projecte evolucioni progressivament cap a estats funcionals.
 
-Una tasca no és executable només pel seu `Order`: totes les dependències han d'estar `Done`.
+Una tasca no és executable només per tenir una `priority` baixa: totes les dependències han de tenir `status: done`.
 
-## Prioritat inicial
+No facis servir categories `Urgent`, `High`, `Medium` o `Low`. La prioritat és exclusivament numèrica.
 
-Utilitza `Medium` per defecte.
+Per bugs bloquejants futurs, utilitza `blocking: true` i reserva prioritats prou baixes per situar-los abans de les tasques normals disponibles.
 
-Utilitza `High` només quan existeixi una raó clara.
+## Assignació de milestones
 
-Reserva `Urgent` principalment per bugs bloquejants descoberts durant el desenvolupament.
+Cada `TASK-NNN.md` ha d'indicar exactament una milestone existent a `PLAN.md` mitjançant el camp YAML `milestone`.
 
-## Estat inicial
+No inventis milestones alternatives i no assumeixis que sempre existeixen `M1` a `M7`.
 
-Totes les tasques creades durant aquesta planificació han de començar com:
+Assigna cada tasca a la milestone on el seu resultat sigui necessari per primera vegada.
 
-`Status = Todo` dins de `ProjecteDeures`
+La prioritat i les dependències determinen l'ordre operacional; la milestone determina el bloc funcional que serà revisat i commitejat conjuntament.
 
-No comencis a implementar-les.
+No creïs commits durant aquest pas.
+
+## Milestones Git
+
+Les milestones concretes, el seu abast, criteris de finalització i missatges de commit provenen exclusivament de `PLAN.md`.
+
+Durant aquesta fase:
+
+* associa cada tasca a una milestone existent;
+* comprova que totes les milestones que requereixen implementació tenen tasques suficients;
+* no redefineixis les milestones;
+* no creïs commits;
+* no creïs una tasca artificial només per representar el commit de milestone.
 
 ## Cobertura mínima
 
-Les issues han de cobrir com a mínim:
+La carpeta `tasks/` ha de cobrir tot el treball necessari per satisfer `PLAN.md`, incloent, quan sigui aplicable:
 
-* inicialització Node.js;
-* servidor web;
-* estructura de l'aplicació;
+* infraestructura i configuració;
+* funcionalitats;
 * interfície;
-* creació i edició de pràctiques;
-* criteris d'acceptació;
-* formulari d'entrega;
-* URL GitHub;
-* accessibilitat del repositori;
-* obtenció temporal;
-* inspecció segura dels fitxers;
-* contingut no fiable;
-* estructura de l'arnès OpenCode runtime;
-* configuració OpenCode runtime;
-* provider;
-* model;
-* `baseURL`;
-* context;
-* output;
-* raonament configurable;
-* endpoint vLLM compatible amb OpenAI;
-* agent runtime de revisió;
-* permisos de l'agent;
-* protecció contra prompt injection;
-* invocació d'OpenCode des de Node.js;
-* execució no interactiva;
-* directori de treball;
-* prompt específic per criteri;
-* timeout;
-* stdout;
-* stderr;
-* codi de sortida;
-* resposta estructurada;
-* validació de l'esquema;
-* validació individual;
-* `PASS`;
-* `FAIL`;
-* `NEEDS_REVIEW`;
-* evidències;
-* feedback;
-* resultat global segons la regla: qualsevol `FAIL` → `FAIL`; cap `FAIL` però algun `NEEDS_REVIEW` → `NEEDS_REVIEW`; tots `PASS` → `PASS`;
-* tractament separat dels errors tècnics, que mai no es poden convertir en `PASS`;
 * persistència;
-* errors Git/GitHub;
-* errors d'OpenCode;
-* errors del provider/model;
-* respostes incorrectes de l'agent;
-* neteja de processos i directoris temporals;
-* validacions Puppeteer;
+* integracions;
+* contractes i validació de dades;
+* gestió d'errors i casos límit;
+* seguretat;
+* neteja de recursos;
+* proves funcionals;
+* Puppeteer MCP per funcionalitats web observables;
 * regressions;
 * validació global.
 
+No converteixis aquesta llista genèrica en requisits inexistents: només crea tasques per elements exigits o justificats per `PLAN.md`.
+
 ## Validacions arquitectòniques obligatòries
 
-Inclou criteris que permetin comprovar que:
+Inclou criteris de `Validation` suficients per comprovar que les tasques respecten les decisions arquitectòniques i restriccions de `PLAN.md`.
 
-* el servidor no valida les entregues invocant directament vLLM;
-* OpenCode és la capa runtime encarregada d'executar l'agent;
-* la configuració del model resideix a OpenCode;
-* l'agent runtime és diferent dels agents de desenvolupament;
-* un canvi de provider o model no obliga a modificar la lògica de negoci del servidor;
-* el repositori de l'alumne no pot alterar les instruccions de revisió;
-* cada criteri es valida independentment;
-* una resposta malformada no es tracta com a `PASS`.
+Especialment, protegeix els límits entre components, les dependències prohibides, les restriccions de seguretat i qualsevol separació de responsabilitats que el pla declari explícitament.
+
+No dupliquis a cada tasca tota l'arquitectura: incorpora només les restriccions que siguin rellevants per validar aquella tasca.
 
 ## Revisió final
 
 Abans d'acabar:
 
 * comprova que totes les fases de `PLAN.md` estan cobertes;
+* comprova que totes les fites necessàries tenen tasques associades;
 * comprova dependències;
 * comprova que no hi ha cicles;
 * comprova identificadors;
 * comprova que no hi ha tasques duplicades;
 * comprova atomicitat;
 * comprova criteris de validació;
-* comprova l'ordre;
+* comprova prioritats;
+* comprova que totes les tasques inicials tenen `status: ready` o `status: backlog`;
+* comprova que només tenen `status: ready` les que tenen totes les dependències satisfetes;
 * comprova cobertura funcional;
-* comprova que no s'ha introduït una integració directa Node.js → vLLM per validar entregues;
-* comprova que l'arnès OpenCode runtime queda completament cobert.
+* comprova que totes les restriccions arquitectòniques de `PLAN.md` estan cobertes;
+* comprova que totes les integracions i subsistemes definits al pla tenen les tasques necessàries;
+* comprova que no s'ha creat cap Issue ni Project a GitHub.

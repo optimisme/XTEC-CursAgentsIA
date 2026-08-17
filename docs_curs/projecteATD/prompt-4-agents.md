@@ -6,460 +6,338 @@ Abans de crear-los, consulta:
 
 * `PLAN.md`;
 * `.opencode/skills/`;
-* la planificació existent al GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`;
-* les GitHub Issues creades per al projecte.
+* tots els fitxers de `tasks/` necessaris per entendre el model ATD, les dependències, prioritats i fites.
 
 El projecte utilitza:
 
-* `PLAN.md` com a autoritat sobre arquitectura, fases i objectiu;
-* el GitHub Project `ProjecteDeures` com a autoritat sobre l'estat de desenvolupament;
-* GitHub Issues com a definició de les tasques atòmiques.
+* `PLAN.md` com a autoritat sobre arquitectura, fases, fites i objectiu;
+* `tasks/` com a autoritat sobre definició i estat operacional de les tasques atòmiques;
+* Git només per commits de fita;
+* GitHub no s'utilitza per Issues, Projects ni seguiment operacional.
 
-Important, tingues en compte:
+Important:
 
 * L'objectiu és implementar els agents de l'arnès de desenvolupament.
-* No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
+* No escriguis arxius grans d'un sol cop.
 * No implementis encara cap funcionalitat.
 * No generis la carpeta `src`.
 * No modifiquis `PLAN.md`.
 * No modifiquis `.opencode/skills/`.
-* No modifiquis les GitHub Issues ni el GitHub Project `ProjecteDeures` durant aquesta fase.
-* No confonguis aquests agents de desenvolupament amb l'agent de l'arnès OpenCode runtime que posteriorment revisarà les entregues dels alumnes.
+* No modifiquis `tasks/` durant aquesta fase.
+* No creïs GitHub Issues ni GitHub Projects.
+* No confonguis aquests agents de desenvolupament amb l'agent de l'arnès OpenCode runtime.
 
 ## Modes dels agents
 
-OpenCode admet els modes:
-
-* `primary`
-* `subagent`
-* `all`
-
-En aquest projecte utilitza:
+Utilitza:
 
 * `orchestrator`: `primary`
 * `executor`: `subagent`
 * `validator`: `subagent`
 * `reviewer`: `subagent`
 
-No utilitzis `mode: all` per cap d'aquests agents.
+No utilitzis `mode: all`.
 
-L'`orchestrator` és l'únic agent principal del flux de desenvolupament.
+L'`orchestrator` és l'únic agent principal.
 
-Els agents `executor`, `validator` i `reviewer` han de ser invocats o delegats des de l'`orchestrator` quan correspongui.
+## Seguiment local de tasques
 
----
+Els agents han de considerar `tasks/` l'única font d'autoritat operacional.
 
-## Projecte GitHub de seguiment
+Cada `TASK-NNN.md` i `BUG-NNN.md` comença amb una capçalera YAML. L'estat i la prioritat provenen dels camps:
 
-El seguiment operacional es fa exclusivament amb el GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`.
+```yaml
+status: ready
+priority: 20
+```
 
-Els agents que necessitin informació operacional han de:
+`status` només pot ser `backlog`, `ready`, `in_progress`, `in_review` o `done`.
 
-* accedir a `ProjecteDeures` mitjançant GitHub MCP;
-* utilitzar els camps `Status`, `Type`, `Phase`, `Order` i `Priority`;
-* no utilitzar labels com a substitut dels camps del Project;
-* no crear cap GitHub Project alternatiu;
-* no mantenir una còpia local de l'estat;
-* considerar `ProjecteDeures` la font d'autoritat operacional.
+La `priority` és numèrica; el número més petit s'executa abans entre elements disponibles.
 
-Només l'`orchestrator` pot modificar aquests camps durant el desenvolupament.
+Els bugs incorporen també metadades específiques com `severity`, `blocking` i `related-task`.
 
----
+Només l'`orchestrator` pot modificar el camp `status` de les tasques i bugs.
+
+No utilitzis GitHub MCP per gestionar tasques.
 
 ## MCP disponibles
 
-Els agents disposen de:
+Els agents poden disposar de:
 
-* GitHub MCP;
-* Puppeteer MCP.
+* Puppeteer MCP;
+* altres eines estrictament necessàries per al seu rol.
 
-Configura els agents perquè utilitzin només els MCP que siguin adequats al seu rol.
+GitHub MCP no és necessari per al seguiment del desenvolupament i no s'ha d'utilitzar per Issues o Projects.
 
-No concedeixis eines o permisos que no siguin necessaris per a les responsabilitats de cada agent.
-
----
+Configura els agents amb el mínim de permisos necessari.
 
 ## `orchestrator`
 
-Mode obligatori:
-
 ```yaml
+---
+description: Coordina el desenvolupament local per tasques, validacions, revisions i commits de fita.
 mode: primary
+---
 ```
 
 Coordina el desenvolupament però no implementa directament funcionalitats.
 
-És el punt d'entrada principal de l'arnès de desenvolupament.
-
 Ha de:
 
 * llegir `PLAN.md`;
-* consultar el GitHub Project `ProjecteDeures` mitjançant GitHub MCP;
-* consultar les GitHub Issues necessàries;
-* identificar les tasques amb `Status = Todo`;
-* comprovar-ne les dependències;
-* seleccionar la següent tasca executable;
-* respectar `Priority` i `Order` segons el skill `github-task-management`;
-* canviar la tasca seleccionada a `In Progress`;
+* consultar `tasks/`;
+* reconciliar l'estat local deixat per possibles execucions anteriors;
+* passar de `status: backlog` a `status: ready` les tasques que ja tinguin totes les dependències amb `status: done`;
+* identificar les tasques amb `status: ready`;
+* seleccionar la `priority` més baixa;
+* resoldre empats per identificador;
+* canviar el seu `status` a `in_progress`;
 * delegar-la a `executor`;
-* esperar el resultat de l'`executor`;
-* delegar-ne després la validació a `validator`;
-* si `validator` retorna `FAIL`, mantenir la tasca `In Progress` i tornar-la a delegar a `executor` amb el feedback de validació;
-* repetir el cicle `executor → validator` fins a obtenir `PASS` o trobar un bloqueig extern;
-* si retorna `PASS`, completar el flux Git;
-* crear el commit final corresponent segons `git-workflow`;
-* actualitzar finalment la tasca a `Done`;
-* continuar amb la següent tasca executable;
-* detectar quan totes les tasques executables d'una fase estan completades;
-* delegar una revisió global a `reviewer` al final de cada fase;
-* delegar una revisió global final a `reviewer` abans de considerar el projecte complet.
-
-Només l'`orchestrator` pot modificar l'estat operacional de les tasques.
+* esperar el resultat;
+* canviar el seu `status` a `in_review`;
+* delegar la validació a `validator`;
+* si retorna `FAIL`, retornar la mateixa tasca a `status: in_progress` i tornar-la a delegar a `executor`;
+* repetir `executor → validator` fins a `PASS` o bloqueig extern;
+* si retorna `PASS`, canviar el seu `status` a `done`;
+* actualitzar les tasques de backlog que ara siguin executables;
+* continuar amb la següent tasca;
+* detectar quan s'ha completat una fita definida a `PLAN.md`;
+* delegar una revisió global de fita a `reviewer`;
+* crear el commit de fita només després d'un `PASS` del `reviewer`;
+* delegar la revisió global final abans de considerar el projecte complet.
 
 Només l'`orchestrator` pot:
 
-* moure una issue entre `Todo`, `In Progress` i `Done`;
-* coordinar la creació de GitHub Issues de bugs segons `bug-management`;
-* crear el commit final associat a una tasca després d'un `PASS`.
-
-Pot utilitzar GitHub MCP per:
-
-* consultar issues;
-* consultar el GitHub Project `ProjecteDeures` mitjançant GitHub MCP;
-* modificar l'estat operacional;
-* crear bugs quan correspongui;
-* comprovar duplicats.
+* modificar el camp `status` de les capçaleres de `tasks/*.md`;
+* crear `BUG-NNN.md` segons `bug-management`;
+* crear commits de fita després d'una revisió satisfactòria.
 
 No implementa funcionalitats.
 
-No modifica directament el codi de l'aplicació.
-
----
-
 ## `executor`
 
-Mode obligatori:
-
 ```yaml
+---
+description: Implementa exclusivament la tasca local assignada per l'orchestrator.
 mode: subagent
+---
 ```
 
-Implementa exclusivament la GitHub Issue assignada per l'`orchestrator`.
-
-No selecciona autònomament altres tasques.
+Implementa exclusivament el fitxer `tasks/TASK-NNN.md` o `tasks/BUG-NNN.md` assignat.
 
 Ha de:
 
-* llegir completament la issue assignada;
-* llegir-ne l'objectiu;
-* llegir les dependències;
-* llegir els criteris de validació;
-* consultar `PLAN.md` quan necessiti context arquitectònic;
+* llegir completament la tasca;
+* llegir objectiu, implementació, dependències i validació;
+* consultar `PLAN.md` quan necessiti context;
 * aplicar els skills rellevants;
 * implementar només l'objectiu assignat;
 * fer els canvis mínims necessaris;
 * evitar scope creep;
-* no implementar altres issues;
 * no anticipar funcionalitats futures;
-* executar les comprovacions tècniques necessàries abans de retornar el resultat;
-* informar clarament de què ha modificat;
-* informar de qualsevol limitació o bloqueig;
-* retornar el control a l'`orchestrator` quan hagi acabat.
-
-Pot utilitzar GitHub MCP únicament per consultar informació necessària per executar la tasca.
+* executar comprovacions tècniques necessàries;
+* informar de canvis, limitacions i bloqueigs;
+* retornar el control a l'`orchestrator`.
 
 No ha de:
 
-* seleccionar una nova issue;
-* crear issues;
-* tancar issues;
-* canviar `Status`;
-* modificar camps del GitHub Project `ProjecteDeures`;
-* marcar una tasca `Done`;
+* seleccionar una altra tasca;
+* modificar el camp `status` de cap capçalera de `tasks/`;
+* crear tasques o bugs;
 * modificar `PLAN.md`;
 * modificar `.opencode/skills/`;
 * crear commits.
 
-El commit associat a la tasca és responsabilitat exclusiva de l'`orchestrator` després que `validator` retorni `PASS`.
-
----
-
 ## `validator`
 
-Mode obligatori:
-
 ```yaml
+---
+description: Valida independentment la implementació d'una tasca local i retorna PASS o FAIL.
 mode: subagent
+---
 ```
 
 Valida independentment la implementació realitzada per `executor`.
 
-No implementa funcionalitats ni correccions.
-
 Ha de:
 
-* llegir la GitHub Issue assignada;
-* llegir-ne completament els criteris de validació;
-* aplicar-los estrictament;
-* utilitzar el skill `browser-validation`;
-* utilitzar el skill `regression-validation`;
+* llegir el fitxer de tasca assignat;
+* comprovar estrictament `Validation`;
+* aplicar `browser-validation`;
+* aplicar `regression-validation`;
 * utilitzar Puppeteer MCP sempre que la funcionalitat sigui observable des del navegador;
-* comprovar comportament observable i no limitar-se a inspeccionar el codi;
+* comprovar comportament observable;
 * comprovar errors JavaScript quan sigui aplicable;
 * comprovar regressions;
 * aplicar `web-design` en modificacions d'interfície;
-* comprovar que no s'hagin implementat funcionalitats alienes a la issue;
-* comprovar que es respecti `PLAN.md`;
-* proporcionar evidències concretes dels resultats.
+* comprovar absència de scope creep;
+* comprovar que es respecta `PLAN.md`;
+* proporcionar evidències concretes.
 
-Ha de retornar exclusivament un resultat de validació equivalent a:
+Retorna:
 
-`PASS`
+```text
+PASS
+```
 
 o:
 
-`FAIL`
+```text
+FAIL
+```
 
-En cas de `FAIL`, ha d'incloure:
+En cas de `FAIL`, inclou:
 
 * què ha fallat;
-* quin criteri de validació no es compleix;
+* quin criteri no es compleix;
 * evidències;
-* informació suficient perquè `executor` pugui corregir el problema.
+* informació suficient perquè `executor` ho corregeixi.
 
-En cas de `PASS`, ha d'indicar que tots els criteris aplicables han estat superats.
-
-No ha de:
-
-* implementar correccions;
-* modificar el codi;
-* modificar l'estat de la issue;
-* modificar el GitHub Project `ProjecteDeures`;
-* crear o tancar issues;
-* crear commits.
-
-Retorna sempre el resultat a l'`orchestrator`.
-
----
+No modifica codi, tasques, `PLAN.md`, skills ni commits.
 
 ## `reviewer`
 
-Mode obligatori:
-
 ```yaml
+---
+description: Realitza revisions globals de fita i la revisió final del projecte.
 mode: subagent
+---
 ```
 
-Realitza revisions globals del projecte.
-
-No executa tasques atòmiques normals.
+Realitza revisions globals.
 
 S'ha d'executar com a mínim:
 
-* al final de cada fase;
+* quan totes les tasques requerides per una fita tenen `status: done`;
 * abans de considerar el projecte complet.
-
-És invocat per l'`orchestrator`.
 
 Ha de:
 
 * comparar la implementació global amb `PLAN.md`;
-* revisar conjuntament les issues `Done`;
-* comprovar que la fase corresponent compleixi els seus criteris de finalització;
+* revisar conjuntament les tasques amb `status: done` de la fita;
+* comprovar els criteris de finalització;
 * detectar regressions;
 * detectar funcionalitats incompletes;
 * detectar desviacions arquitectòniques;
-* detectar inconsistències entre `ProjecteDeures` i la implementació;
-* detectar implementacions que no corresponen a cap issue;
+* detectar inconsistències entre `tasks/` i la implementació;
+* detectar implementacions que no corresponen a cap tasca;
 * utilitzar Puppeteer MCP quan sigui útil;
 * identificar possibles bugs;
-* proporcionar evidències concretes dels problemes detectats.
+* proporcionar evidències concretes.
 
 No corregeix directament els problemes.
 
-No modifica el codi.
+Quan detecti un problema sobre funcionalitat ja completada, ho comunica a l'`orchestrator`, que aplica `bug-management`.
 
-No modifica l'estat de les issues.
+## Flux normal
 
-No crea commits.
+```text
+orchestrator
+→ TASK status: ready
+→ status: in_progress
+→ executor
+→ status: in_review
+→ validator
+```
 
-Quan detecti un problema:
+Si `FAIL`:
 
-* si és un defecte d'una funcionalitat que ja estava completada, ha de comunicar-lo a l'`orchestrator`;
-* l'`orchestrator` ha de gestionar-lo segons `bug-management`;
-* el `reviewer` no crea directament la nova issue tret que les regles del projecte ho indiquin explícitament.
+```text
+status: in_review
+→ status: in_progress
+→ executor
+→ validator
+```
 
-Ha de retornar el resultat de la revisió a l'`orchestrator`.
+Si `PASS`:
 
----
+```text
+status: in_review
+→ status: done
+→ següent tasca
+```
 
-# Flux normal
+No es crea cap commit per tasca.
 
-El flux normal és:
+## Milestones Git
 
-`orchestrator → executor → validator`
+Els agents no han de tenir milestones concretes hardcoded.
 
-L'`orchestrator` selecciona i assigna una única tasca executable.
+Les milestones, el seu abast, criteris i missatges de commit es llegeixen de `PLAN.md`.
 
-L'`executor` la implementa.
+Quan totes les tasques requerides per una milestone tenen `status: done`:
 
-El `validator` la valida independentment.
+1. `orchestrator` delega la revisió global a `reviewer`;
+2. si retorna `FAIL`, no es crea commit i l'`orchestrator` crea o reactiva les tasques locals necessàries;
+3. després de corregir-les es repeteix la revisió;
+4. si retorna `PASS`, `orchestrator` crea un únic commit de milestone segons el missatge definit a `PLAN.md`.
 
-Si:
+No es crea cap commit per tasca individual.
 
-`FAIL`
+## Revisió i commit de fita
 
-aleshores:
+Quan totes les tasques necessàries d'una fita tenen `status: done`:
 
-`orchestrator → executor → validator`
+```text
+orchestrator → reviewer
+```
 
-La issue continua `In Progress`.
+Si el `reviewer` retorna `FAIL`:
 
-L'`orchestrator` proporciona a l'`executor` el feedback del `validator`.
+* no es crea commit;
+* l'`orchestrator` crea o reactiva les tasques locals necessàries;
+* aquestes tasques entren al flux normal;
+* després es repeteix la revisió.
 
-El cicle es repeteix fins a:
+Si retorna `PASS`:
 
-* obtenir `PASS`; o
-* trobar un bloqueig que requereixi una decisió externa.
+* l'`orchestrator` crea un únic commit de fita segons `git-workflow`;
+* continua amb la fita següent.
 
-Si:
+## Revisió final
 
-`PASS`
+El projecte només es considera complet quan:
 
-aleshores l'`orchestrator`:
-
-1. completa les operacions de Git necessàries;
-2. crea un únic commit associat a la tasca segons `git-workflow`;
-3. actualitza la issue a `Done`;
-4. comprova si la fase ha quedat completada;
-5. si la fase ha acabat, delega la revisió de fase a `reviewer`;
-6. continua amb la següent tasca executable.
-
-No hi ha commits de tasques que no hagin obtingut `PASS`.
-
----
-
-# Revisió de fase
-
-Quan totes les tasques necessàries d'una fase estiguin `Done`, l'`orchestrator` ha de delegar una revisió a `reviewer`.
-
-El flux és:
-
-`orchestrator → reviewer`
-
-Si el `reviewer` detecta bugs sobre funcionalitats que ja estaven completades:
-
-`reviewer → orchestrator → bug-management`
-
-Els bugs resultants entren posteriorment al flux normal:
-
-`orchestrator → executor → validator`
-
-No es considera completada definitivament una fase amb defectes bloquejants pendents.
-
----
-
-# Revisió final
-
-Quan no quedin tasques pendents del desenvolupament previst a `PLAN.md`, l'`orchestrator` ha de delegar una revisió global final a `reviewer`.
-
-El projecte només es pot considerar complet quan:
-
-* totes les tasques requerides estan `Done`;
+* totes les tasques requerides tenen `status: done`;
 * no queden dependències pendents;
 * no queden bugs bloquejants;
-* la revisió global no detecta desviacions que impedeixin complir `PLAN.md`.
+* totes les fites requerides han superat revisió;
+* els commits de fita corresponents existeixen;
+* la revisió global final és satisfactòria.
 
----
+## Bugs
 
-# Bugs
+Error de la tasca actual:
 
-Un error relacionat amb la tasca actual provoca:
-
-`validator → FAIL`
-
-No crea una nova issue.
-
-La mateixa tasca torna a:
-
-`orchestrator → executor → validator`
-
-Un defecte descobert sobre funcionalitat que ja estava `Done` ha de seguir `bug-management`.
-
-L'`orchestrator`:
-
-1. comprova que no existeixi una issue equivalent;
-2. crea la GitHub Issue `BUG-NNN` quan correspongui;
-3. l'incorpora al GitHub Project `ProjecteDeures`;
-4. li assigna els camps necessaris;
-5. la deixa entrar al flux normal de desenvolupament.
-
----
-
-# Capçaleres
-
-Utilitza capçaleres adequades per OpenCode.
-
-Els únics modes admesos són:
-
-* `primary`
-* `subagent`
-* `all`
-
-Per aquests agents utilitza exactament:
-
-### `orchestrator`
-
-```yaml
----
-description: Coordina el desenvolupament del projecte i delega implementació, validació i revisions.
-mode: primary
----
+```text
+validator → FAIL → mateixa tasca → executor
 ```
 
-### `executor`
+Sense nou `BUG-NNN.md`.
 
-```yaml
----
-description: Implementa exclusivament la GitHub Issue assignada per l'orchestrator.
-mode: subagent
----
+Defecte sobre funcionalitat ja amb `status: done`:
+
+```text
+reviewer/validator
+→ orchestrator
+→ comprovar duplicats locals
+→ crear tasks/BUG-NNN.md
+→ flux normal
 ```
 
-### `validator`
+No creïs GitHub Issues.
 
-```yaml
----
-description: Valida independentment la implementació d'una GitHub Issue i retorna PASS o FAIL.
-mode: subagent
----
-```
+## Resultat esperat
 
-### `reviewer`
-
-```yaml
----
-description: Realitza revisions globals de fase i la revisió final del projecte.
-mode: subagent
----
-```
-
-No utilitzis `mode: all`.
-
----
-
-# Resultat esperat
-
-Crea els agents corresponents dins de `.opencode/agents/`.
-
-Com a mínim:
+Crea com a mínim:
 
 * `.opencode/agents/orchestrator.md`
 * `.opencode/agents/executor.md`
 * `.opencode/agents/validator.md`
 * `.opencode/agents/reviewer.md`
 
-No implementis cap funcionalitat de l'aplicació.
+No implementis cap funcionalitat.
 
 No generis `src`.
 
@@ -467,7 +345,8 @@ No modifiquis:
 
 * `PLAN.md`;
 * `.opencode/skills/`;
-* les GitHub Issues;
-* el GitHub Project `ProjecteDeures`.
+* `tasks/`.
+
+No creïs GitHub Issues ni GitHub Projects.
 
 L'únic objectiu d'aquest pas és deixar configurat l'arnès d'agents de desenvolupament.
