@@ -49,6 +49,18 @@ function initDB() {
     )
   `);
 
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS submissions (
+      hash TEXT PRIMARY KEY,
+      practiceId TEXT NOT NULL,
+      url TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      result TEXT,
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (practiceId) REFERENCES practices(id) ON DELETE CASCADE
+    )
+  `);
+
   return db;
 }
 

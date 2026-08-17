@@ -1,6 +1,7 @@
 const express = require('express');
 const { initDB, getDB } = require('./models/db');
 const practicesRoutes = require('./routes/practices');
+const submissionsRoutes = require('./routes/submissions');
 
 // Initialize database on startup
 initDB();
@@ -11,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use('/api/practices', practicesRoutes);
+app.use('/api/submissions', submissionsRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Pràcties Validator API', version: '0.1.0' });
