@@ -31,7 +31,7 @@ function initDB() {
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS practices (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       description TEXT,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
@@ -42,7 +42,7 @@ function initDB() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS criteria (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      practiceId INTEGER NOT NULL,
+      practiceId TEXT NOT NULL,
       text TEXT NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (practiceId) REFERENCES practices(id) ON DELETE CASCADE
