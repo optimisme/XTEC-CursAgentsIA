@@ -20,7 +20,7 @@ Important:
 * L'objectiu és implementar els agents de l'arnès de desenvolupament.
 * No escriguis arxius grans d'un sol cop.
 * No implementis encara cap funcionalitat.
-* No generis la carpeta `src`.
+* No generis encara cap directori ni fitxer d'implementació de l'aplicació, inclòs `server/`.
 * No modifiquis `PLAN.md`.
 * No modifiquis `.opencode/skills/`.
 * No modifiquis `tasks/` durant aquesta fase.
@@ -100,6 +100,7 @@ Ha de:
 * si retorna `FAIL`, retornar la mateixa tasca a `status: in_progress` i tornar-la a delegar a `executor`;
 * repetir `executor → validator` fins a `PASS` o bloqueig extern;
 * si retorna `PASS`, canviar el seu `status` a `done`;
+* no inferir `status: done` només perquè la implementació existeixi; si una reconciliació no pot demostrar un `PASS` anterior de manera segura, repetir la validació abans de marcar la tasca com a `done`;
 * actualitzar les tasques de backlog que ara siguin executables;
 * continuar amb la següent tasca;
 * detectar quan s'ha completat una fita definida a `PLAN.md`;
@@ -111,7 +112,8 @@ Només l'`orchestrator` pot:
 
 * modificar el camp `status` de les capçaleres de `tasks/*.md`;
 * crear `BUG-NNN.md` segons `bug-management`;
-* crear commits de fita després d'una revisió satisfactòria.
+* crear commits de fita després d'una revisió satisfactòria;
+* comprovar abans l'historial Git per evitar crear un commit de fita duplicat.
 
 No implementa funcionalitats.
 
@@ -260,6 +262,8 @@ status: in_review
 
 No es crea cap commit per tasca.
 
+No hi pot haver més d'un element de treball (`TASK-NNN` o `BUG-NNN`) amb `status: in_progress` o `status: in_review` alhora.
+
 ## Milestones Git
 
 Els agents no han de tenir milestones concretes hardcoded.
@@ -271,7 +275,9 @@ Quan totes les tasques requerides per una milestone tenen `status: done`:
 1. `orchestrator` delega la revisió global a `reviewer`;
 2. si retorna `FAIL`, no es crea commit i l'`orchestrator` crea o reactiva les tasques locals necessàries;
 3. després de corregir-les es repeteix la revisió;
-4. si retorna `PASS`, `orchestrator` crea un únic commit de milestone segons el missatge definit a `PLAN.md`.
+4. si retorna `PASS`, `orchestrator` comprova si el commit exacte definit a `PLAN.md` ja existeix;
+5. si ja existeix, considera la milestone ja commitejada i no crea cap duplicat;
+6. si no existeix, crea un únic commit de milestone segons el missatge definit a `PLAN.md`.
 
 No es crea cap commit per tasca individual.
 

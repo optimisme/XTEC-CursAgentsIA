@@ -98,6 +98,10 @@ Documenta:
 
 Només l'`orchestrator` modifica `status`.
 
+No hi pot haver més d'un element de treball (`TASK-NNN` o `BUG-NNN`) amb `status: in_progress` o `status: in_review` alhora.
+
+En reconciliacions posteriors, no s'ha d'inferir `status: done` només perquè existeixi una implementació. Si no es pot demostrar de manera segura que hi havia un `PASS` anterior, cal repetir la validació abans de marcar l'element com a `done`.
+
 ## Estructura del projecte
 
 Descriu l'estructura prevista segons `PLAN.md`.
@@ -211,7 +215,9 @@ Regles:
 * no es crea un commit per tasca;
 * els canvis validats s'acumulen fins a la milestone corresponent;
 * quan totes les tasques requerides tenen `status: done`, `reviewer` fa una revisió global;
-* només després d'un `PASS`, `orchestrator` crea un únic commit amb el missatge definit a `PLAN.md`;
+* només després d'un `PASS`, `orchestrator` comprova primer si el commit exacte de la milestone ja existeix a l'historial Git;
+* si ja existeix, considera la milestone ja commitejada i no crea cap duplicat;
+* si no existeix, crea un únic commit amb el missatge definit a `PLAN.md`;
 * un `FAIL` genera o reactiva treball local abans de tornar a revisar;
 * no es fa `push` tret que una instrucció explícita ho demani.
 
@@ -223,7 +229,9 @@ Documenta clarament:
 * els canvis validats s'acumulen fins a una fita;
 * les fites es defineixen a `PLAN.md`;
 * quan totes les tasques requerides d'una fita tenen `status: done`, `reviewer` fa una revisió global;
-* només després d'un `PASS` de la fita, l'`orchestrator` crea un únic commit;
+* només després d'un `PASS` de la fita, l'`orchestrator` comprova si el commit exacte ja existeix;
+* si ja existeix, no crea cap duplicat;
+* si no existeix, crea un únic commit;
 * format recomanat: `MILESTONE-MN: ...`;
 * no es creen GitHub Issues ni GitHub Projects;
 * GitHub no és la font d'estat;

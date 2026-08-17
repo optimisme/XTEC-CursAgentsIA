@@ -12,7 +12,7 @@ Important:
 * L'objectiu és implementar `PLAN.md`.
 * No escriguis arxius grans d'un sol cop: crea primer l'arxiu buit i afegeix el contingut per seccions petites.
 * No implementis encara cap funcionalitat.
-* No generis la carpeta `src`.
+* No generis encara cap directori ni fitxer d'implementació de l'aplicació, inclòs `server/`.
 * No generis encara la carpeta `tasks/`.
 * No modifiquis `.opencode/skills/`.
 * No creïs agents ni `AGENTS.md`.
@@ -471,7 +471,10 @@ Una milestone només pot generar el seu commit quan:
 2. no hi ha bugs bloquejants associats;
 3. el `reviewer` ha executat la revisió global de la milestone;
 4. el `reviewer` ha retornat `PASS`;
-5. l'`orchestrator` ha comprovat que els canvis acumulats corresponen a l'abast de la milestone.
+5. l'`orchestrator` ha comprovat que els canvis acumulats corresponen a l'abast de la milestone;
+6. l'`orchestrator` ha comprovat a l'historial Git que el commit exacte definit per aquella milestone encara no existeix.
+
+Si el commit exacte ja existeix, la milestone es considera ja commitejada i no se'n crea cap duplicat.
 
 Cada milestone genera com a màxim un commit final.
 

@@ -71,7 +71,7 @@ Per cada `tasks/TASK-NNN.md` i `tasks/BUG-NNN.md`:
 
 Com a mínim:
 
-* una tasca implementada i validada ha de tenir `status: done`;
+* una tasca implementada només pot tenir `status: done` si es pot demostrar de manera segura que ja havia superat una validació `PASS`; si no es pot demostrar, s'ha de repetir la validació abans de marcar-la com a `done`;
 * una tasca no iniciada amb dependències pendents ha de tenir `status: backlog`;
 * una tasca no iniciada amb totes les dependències satisfetes ha de tenir `status: ready`;
 * una tasca que realment s'està implementant pot tenir `status: in_progress`;
@@ -109,7 +109,9 @@ L'`orchestrator` ha de:
 7. comprovar de nou les dependències;
 8. canviar el seu `status` a `in_progress`.
 
-No seleccionis una nova tasca mentre l'actual tingui `status: in_progress` o `status: in_review`.
+No seleccionis una nova tasca mentre qualsevol element de treball (`TASK-NNN` o `BUG-NNN`) tingui `status: in_progress` o `status: in_review`.
+
+No hi pot haver més d'un element de treball amb `status: in_progress` o `status: in_review` alhora.
 
 ## Implementació
 
@@ -296,15 +298,17 @@ Si detecta defectes:
 Només després del `PASS`:
 
 1. comprova que l'arbre de treball conté els canvis esperats des de l'última fita;
-2. crea un únic commit lògic de fita segons `git-workflow`;
-3. format recomanat:
+2. comprova l'historial Git i verifica si el commit exacte definit per la milestone a `PLAN.md` ja existeix;
+3. si ja existeix, considera la milestone ja commitejada i no creïs cap commit duplicat;
+4. si no existeix, crea un únic commit lògic de fita segons `git-workflow`;
+5. format recomanat:
 
 ```text
 MILESTONE-MN: descripció breu
 ```
 
-4. comprova que el commit existeix correctament;
-5. continua amb la següent fita.
+6. comprova que el commit existeix correctament quan s'hagi creat;
+7. continua amb la següent fita.
 
 No facis `push` tret que una instrucció explícita ho demani.
 

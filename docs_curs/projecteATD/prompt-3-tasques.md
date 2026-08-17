@@ -14,7 +14,7 @@ Important:
 
 * L'objectiu és definir les tasques locals del projecte.
 * No implementis encara cap funcionalitat.
-* No generis la carpeta `src`.
+* No generis encara cap directori ni fitxer d'implementació de l'aplicació, inclòs `server/`.
 * No modifiquis `PLAN.md`.
 * No modifiquis `.opencode/skills/`.
 * No creïs agents ni `AGENTS.md`.

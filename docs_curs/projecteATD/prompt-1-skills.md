@@ -255,7 +255,7 @@ Una tasca amb `status: backlog` passa a `status: ready` quan totes les dependèn
 5. en empat, utilitza l'identificador numèric més petit;
 6. abans de delegar-la, canvia `status` a `in_progress`.
 
-No hi pot haver més d'una tasca normal amb `status: in_progress` alhora.
+No hi pot haver més d'un element de treball (`TASK-NNN` o `BUG-NNN`) amb `status: in_progress` o `status: in_review` alhora.
 
 ---
 
@@ -282,6 +282,8 @@ status: in_progress → status: in_review
 ```
 
 Una tasca només pot passar a `status: done` després d'una validació `PASS`.
+
+En una reconciliació posterior, la mera existència de la implementació no és suficient per inferir `status: done`. Si no es pot demostrar de manera segura que la tasca ja havia superat la validació, s'ha de repetir la validació abans de marcar-la com a `done`.
 
 ---
 
@@ -350,9 +352,11 @@ Quan totes les tasques requerides d'una fita tenen `status: done`:
 1. l'`orchestrator` delega la revisió de fita al `reviewer`;
 2. si el `reviewer` detecta problemes, es creen o reactiven tasques locals i no es crea el commit;
 3. quan la revisió de fita retorna `PASS`, l'`orchestrator` comprova l'abast dels canvis;
-4. crea un únic commit coherent de fita;
-5. comprova que el commit s'ha creat correctament;
-6. continua amb la fita següent.
+4. abans de crear el commit, comprova l'historial Git i verifica que el commit exacte de la fita encara no existeix;
+5. si ja existeix, considera la fita ja commitejada i no creïs un commit duplicat;
+6. si no existeix, crea un únic commit coherent de fita;
+7. comprova que el commit s'ha creat correctament;
+8. continua amb la fita següent.
 
 Format recomanat:
 
@@ -387,8 +391,10 @@ Quan totes les tasques necessàries d'una milestone definida a `PLAN.md` estan c
 2. delega una revisió global de la milestone al `reviewer`;
 3. si el `reviewer` retorna `FAIL`, no es crea cap commit i es creen o reactiven les tasques locals necessàries;
 4. després de corregir-les, la milestone es torna a revisar;
-5. només si el `reviewer` retorna `PASS`, l'`orchestrator` crea un únic commit coherent per a la milestone;
-6. el missatge del commit ha de seguir el format o missatge definit a `PLAN.md`.
+5. només si el `reviewer` retorna `PASS`, l'`orchestrator` comprova primer si el commit exacte de la milestone ja existeix a l'historial Git;
+6. si ja existeix, no crea cap commit duplicat;
+7. si no existeix, crea un únic commit coherent per a la milestone;
+8. el missatge del commit ha de seguir el format o missatge definit a `PLAN.md`.
 
 Cada milestone genera com a màxim un commit final.
 
