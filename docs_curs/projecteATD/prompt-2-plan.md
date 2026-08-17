@@ -271,11 +271,21 @@ No planifiquis l'execució arbitrària del codi dels repositoris entregats sense
 
 Defineix una arquitectura prou concreta per guiar posteriorment les tasques ATD.
 
+El codi de l'aplicació servidor ha de residir dins de:
+
+`server/`
+
+Utilitza **Node.js amb Express** per implementar el servidor web.
+
+El servidor ha de servir els recursos estàtics de la interfície des de:
+
+`server/public/`
+
 Descriu:
 
-* servidor Node.js;
-* organització funcional;
-* interfície web;
+* servidor Node.js amb Express;
+* organització funcional dins de `server/`;
+* interfície web i recursos estàtics dins de `server/public/`;
 * persistència;
 * accés als repositoris GitHub entregats;
 * obtenció temporal dels repositoris;
@@ -294,11 +304,23 @@ No inventis complexitat innecessària.
 
 Proposa l'estructura de carpetes i responsabilitats dels components.
 
+Utilitza com a mínim aquesta separació:
+
+`server/`
+: codi del servidor Node.js amb Express.
+
+`server/public/`
+: HTML, CSS, JavaScript del client, tipografies, icones i altres recursos estàtics.
+
 Ha de quedar clar on resideix l'arnès OpenCode runtime de revisió.
 
 Inclou `tasks/` com a carpeta de planificació executable local, però no en generis encara el contingut.
 
-Diferencia clarament `tasks/` del codi de l'aplicació.
+Diferencia clarament:
+
+* `server/` del sistema de planificació `tasks/`;
+* el codi de l'aplicació de l'arnès OpenCode runtime;
+* `.opencode/` de desenvolupament de l'arnès OpenCode runtime de l'aplicació.
 
 ### Flux principal
 
