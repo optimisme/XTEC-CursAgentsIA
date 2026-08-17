@@ -125,6 +125,75 @@ El servidor ha de ser responsable de:
 
 El servidor no ha de decidir per si mateix si un criteri és `PASS`, `FAIL` o `NEEDS_REVIEW`, excepte quan existeixi un error tècnic que impedeixi completar la revisió.
 
+## Interfície web i rols d'ús
+
+L'aplicació ha de disposar d'una pàgina principal que actuï com a punt d'entrada i presenti dues opcions clarament diferenciades:
+
+* accedir a la interfície d'alumne;
+* accedir a la interfície de professor.
+
+No cal implementar un sistema general de comptes, rols o autenticació amb contrasenya en aquesta primera versió.
+
+### Interfície d'alumne
+
+La interfície d'alumne ha de permetre:
+
+* identificar-se únicament mitjançant el DNI;
+* si el DNI encara no existeix al sistema, crear automàticament l'alumne;
+* no utilitzar contrasenya ni cap altre mecanisme d'autenticació en aquesta primera versió;
+* consultar la llista de les seves entregues;
+* veure, per cada entrega:
+
+  * la pràctica corresponent;
+  * la URL del repositori GitHub;
+  * l'estat o resultat global de la valoració;
+  * el feedback disponible;
+* distingir clarament si la valoració de l'entrega és positiva, negativa o requereix revisió, d'acord amb els estats globals definits pel sistema;
+* eliminar una entrega pròpia;
+* crear una nova entrega:
+
+  * seleccionant una de les pràctiques definides pel professor;
+  * introduint la URL pública del repositori GitHub.
+
+La interfície només ha de mostrar a l'alumne les entregues associades al DNI amb què s'ha identificat.
+
+### Interfície de professor
+
+La interfície de professor ha de permetre:
+
+* consultar la llista de pràctiques existents;
+* crear una pràctica indicant:
+
+  * nom;
+  * enunciat;
+  * un o més criteris de valoració;
+* consultar les entregues realitzades pels alumnes;
+* veure, per cada entrega:
+
+  * DNI de l'alumne;
+  * pràctica corresponent;
+  * URL del repositori GitHub;
+  * resultat global de la valoració realitzada mitjançant l'agent OpenCode;
+  * resultats individuals dels criteris quan sigui necessari;
+  * evidències i feedback generats durant la revisió.
+
+En aquesta primera versió no cal definir autenticació del professor tret que un requisit posterior ho especifiqui explícitament.
+
+### Navegació
+
+El pla ha de preveure com a mínim:
+
+`pàgina principal`
+→ `interfície d'alumne`
+
+i
+
+`pàgina principal`
+→ `interfície de professor`
+
+La interfície ha de residir dins de `server/public/` i pot utilitzar HTML, CSS i JavaScript del client sense introduir frameworks frontend si no són necessaris.
+
+
 ## Responsabilitats de l'arnès OpenCode runtime
 
 L'arnès de revisió ha de ser responsable de:
