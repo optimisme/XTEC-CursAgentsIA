@@ -9,6 +9,15 @@ Abans de començar:
 * consulta els skills existents a `.opencode/skills/`;
 * utilitza aquests skills com a restriccions del pla quan siguin aplicables.
 
+Important, tingues en compte:
+
+* L'objectiu és implementar PLAN.md
+* No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
+* No implementis encara cap funcionalitat.
+* No generis la carpeta "src"
+* No modifiquis .opencode/skills/.
+* No creïs agents ni AGENTS.md
+
 S'ha d'implementar una aplicació web amb servidor Node.js per validar entregues de pràctiques de programació.
 
 L'aplicació ha de permetre:

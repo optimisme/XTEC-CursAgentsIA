@@ -1,11 +1,11 @@
 # Stop:    docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml down
 # Start:   docker compose -f compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml up -d
 # Logs:    docker logs -f --tail 80 qwen36_35b_a3b_cuda_vram128_vllm_nvidia_nvfp4_64k_image
-# Note:    NVIDIA Qwen3.6 35B A3B NVFP4 profile using vLLM 0.26.0
-#          with FlashInfer B12X MoE and FlashInfer CUTLASS linear backends.
+# Note:    NVIDIA Qwen3.6 35B A3B NVFP4 profile using vLLM 0.27.1
+#          with FlashInfer B12X MoE and auto linear backend selection (v0.27.1).
 services:
   qwen-vllm:
-    image: vllm/vllm-openai:v0.26.0
+    image: vllm/vllm-openai:v0.27.1
     pull_policy: always
     container_name: qwen36_35b_a3b_cuda_vram128_vllm_nvidia_nvfp4_64k_image
     environment:
@@ -63,7 +63,7 @@ services:
           --kv-cache-dtype fp8 \
           --attention-backend flashinfer \
           --moe-backend flashinfer_b12x \
-          --linear-backend flashinfer_cutlass \
+          --linear-backend auto \
           --gpu-memory-utilization 0.80 \
           --max-model-len 65536 \
           --max-num-seqs 32 \

@@ -1,7 +1,5 @@
 Genera la planificació executable del projecte mitjançant GitHub Issues i GitHub Project aplicant Atomic Task Decomposition (ATD).
 
-No implementis encara cap funcionalitat.
-
 Abans de començar llegeix:
 
 * `PLAN.md`;
@@ -12,13 +10,20 @@ Abans de començar llegeix:
 * `.opencode/skills/git-workflow`;
 * `.opencode/skills/bug-management`.
 
+Important, tingues en compte:
+
+* L'objectiu és definir les tasques a GitHub.
+* No implementis encara cap funcionalitat.
+* No generis la carpeta "src", ni implementis cap de les tasques definides.
+* No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
+* Les tasques es defineixen a GitHub com a "Issues" tipus "Open"
+* No implementis encara cap funcionalitat.
+* No generis la carpeta "src"
+* No modifiquis `PLAN.md`.
+* No modifiquis `.opencode/skills/`.
+* No creïs agents ni AGENTS.md
+
 Utilitza GitHub MCP per crear i configurar la planificació.
-
-No creïs `tasks/`.
-
-No creïs fitxers `tasks/*.md`.
-
-No utilitzis `[ ]`, `[p]` ni `[x]`.
 
 ## Principi arquitectònic obligatori
 
@@ -35,9 +40,11 @@ Mantén separats:
 * els agents OpenCode de desenvolupament del projecte;
 * l'arnès OpenCode runtime que revisarà les entregues.
 
-## GitHub Project
+## GitHub
 
-Crea o configura un GitHub Project per al desenvolupament.
+Configura aquest projecte a GitHub per al desenvolupament.
+
+El projecte és aquest, ja està creat, no cal cap tasca de creació de projecte.
 
 Utilitza, sempre que les capacitats disponibles del GitHub MCP ho permetin, els camps:
 
@@ -376,11 +383,3 @@ Abans d'acabar:
 * comprova cobertura funcional;
 * comprova que no s'ha introduït una integració directa Node.js → vLLM per validar entregues;
 * comprova que l'arnès OpenCode runtime queda completament cobert.
-
-No implementis cap funcionalitat.
-
-No creïs agents.
-
-No modifiquis `PLAN.md`.
-
-No modifiquis `.opencode/skills/`.

@@ -10,9 +10,13 @@ Abans d'escriure'l, llegeix:
 
 `AGENTS.md` ha de descriure com s'ha de treballar en aquest projecte.
 
-No ha de duplicar `PLAN.md`.
 
-No ha de duplicar totes les GitHub Issues.
+Important, tingues en compte:
+
+* L'objectiu és definir AGENTS.md
+* No ha de duplicar `PLAN.md`.
+* No ha de duplicar totes les GitHub Issues.
+* No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
 
 ## Objectiu del projecte
 

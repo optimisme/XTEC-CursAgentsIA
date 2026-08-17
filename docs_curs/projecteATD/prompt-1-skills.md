@@ -1,13 +1,15 @@
 Configura els skills del projecte a `.opencode/skills/`.
 
-Encara no implementis cap funcionalitat de l'aplicació.
+Important, tingues en compte:
 
+* L'objectiu és implementar els skills de l'arnès.
 * No implementis l'aplicació.
 * No generis encara `PLAN.md`.
 * No creïs GitHub Issues ni GitHub Projects.
 * No creïs agents.
 * No modifiquis fitxers fora de `.opencode/skills/`.
 * No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
+* No creïs PLAN.md, agents ni AGENTS.md
 
 Crea els següents skills:
 
@@ -307,3 +309,4 @@ Cada skill ha de tenir una capçalera:
 name:
 description:
 ---
+```

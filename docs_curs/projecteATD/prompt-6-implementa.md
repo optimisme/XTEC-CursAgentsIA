@@ -2,7 +2,11 @@ Implementa o continua implementant el projecte seguint `AGENTS.md`.
 
 Comença llegint `AGENTS.md` i `PLAN.md`.
 
-Utilitza l'agent `orchestrator` per continuar a partir de l'estat actual del GitHub Project.
+Tingues en compte:
+
+* No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
+
+* Utilitza l'agent `orchestrator` per continuar a partir de l'estat actual del GitHub Project.
 
 Selecciona la següent tasca executable segons les dependències, prioritat i ordre definits al projecte.
 
