@@ -2,7 +2,7 @@ Genera `PLAN.md` per al projecte.
 
 Encara no implementis cap funcionalitat.
 
-No creïs GitHub Issues ni GitHub Projects en aquesta fase.
+No creïs GitHub Issues ni GitHub Projects en aquesta fase. El projecte de seguiment ja existeix: `ProjecteDeures`, vinculat al repositori `RevisorDeures`; no el modifiquis en aquesta fase.
 
 Abans de començar:
 
@@ -371,7 +371,7 @@ Explica que:
 
 * `PLAN.md` defineix el pla estable;
 * GitHub Issues representaran les tasques ATD;
-* GitHub Project gestionarà l'estat;
+* el GitHub Project existent `ProjecteDeures`, vinculat a `RevisorDeures`, gestionarà l'estat operacional mitjançant els seus camps;
 * bugs i tasques utilitzaran el mateix flux;
 * l'estat de desenvolupament no es duplicarà dins de `PLAN.md`.
 

@@ -1,4 +1,4 @@
-Genera la planificació executable del projecte mitjançant GitHub Issues i GitHub Project aplicant Atomic Task Decomposition (ATD).
+Genera la planificació executable del projecte mitjançant GitHub Issues i el GitHub Project existent `ProjecteDeures`, vinculat al repositori `RevisorDeures`, aplicant Atomic Task Decomposition (ATD).
 
 Abans de començar llegeix:
 
@@ -23,7 +23,7 @@ Important, tingues en compte:
 * No modifiquis `.opencode/skills/`.
 * No creïs agents ni AGENTS.md
 
-Utilitza GitHub MCP per crear i configurar la planificació.
+Utilitza GitHub MCP per crear les GitHub Issues i incorporar-les i configurar-les dins del GitHub Project `ProjecteDeures`. No creïs cap GitHub Project nou.
 
 ## Principi arquitectònic obligatori
 
@@ -42,11 +42,21 @@ Mantén separats:
 
 ## GitHub
 
-Configura aquest projecte a GitHub per al desenvolupament.
+El repositori de desenvolupament és `RevisorDeures`.
 
-El projecte és aquest, ja està creat, no cal cap tasca de creació de projecte.
+El GitHub Project de seguiment ja existeix i és `ProjecteDeures`, vinculat a `RevisorDeures`.
 
-Utilitza, sempre que les capacitats disponibles del GitHub MCP ho permetin, els camps:
+Abans de crear les tasques:
+
+1. utilitza GitHub MCP per localitzar `ProjecteDeures`;
+2. comprova que és el Project vinculat al repositori `RevisorDeures`;
+3. consulta els camps existents del Project;
+4. reutilitza els camps compatibles ja existents;
+5. crea o configura únicament els camps necessaris si GitHub MCP ho permet;
+6. no creïs cap Project alternatiu;
+7. no utilitzis labels com a substitut de `Status`, `Type`, `Phase`, `Order` o `Priority`.
+
+Utilitza, sempre que les capacitats disponibles del GitHub MCP ho permetin, els camps de `ProjecteDeures`:
 
 ### Status
 
@@ -78,13 +88,13 @@ Assigna inicialment valors separats preferentment per increments de 10.
 
 No utilitzis la posició visual de les targetes com a única definició de l'ordre.
 
-Si alguna operació concreta sobre GitHub Projects no està disponible a través del MCP instal·lat, no inventis que s'ha realitzat: informa clarament de la limitació.
+Si alguna operació concreta sobre `ProjecteDeures` no està disponible a través del GitHub MCP instal·lat, no inventis que s'ha realitzat, no creïs un Project alternatiu i informa clarament de la limitació.
 
 ## GitHub Issues
 
 Transforma `PLAN.md` en tasques ATD.
 
-Cada tasca ha de correspondre a una única GitHub Issue.
+Cada tasca ha de correspondre a una única GitHub Issue del repositori `RevisorDeures` i aquesta issue s'ha d'incorporar com a item de `ProjecteDeures`.
 
 Utilitza identificadors globals:
 
@@ -295,7 +305,7 @@ Reserva `Urgent` principalment per bugs bloquejants descoberts durant el desenvo
 
 Totes les tasques creades durant aquesta planificació han de començar com:
 
-`Status = Todo`
+`Status = Todo` dins de `ProjecteDeures`
 
 No comencis a implementar-les.
 

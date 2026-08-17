@@ -5,7 +5,7 @@ Abans d'escriure'l, llegeix:
 * `PLAN.md`;
 * `.opencode/agents/`;
 * `.opencode/skills/`;
-* la configuració del GitHub Project;
+* la configuració del GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`;
 * una mostra suficient de les GitHub Issues per entendre el model ATD utilitzat.
 
 `AGENTS.md` ha de descriure com s'ha de treballar en aquest projecte.
@@ -49,9 +49,9 @@ Font d'autoritat sobre:
 * validació;
 * dependències.
 
-### GitHub Project
+### GitHub Project `ProjecteDeures`
 
-Font d'autoritat sobre:
+`ProjecteDeures`, vinculat al repositori `RevisorDeures`, és la font d'autoritat sobre:
 
 * estat operacional;
 * ordre;
@@ -62,6 +62,17 @@ Font d'autoritat sobre:
 No existeix una planificació paral·lela a `tasks/*.md`.
 
 No s'han de crear ni mantenir checkboxes locals d'estat.
+
+`AGENTS.md` ha de deixar explícit que:
+
+* el repositori de desenvolupament és `RevisorDeures`;
+* el Project de seguiment és `ProjecteDeures`;
+* `ProjecteDeures` ja existeix i està vinculat a `RevisorDeures`;
+* no s'ha de crear cap Project alternatiu;
+* el GitHub MCP s'utilitza per consultar i modificar els camps del Project;
+* els camps operacionals són `Status`, `Type`, `Phase`, `Order` i `Priority`;
+* les labels no substitueixen aquests camps.
+
 
 ## Estructura del projecte
 
@@ -247,7 +258,7 @@ Només l'orquestrador modifica l'estat operacional de les tasques.
 
 Documenta que l'orquestrador:
 
-1. consulta GitHub Project;
+1. consulta `ProjecteDeures` mitjançant GitHub MCP;
 2. considera items `Todo`;
 3. comprova dependències;
 4. tracta primer bugs `Urgent`;
@@ -278,7 +289,7 @@ Està disponible per:
 * consultar repositoris;
 * consultar GitHub Issues;
 * gestionar issues;
-* consultar i gestionar el GitHub Project quan les eines disponibles ho permetin;
+* consultar i gestionar el GitHub Project `ProjecteDeures` quan les eines disponibles ho permetin;
 * obtenir informació necessària per al desenvolupament.
 
 No substitueix Git local.
@@ -398,7 +409,7 @@ En cas de contradicció:
 
 Una GitHub Issue no pot contradir l'arquitectura o les restriccions globals de `PLAN.md`. `AGENTS.md` defineix el flux de treball general; els skills defineixen les regles especialitzades aplicables a cada tipus de tasca; les instruccions de cada agent concreten el seu rol però no poden anul·lar les fonts superiors.
 
-L'estat operacional prové sempre del GitHub Project.
+L'estat operacional prové sempre del GitHub Project `ProjecteDeures`; no utilitzis labels ni fitxers locals com a substitut dels camps `Status`, `Type`, `Phase`, `Order` i `Priority`.
 
 ## Eines
 
@@ -431,7 +442,7 @@ No modifiquis:
 * `.opencode/agents/`;
 * `.opencode/skills/`;
 * GitHub Issues;
-* GitHub Project.
+* GitHub Project `ProjecteDeures`.
 
 L'únic resultat ha de ser `AGENTS.md`.
 

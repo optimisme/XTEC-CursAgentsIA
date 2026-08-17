@@ -5,8 +5,26 @@ Comença llegint:
 * `AGENTS.md`;
 * `PLAN.md`;
 * els skills aplicables a `.opencode/skills/`;
-* l'estat actual del GitHub Project;
+* l'estat actual del GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`;
 * les GitHub Issues necessàries.
+
+
+# Projecte GitHub de seguiment
+
+Utilitza exclusivament el GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`, per al seguiment operacional del desenvolupament.
+
+Abans d'iniciar el bucle:
+
+1. localitza `ProjecteDeures` mitjançant GitHub MCP;
+2. comprova que correspon al Project vinculat a `RevisorDeures`;
+3. consulta els items i els camps `Status`, `Type`, `Phase`, `Order` i `Priority`;
+4. no creïs cap GitHub Project alternatiu;
+5. no utilitzis labels com a substitut d'aquests camps;
+6. si `ProjecteDeures` no és accessible o no es poden modificar els camps necessaris, tracta-ho com un bloqueig extern i informa'n.
+
+Les GitHub Issues del repositori `RevisorDeures` defineixen les tasques atòmiques. Cada issue executable ha d'estar incorporada a `ProjecteDeures`.
+
+---
 
 ## Principi d'execució
 
@@ -54,7 +72,7 @@ L'`orchestrator` ha de repetir aquest procés mentre existeixin tasques executab
 
 L'`orchestrator` ha de:
 
-1. consultar el GitHub Project;
+1. consultar `ProjecteDeures` mitjançant GitHub MCP;
 2. identificar les issues amb `Status = Todo`;
 3. comprovar les dependències de cada candidata;
 4. descartar les que tinguin dependències pendents;
@@ -254,7 +272,7 @@ El `reviewer` ha de:
 * detectar regressions;
 * detectar funcionalitats incompletes;
 * detectar desviacions arquitectòniques;
-* detectar inconsistències entre GitHub Project i implementació;
+* detectar inconsistències entre `ProjecteDeures` i la implementació;
 * utilitzar Puppeteer MCP quan sigui útil;
 * identificar possibles bugs.
 
@@ -282,7 +300,7 @@ L'`orchestrator` ha de:
 
 1. comprovar amb GitHub MCP que no existeixi ja una issue equivalent;
 2. crear una GitHub Issue `BUG-NNN` quan correspongui;
-3. incorporar-la al GitHub Project;
+3. incorporar-la al GitHub Project `ProjecteDeures`;
 4. establir-ne fase, ordre, prioritat, dependències i estat;
 5. deixar que entri posteriorment al mateix bucle normal:
 
@@ -466,7 +484,7 @@ No facis una validació exclusivament mitjançant inspecció del codi quan pugui
 
 # Estat del desenvolupament
 
-La font d'autoritat de l'estat operacional és el GitHub Project.
+La font d'autoritat de l'estat operacional és el GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`.
 
 No creïs:
 
@@ -474,7 +492,7 @@ No creïs:
 * checklists locals paral·leles;
 * fitxers alternatius per mantenir l'estat de les tasques.
 
-No dupliquis l'estat del GitHub Project dins de `PLAN.md` ni `AGENTS.md`.
+No dupliquis l'estat de `ProjecteDeures` dins de `PLAN.md` ni `AGENTS.md`, i no utilitzis labels com a substitut dels camps operacionals del Project.
 
 ---
 
@@ -484,7 +502,7 @@ Després de cada tasca amb `PASS`:
 
 1. marca-la `Done`;
 2. comprova si cal executar `reviewer`;
-3. consulta novament el GitHub Project;
+3. consulta novament `ProjecteDeures` mitjançant GitHub MCP;
 4. selecciona la següent tasca executable;
 5. continua amb el bucle.
 
@@ -529,7 +547,7 @@ Quan aparentment no quedin tasques pendents, no donis el projecte per acabat imm
 
 L'`orchestrator` ha de:
 
-1. consultar novament el GitHub Project;
+1. consultar novament `ProjecteDeures` mitjançant GitHub MCP;
 2. comprovar que no quedin issues executables o bloquejants;
 3. comprovar les fases de `PLAN.md`;
 4. delegar una revisió global final a `reviewer`;

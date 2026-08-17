@@ -6,13 +6,13 @@ Abans de crear-los, consulta:
 
 * `PLAN.md`;
 * `.opencode/skills/`;
-* la planificació existent al GitHub Project;
+* la planificació existent al GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`;
 * les GitHub Issues creades per al projecte.
 
 El projecte utilitza:
 
 * `PLAN.md` com a autoritat sobre arquitectura, fases i objectiu;
-* GitHub Project com a autoritat sobre l'estat de desenvolupament;
+* el GitHub Project `ProjecteDeures` com a autoritat sobre l'estat de desenvolupament;
 * GitHub Issues com a definició de les tasques atòmiques.
 
 Important, tingues en compte:
@@ -23,7 +23,7 @@ Important, tingues en compte:
 * No generis la carpeta `src`.
 * No modifiquis `PLAN.md`.
 * No modifiquis `.opencode/skills/`.
-* No modifiquis les GitHub Issues ni el GitHub Project durant aquesta fase.
+* No modifiquis les GitHub Issues ni el GitHub Project `ProjecteDeures` durant aquesta fase.
 * No confonguis aquests agents de desenvolupament amb l'agent de l'arnès OpenCode runtime que posteriorment revisarà les entregues dels alumnes.
 
 ## Modes dels agents
@@ -46,6 +46,23 @@ No utilitzis `mode: all` per cap d'aquests agents.
 L'`orchestrator` és l'únic agent principal del flux de desenvolupament.
 
 Els agents `executor`, `validator` i `reviewer` han de ser invocats o delegats des de l'`orchestrator` quan correspongui.
+
+---
+
+## Projecte GitHub de seguiment
+
+El seguiment operacional es fa exclusivament amb el GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`.
+
+Els agents que necessitin informació operacional han de:
+
+* accedir a `ProjecteDeures` mitjançant GitHub MCP;
+* utilitzar els camps `Status`, `Type`, `Phase`, `Order` i `Priority`;
+* no utilitzar labels com a substitut dels camps del Project;
+* no crear cap GitHub Project alternatiu;
+* no mantenir una còpia local de l'estat;
+* considerar `ProjecteDeures` la font d'autoritat operacional.
+
+Només l'`orchestrator` pot modificar aquests camps durant el desenvolupament.
 
 ---
 
@@ -77,7 +94,7 @@ Coordina el desenvolupament però no implementa directament funcionalitats.
 Ha de:
 
 * llegir `PLAN.md`;
-* consultar el GitHub Project;
+* consultar el GitHub Project `ProjecteDeures` mitjançant GitHub MCP;
 * consultar les GitHub Issues necessàries;
 * identificar les tasques amb `Status = Todo`;
 * comprovar-ne les dependències;
@@ -108,7 +125,7 @@ Només l'`orchestrator` pot:
 Pot utilitzar GitHub MCP per:
 
 * consultar issues;
-* consultar el GitHub Project;
+* consultar el GitHub Project `ProjecteDeures` mitjançant GitHub MCP;
 * modificar l'estat operacional;
 * crear bugs quan correspongui;
 * comprovar duplicats.
@@ -157,7 +174,7 @@ No ha de:
 * crear issues;
 * tancar issues;
 * canviar `Status`;
-* modificar camps del GitHub Project;
+* modificar camps del GitHub Project `ProjecteDeures`;
 * marcar una tasca `Done`;
 * modificar `PLAN.md`;
 * modificar `.opencode/skills/`;
@@ -217,7 +234,7 @@ No ha de:
 * implementar correccions;
 * modificar el codi;
 * modificar l'estat de la issue;
-* modificar el GitHub Project;
+* modificar el GitHub Project `ProjecteDeures`;
 * crear o tancar issues;
 * crear commits.
 
@@ -252,7 +269,7 @@ Ha de:
 * detectar regressions;
 * detectar funcionalitats incompletes;
 * detectar desviacions arquitectòniques;
-* detectar inconsistències entre GitHub Project i implementació;
+* detectar inconsistències entre `ProjecteDeures` i la implementació;
 * detectar implementacions que no corresponen a cap issue;
 * utilitzar Puppeteer MCP quan sigui útil;
 * identificar possibles bugs;
@@ -373,7 +390,7 @@ L'`orchestrator`:
 
 1. comprova que no existeixi una issue equivalent;
 2. crea la GitHub Issue `BUG-NNN` quan correspongui;
-3. l'incorpora al GitHub Project;
+3. l'incorpora al GitHub Project `ProjecteDeures`;
 4. li assigna els camps necessaris;
 5. la deixa entrar al flux normal de desenvolupament.
 
@@ -451,6 +468,6 @@ No modifiquis:
 * `PLAN.md`;
 * `.opencode/skills/`;
 * les GitHub Issues;
-* el GitHub Project.
+* el GitHub Project `ProjecteDeures`.
 
 L'únic objectiu d'aquest pas és deixar configurat l'arnès d'agents de desenvolupament.

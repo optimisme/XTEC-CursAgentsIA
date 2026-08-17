@@ -5,7 +5,7 @@ Important, tingues en compte:
 * L'objectiu és implementar els skills de l'arnès.
 * No implementis l'aplicació.
 * No generis encara `PLAN.md`.
-* No creïs GitHub Issues ni GitHub Projects.
+* No creïs GitHub Issues ni GitHub Projects. El GitHub Project de seguiment ja existeix: `ProjecteDeures`, vinculat al repositori `RevisorDeures`.
 * No creïs agents.
 * No modifiquis fitxers fora de `.opencode/skills/`.
 * No escriguis arxius grans d'un sol cop: crea primer cada arxiu buit i afegeix el contingut per seccions petites.
@@ -113,6 +113,20 @@ El projecte utilitza:
 
 No s'han de crear fitxers `tasks/*.md`.
 
+### Projecte GitHub obligatori
+
+El seguiment operacional s'ha de fer exclusivament al GitHub Project `ProjecteDeures`, vinculat al repositori `RevisorDeures`.
+
+Quan un agent necessiti consultar o modificar l'estat de desenvolupament:
+
+* utilitza GitHub MCP per localitzar `ProjecteDeures`;
+* comprova que correspon al projecte vinculat a `RevisorDeures`;
+* utilitza els camps del Project per llegir i actualitzar `Status`, `Type`, `Phase`, `Order` i `Priority`;
+* no utilitzis labels com a substitut dels camps del Project;
+* no creïs cap Project nou ni cap sistema paral·lel de seguiment;
+* si GitHub MCP no permet localitzar o modificar `ProjecteDeures`, informa de la limitació i no inventis cap actualització.
+
+
 Cada tasca executable ha de correspondre a una GitHub Issue.
 
 Les issues han de tenir, quan sigui possible:
@@ -128,7 +142,8 @@ Les issues han de tenir, quan sigui possible:
 * prioritat;
 * tipus.
 
-El GitHub Project ha d'utilitzar conceptualment:
+El GitHub Project `ProjecteDeures` ha d'utilitzar aquests camps com a font d'autoritat operacional. Els agents hi han d'accedir mitjançant GitHub MCP i no han de crear cap Project alternatiu:
+
 
 ### Status
 
@@ -292,13 +307,13 @@ Si es detecta un defecte en funcionalitat anterior:
 3. assigna-li identificador `BUG-NNN`;
 4. documenta reproducció, resultat esperat, resultat observat i evidències;
 5. defineix dependències, fase, ordre i prioritat;
-6. incorpora-la al GitHub Project.
+6. incorpora-la al GitHub Project `ProjecteDeures` mitjançant GitHub MCP.
 
 El bug passa després pel mateix flux:
 
 `orchestrator → executor → validator`
 
-No implementis un bug directament només perquè existeixi una incidència informal: ha d'existir una issue executable al GitHub Project.
+No implementis un bug directament només perquè existeixi una incidència informal: ha d'existir una issue executable incorporada al GitHub Project `ProjecteDeures`.
 
 ---
 

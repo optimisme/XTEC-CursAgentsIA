@@ -1,0 +1,10 @@
+{
+  "name": "reviewer",
+  "description": "Agent de revisió runtime per validar entregues de pràctiques",
+  "permissions": {
+    "files": "read-only",
+    "network": "none",
+    "shell": "none",
+    "github": "none"
+  }
+}
