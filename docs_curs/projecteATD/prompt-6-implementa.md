@@ -53,6 +53,37 @@ Continua automàticament amb la següent tasca executable.
 
 ---
 
+## Reconciliació de l'estat inicial
+
+Abans de seleccionar una nova tasca, l'`orchestrator` ha de comprovar i reconciliar l'estat deixat per possibles execucions anteriors.
+
+Per cada GitHub Issue incorporada a `ProjecteDeures`:
+
+1. comprova l'estat del camp `Status` del GitHub Project;
+2. comprova l'estat propi de la GitHub Issue (`open` o `closed`);
+3. contrasta aquests estats amb l'estat real del desenvolupament, els commits existents i, quan sigui necessari, els criteris de validació de la issue;
+4. corregeix automàticament qualsevol inconsistència que pugui determinar-se de manera segura.
+
+Com a mínim:
+
+* una issue completada i validada ha de tenir `Status = Done` i la GitHub Issue ha d'estar `closed`;
+* una issue pendent d'implementació ha de tenir `Status = Todo` i la GitHub Issue ha d'estar `open`;
+* una issue que realment està en procés ha de tenir `Status = In Progress` i la GitHub Issue ha d'estar `open`;
+* una issue que hagi quedat `In Progress` per una execució anterior interrompuda no s'ha de considerar necessàriament activa: determina si la implementació es va completar, si s'ha de reprendre o si s'ha de retornar a `Todo`, i actualitza els estats corresponents;
+* una issue amb `Status = Done` però encara `open` s'ha de tancar si existeix evidència suficient que la tasca està completada i validada;
+* una issue `closed` però amb `Status != Done` s'ha de reconciliar amb l'estat real de la implementació;
+* no canviïs un estat si no pots determinar de manera segura quin és el correcte.
+
+Si una inconsistència no es pot resoldre de manera segura, tracta-la com una incidència d'estat a revisar abans de seleccionar noves tasques.
+
+La reconciliació ha de deixar sincronitzats, sempre que sigui possible:
+
+`estat real de la implementació ↔ GitHub Issue ↔ ProjecteDeures.Status`
+
+No creïs una issue nova únicament per corregir una inconsistència d'estat causada per una execució anterior.
+
+---
+
 # Bucle agèntic principal
 
 El bucle normal és:
