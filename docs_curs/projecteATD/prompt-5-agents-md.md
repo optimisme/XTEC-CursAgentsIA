@@ -298,9 +298,7 @@ No modifiquis recursos remots que no siguin necessaris per al flux definit.
 
 L'agent runtime de revisió no ha de necessitar GitHub MCP per validar el contingut del repositori temporal.
 
-GitHub MCP es pot connectar amb la variable d'entorn "GITHUB_PERSONAL_ACCESS_TOKEN" que està definida al settings.env i conté el token d'accés a GitHub.
-
-Afegeix una explicació a l'arxiu "AGENTS.md" amb el nom de la variable d'entorn "GITHUB_PERSONAL_ACCESS_TOKEN" i l'arxiu settings.env amb el token d'accés a GitHub.
+Afegeix una explicació a l'arxiu "AGENTS.md" on es digui que el token d'accés del GitHub MCP està en una variable d'entorn "GITHUB_PERSONAL_ACCESS_TOKEN" i també a l'arxiu settings.env.
 
 ## Puppeteer MCP
 
