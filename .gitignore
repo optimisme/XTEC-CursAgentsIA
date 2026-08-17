@@ -7,7 +7,6 @@ keys.env
 *.env
 !keys.env.example
 !*.env.example
-explain-docker.md
 
 # Python cache
 __pycache__/
@@ -17,23 +16,9 @@ __pycache__/
 
 vids
 *vids/*
+explain-docker.md
 
-# NodeJS
-node_modules
-node_modules/*
-node_modules
-!package.json
-package-lock.json
-!projecteFunctionCalling/package.json
-!projecteFunctionCalling/package-lock.json
-bun.lock
-.gitignore
-
-# OpenCode
-!.opencode/.gitignore
-!.opencode/mcp/github/package.json
-!.opencode/mcp/github/package-lock.json
-
+# OpenCode development (separate from runtime)
 .opencode
 .opencode/node_modules
 .opencode/agents
@@ -44,3 +29,7 @@ bun.lock
 .opencode/mcp/*
 .opencode/tools
 .opencode/tools/*
+
+# Generated files (created at runtime)
+practices.db*
+node_modules/

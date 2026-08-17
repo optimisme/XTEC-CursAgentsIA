@@ -1,0 +1,17 @@
+{
+  "name": "xtec-curs-agentsia",
+  "version": "1.0.0",
+  "description": "Validador d'Entregades de Pràctiques",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^13.0.0",
+    "express": "^4.21.0"
+  }
+}
