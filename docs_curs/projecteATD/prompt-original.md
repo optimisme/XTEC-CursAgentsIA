@@ -173,7 +173,7 @@ L’agent haurà de:
 
 L’**arnès d’OpenCode específic del valorador** s’ha de desenvolupar com a part del servidor.
 
-# Pàgina principal
+# Pàgina principal (login comú)
 
 La pàgina principal ha de mostrar el formulari de login que automàticament anirà a la pàgina d'alumne o professor un cop identificat. L'admin entra amb la paraula "admin" enlloc de amb un correu electrònic.
 
