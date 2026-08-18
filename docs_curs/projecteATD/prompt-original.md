@@ -4,18 +4,20 @@ Vull implementar la pàgina web descrita a continuació fent servir un **agent p
 
 Per fer-ho necessito **tres prompts**:
 
-1. Un prompt que generi l’**arnès bàsic d’OpenCode**, amb:
+1. Un prompt que generi l’**arnès bàsic d’OpenCode** a l'arxiu "prompts/prompt-arnes.md", amb:
 
    * skills
    * `PLAN.md`
    * agents
    * `AGENTS.md`
 
-2. Un prompt que generi la **llista de tasques** necessàries per desenvolupar el servidor web en un únic arxiu:
+
+
+2. Un prompt que generi la **llista de tasques** a l'arxiu "prompts/prompt-tasques.md" necessàries per desenvolupar el servidor web en un únic arxiu:
 
    * `tasks/tasks.md`
 
-   Les tasques s’han de definir mitjançant **descomposició atòmica**, en un format que permeti fer fàcilment el seguiment de:
+   Les tasques s’han de definir mitjançant **descomposició atòmica** a l'arxiu "prompts/prompt-implementa.md", en un format que permeti fer fàcilment el seguiment de:
 
    * les tasques pendents;
    * les tasques en curs;
@@ -102,7 +104,6 @@ Cada pràctica té:
 
 * un títol;
 * uns criteris d’acceptació;
-* un camp amb una URL de GitHub.
 
 Per a cada pràctica, l’administrador pot accedir al llistat d’entregues que ha rebut.
 
@@ -134,8 +135,8 @@ A l’apartat **Entregues**, l’alumne pot veure la llista de les entregues que
 
 Per a cada entrega ha de poder veure:
 
-* si ha estat acceptada;
-* si ha estat revisada pel professor.
+* si ha estat acceptada per l'agent de opencode
+* si ha estat revisada pel professor
 
 L’alumne també pot **esborrar les entregues que encara no hagin estat revisades**.
 
