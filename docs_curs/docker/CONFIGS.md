@@ -1,6 +1,6 @@
 # CONFIGS
 
-Models recomanats segons programari.
+Models recomanats per programar segons VRAM.
 
 ## 128GB/96GB servidor multiusuari
 
