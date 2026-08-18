@@ -209,22 +209,26 @@ Els endpoints han de tenir una estructura coherent, per exemple sota `/api/...`,
 
 # Arxius que necessito
 
+No implentis el servidor, planifica l'arnés i el desenvolupament per generar els tres arxius:
+
+
+
 Dona’m **tres arxius**:
 
-1. **Prompt per generar l’arnès**
+1. **Prompt per generar l’arnès** a l'arxiu "prompts/prompt-arnes.md"
 
    * skills;
    * `PLAN.md`;
    * agents;
    * `AGENTS.md`.
 
-2. **Prompt per generar les tasques**
+2. **Prompt per generar les tasques** a l'arxiu "prompts/prompt-tasques.md"
 
    * les tasques s’han de guardar a `tasks/tasks.md`;
    * s’ha de fer servir descomposició atòmica;
    * el format ha de permetre seguir fàcilment l’estat de cada tasca.
 
-3. **Prompt per executar el bucle agèntic**
+3. **Prompt per executar el bucle agèntic** a l'arxiu "prompts/prompt-implementa.md"
 
    * ha d’implementar la pàgina web a partir de les tasques definides a `tasks/tasks.md`;
    * ha d’executar els tests de validació corresponents;
