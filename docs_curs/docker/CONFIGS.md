@@ -19,14 +19,15 @@
 ## 12GB monolloc
 
 - Qwen3.5 9B Q6_K / Q8_0 (llama.cpp)
-- x
+ - compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k
+ - compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q8_0
 
 ## 8GB monolloc
 
-- Qwen3 8B Q5_K_M (llama.cpp)
-- x
+ - Qwen3.5 9B Q4_K_M (llama.cpp, 8k context)
+ - compose-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m
 
 ## 4GB monolloc
 
 - Qwen3.5 4B Q4_K_M (llama.cpp)
-- x
+ - compose-qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m

@@ -12,47 +12,11 @@
     "xtec-gguf-cache": {
       "description": "Legacy shared GGUF cache kept for cleanup after per-compose cache migration."
     },
-    "xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-hf-cache": {
-      "description": "Hugging Face cache for qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image."
-    },
-    "xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-vllm-cache": {
-      "description": "vLLM runtime cache for qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image."
-    },
     "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-hf-cache": {
       "description": "Hugging Face cache for qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image."
     },
     "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache": {
       "description": "GGUF/llama.cpp cache for qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image."
-    },
-    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-hf-cache": {
-      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image."
-    },
-    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache": {
-      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image."
-    },
-    "xtec-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image-hf-cache": {
-      "description": "Hugging Face cache for qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image."
-    },
-    "xtec-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image-vllm-cache": {
-      "description": "vLLM runtime cache for qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image."
-    },
-    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-hf-cache": {
-      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8."
-    },
-    "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-vllm-cache": {
-      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8."
-    },
-    "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image-hf-cache": {
-      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image."
-    },
-    "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image-vllm-cache": {
-      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image."
-    },
-    "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image-hf-cache": {
-      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image."
-    },
-    "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image-vllm-cache": {
-      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image."
     },
     "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-hf-cache": {
       "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image."
@@ -74,17 +38,6 @@
     }
   },
   "models": {
-    "qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image": {
-      "compose": "compose-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image.yml",
-      "container": "qwen3_vl_2b_instruct_cuda_vram8_vllm_qwen_fp8_image_64k",
-      "engine": "vllm",
-      "endpoint": "http://127.0.0.1:8000/v1",
-      "volumes": [
-        "xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-hf-cache",
-        "xtec-qwen3-vl-2b-instruct-cuda-vram8-vllm-qwen-fp8-64k-image-vllm-cache"
-      ],
-      "description": "Qwen3-VL 2B Instruct FP8 image-only vLLM profile with 32k context on port 8000."
-    },
     "qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image": {
       "compose": "compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml",
       "container": "qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp_image",
@@ -94,50 +47,6 @@
         "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache"
       ],
       "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile with image input through the Unsloth Qwen3.6 mmproj."
-    },
-    "qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image": {
-      "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image.yml",
-      "container": "qwen36_35b_a3b_cuda_vram128_vllm_nvidia_nvfp4_64k_image",
-      "engine": "vllm",
-      "endpoint": "http://127.0.0.1:8000/v1",
-      "volumes": [
-        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-hf-cache",
-        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image-vllm-cache"
-      ],
-      "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram128 vLLM profile with 64k context, image input, KV cache FP8, and qwen3_xml tool calling."
-    },
-    "qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image": {
-      "compose": "compose-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image.yml",
-      "container": "qwen36_27b_aeon_ultimate_uncensored_multimodal_cuda_vram128_vllm_aeon_nvfp4_mtp_xs_64k_image",
-      "engine": "vllm",
-      "endpoint": "http://127.0.0.1:8000/v1",
-      "volumes": [
-        "xtec-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image-hf-cache",
-        "xtec-qwen36-27b-aeon-ultimate-uncensored-multimodal-cuda-vram128-vllm-aeon-nvfp4-mtp-xs-64k-image-vllm-cache"
-      ],
-      "description": "AEON Qwen3.6 27B Ultimate Uncensored Multimodal NVFP4 MTP-XS cuda-vram128 vLLM profile with 64k context, image input, KV cache FP8, and qwen3_xml tool calling."
-    },
-    "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image": {
-      "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image.yml",
-      "container": "qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_64k_image",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image-hf-cache",
-        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-64k-image-vllm-cache"
-      ],
-      "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile with 64k context, image input, KV cache FP8, FlashInfer B12X MoE, and qwen3_xml tool calling.",
-      "endpoint": "http://127.0.0.1:8000/v1"
-    },
-    "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image": {
-      "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image.yml",
-      "container": "qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_marlin_64k_image",
-      "engine": "vllm",
-      "endpoint": "http://127.0.0.1:8000/v1",
-      "volumes": [
-        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image-hf-cache",
-        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-marlin-64k-image-vllm-cache"
-      ],
-      "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile with 64k context, image input, KV cache FP8, Marlin MoE backend, and qwen3_xml tool calling."
     },
     "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image.yml",
@@ -149,16 +58,6 @@
         "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile with 64k context, image input, KV cache FP8, DFlash speculative decoding, FlashInfer B12X MoE, and qwen3_xml tool calling."
-    },
-    "qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8": {
-      "compose": "compose-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8.yml",
-      "container": "qwen36_35b_a3b_cuda_vram128_vllm_qwen_fp8",
-      "engine": "vllm",
-      "volumes": [
-        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-hf-cache",
-        "xtec-qwen36-35b-a3b-cuda-vram128-vllm-qwen-fp8-vllm-cache"
-      ],
-      "description": "Qwen3.6 35B A3B official Qwen FP8 vLLM profile for CUDA 128GB VRAM."
     },
     "qwen38-27b-cuda-vram128-vllm-qwen-fp8-64k-image": {
       "compose": "compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-64k-image.yml",
@@ -181,6 +80,50 @@
         "xtec-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image-vllm-cache"
       ],
       "description": "RadixArk Qwen3.8 27B NVFP4 vLLM profile with vLLM DSpark speculative decoding, 128k context, image input, and a 0.85 GPU memory target."
+    },
+    "qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k": {
+      "compose": "compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k.yml",
+      "container": "qwen35_9b_cuda_vram12_llamacpp_unsloth_q6_k",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k-hf-cache",
+        "xtec-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k-gguf-cache"
+      ],
+      "description": "Qwen3.5 9B Q6_K GGUF llama.cpp profile with 32k context."
+    },
+    "qwen35-9b-cuda-vram12-llamacpp-unsloth-q8_0": {
+      "compose": "compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q8_0.yml",
+      "container": "qwen35_9b_cuda_vram12_llamacpp_unsloth_q8_0",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen35-9b-cuda-vram12-llamacpp-unsloth-q8_0-hf-cache",
+        "xtec-qwen35-9b-cuda-vram12-llamacpp-unsloth-q8_0-gguf-cache"
+      ],
+      "description": "Qwen3.5 9B Q8_0 GGUF llama.cpp profile with 16k context."
+    },
+    "qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m": {
+      "compose": "compose-qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m.yml",
+      "container": "qwen35_4b_cuda_vram4_llamacpp_unsloth_q4_k_m",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m-hf-cache",
+        "xtec-qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m-gguf-cache"
+      ],
+      "description": "Qwen3.5 4B Q4_K_M GGUF llama.cpp profile with 16k context."
+    },
+    "qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m": {
+      "compose": "compose-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m.yml",
+      "container": "qwen35_9b_cuda_vram8_llamacpp_unsloth_q4_k_m",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m-hf-cache",
+        "xtec-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m-gguf-cache"
+      ],
+      "description": "Qwen3.5 9B Q4_K_M GGUF llama.cpp profile with 8k context for an 8GB monolloc target."
     }
   }
 }
