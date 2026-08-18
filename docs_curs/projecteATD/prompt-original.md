@@ -203,6 +203,44 @@ Defineix els endpoints REST necessaris per donar suport a aquestes pàgines, inc
 
 Els endpoints han de tenir una estructura coherent, per exemple sota `/api/...`, i s'han de definir explícitament als prompts generats perquè posteriorment es puguin convertir en tasques atòmiques i tests.
 
+# Implementació de tasques (PLAN.md)
+
+L'arxiu PLAN.md ha d'indicar que la implementació de les tasques definides a `tasks/tasks.md` s'ha de fer segons l’ordre de prioritat i les dependències.
+
+Cada tasca ha d’indicar un d’aquests estats:
+
+* `pendent`
+* `implementant`
+* `revisant`
+* `completada`
+
+L'arxi PLAN.md ha d'indicar que l’estat de les tasques a `tasks/tasks.md` s'ha d'actualitzar durant la implementació.
+
+Les tasques han d’estar agrupades per **fases**. Una fase només es considera completada quan:
+
+* totes les seves tasques estan `completada`;
+* passen els tests específics;
+* passen tots els tests de regressió acumulats;
+* les funcionalitats web afectades passen la validació amb l’MCP Playwright.
+
+No avancis a la següent fase mentre hi hagi errors.
+
+Per cada tasca:
+
+1. marca-la com `implementant`;
+2. implementa-la;
+3. executa els tests;
+4. marca-la com `revisant`;
+5. revisa i corregeix els problemes;
+6. torna a executar els tests;
+7. marca-la com `completada` només si tot passa correctament.
+
+Quan es completi una fase, fes un **commit de fita** amb l’MCP de GitHub. No facis commits per cada tasca.
+
+El token necessari per l'MCP de GitHub està disponible a la variable d'entorn "GITHUB_PERSONAL_ACCESS_TOKEN" i a l'arxiu "settings.env".
+
+No mostris ni incloguis mai el token o altres secrets als commits o logs.
+
 ---
 
 # Arxius que necessito
