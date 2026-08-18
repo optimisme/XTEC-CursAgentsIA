@@ -16,6 +16,9 @@
 - Qwen3.6 35b a3b (llamacpp)
 - compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image
 
+- Qwen3.8 27b Q3_K_M (llamacpp, DFlash bootstrap draft, 8k context)
+- compose-qwen38-27b-cuda-vram16-llamacpp-unsloth-q3_k_m-dflash-image
+
 ## 12GB monolloc
 
 - Qwen3.5 9B Q6_K / Q8_0 (llama.cpp)
