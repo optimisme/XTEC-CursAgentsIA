@@ -1,0 +1,92 @@
+# Stop:    docker compose -f compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image.yml down
+# Start:   docker compose -f compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image.yml up -d
+# Logs:    docker logs -f --tail 80 qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_128k_image
+# Note:    vLLM profile for the RadixArk Qwen3.8 NVFP4 + DSpark model.
+#          The Hugging Face weight cache is persisted separately for this profile.
+
+services:
+  qwen-vllm:
+    image: vllm/vllm-openai:nightly
+    pull_policy: always
+    container_name: qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_128k_image
+
+    environment:
+      - HF_HOME=/root/.cache/huggingface
+      - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
+      - VLLM_CACHE_ROOT=/root/.cache/vllm
+      - PYTORCH_ALLOC_CONF=expandable_segments:True
+      - HF_HUB_DISABLE_XET=1
+      - HF_HUB_ENABLE_HF_TRANSFER=1
+      - VLLM_ALLOW_LONG_MAX_MODEL_LEN=1
+      - TORCH_MATMUL_PRECISION=high
+
+    volumes:
+      - ./tokens.env:/run/secrets/tokens.env:ro
+      - xtec-qwen38-27b-cuda-vram128-radixark-nvfp4-dspark-128k-image-hf-cache:/root/.cache/huggingface
+      - xtec-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image-vllm-cache:/root/.cache/vllm
+
+    ports:
+      - "8000:8000"
+
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/v1/models"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+      start_period: 45m
+
+    ipc: host
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    restart: unless-stopped
+
+    entrypoint:
+      - /bin/bash
+      - -lc
+
+    command:
+      - |
+        set -a
+        . /run/secrets/tokens.env
+        set +a
+
+        if [ -n "$${HUGGINGFACE_ACCESS_TOKENS:-}" ]; then
+          export HF_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
+          export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
+        fi
+
+        exec vllm serve RadixArk/Qwen3.8-27B-NVFP4 \
+          --served-model-name active-model \
+          --host 0.0.0.0 \
+          --port 8000 \
+          --tensor-parallel-size 1 \
+          --trust-remote-code \
+          --dtype auto \
+          --kv-cache-dtype auto \
+          --gpu-memory-utilization 0.85 \
+          --max-model-len 131072 \
+          --max-num-seqs 35 \
+          --max-num-batched-tokens 8192 \
+          --enable-chunked-prefill \
+          --enable-prefix-caching \
+          --limit-mm-per-prompt '{"image":5,"video":0}' \
+          --reasoning-parser qwen3 \
+          --tool-call-parser qwen3_coder \
+          --enable-auto-tool-choice \
+          --speculative-config '{"method":"dspark","model":"RadixArk/Qwen3.8-27B-DSpark","num_speculative_tokens":8}'
+
+volumes:
+  xtec-qwen38-27b-cuda-vram128-radixark-nvfp4-dspark-128k-image-hf-cache:
+    name: xtec-qwen38-27b-cuda-vram128-radixark-nvfp4-dspark-128k-image-hf-cache
+    external: true
+
+  xtec-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image-vllm-cache:
+    name: xtec-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image-vllm-cache
+    external: true

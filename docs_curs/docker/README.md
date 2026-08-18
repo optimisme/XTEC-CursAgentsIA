@@ -37,7 +37,7 @@ es mantenen al cataleg nomes com a objectius de neteja despres de la migracio.
 El model per defecte de `models.json` es:
 
 ```text
-qwen36-35b-a3b-cuda-vram128-vllm-nvidia-nvfp4-64k-image
+qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image
 ```
 
 Tots els `compose-*.yml` que es mantenen en aquesta carpeta han d'apareixer a
@@ -50,7 +50,7 @@ les imatges poden fallar per falta de context.
 
 ## Tokens privats de HuggingFace
 
-Els models amb pesos restringits, com alguns Gemma o Mistral, necessiten un token
+Els models Qwen amb pesos restringits necessiten un token
 de [HuggingFace](https://huggingface.co). El token no es desa dins dels `compose-*.yml`: es posa en un
 fitxer local `docker/tokens.env`, que no s'ha de publicar.
 
