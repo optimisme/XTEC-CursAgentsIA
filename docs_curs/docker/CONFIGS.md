@@ -1,5 +1,7 @@
 # CONFIGS
 
+Models recomanats segons programari.
+
 ## 128GB/96GB servidor multiusuari
 
 Qwen3.6 35b a3b (vllm)
