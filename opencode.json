@@ -79,12 +79,12 @@
   },
   "model": "ieti-agents/active-model",
   "mcp": {
-    "puppeteer": {
+    "playwright": {
       "type": "local",
       "command": [
         "npx",
         "-y",
-        "@hisma/server-puppeteer"
+        "@playwright/mcp"
       ],
       "enabled": true
     },
