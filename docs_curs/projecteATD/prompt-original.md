@@ -172,6 +172,38 @@ L’agent haurà de:
 
 L’**arnès d’OpenCode específic del valorador** s’ha de desenvolupar com a part del servidor.
 
+# Pàgina principal
+
+La pàgina principal ha de mostrar el formulari de login que automàticament anirà a la pàgina d'alumne o professor un cop identificat. L'admin entra amb la paraula "admin" enlloc de amb un correu electrònic.
+
+# Pàgines i endpoints
+
+En generar els tres prompts, defineix també les **pàgines de la interfície i els endpoints HTTP necessaris per implementar-les**, mantenint una correspondència clara entre frontend i API.
+
+Tingues en compte com a mínim aquestes pàgines:
+
+- `/` — login comú per a administrador i alumnes;
+- `/admin` — espai principal de l'administrador;
+- `/admin/alumnes` — gestió d'alumnes;
+- `/admin/practiques` — gestió de pràctiques;
+- `/admin/entregues` — consulta i revisió d'entregues;
+- `/alumne` — espai principal de l'alumne;
+- `/alumne/entregues` — consulta de les seves entregues;
+- `/alumne/enviar` — formulari per fer una nova entrega.
+
+Defineix els endpoints REST necessaris per donar suport a aquestes pàgines, incloent com a mínim:
+
+- autenticació, sessió i logout;
+- CRUD d'alumnes;
+- CRUD de pràctiques;
+- consulta d'entregues per alumne;
+- consulta d'entregues per pràctica;
+- creació i eliminació d'entregues de l'alumne;
+- marcatge d'una entrega com a revisada;
+- consulta de l'estat i resultat de la valoració automàtica.
+
+Els endpoints han de tenir una estructura coherent, per exemple sota `/api/...`, i s'han de definir explícitament als prompts generats perquè posteriorment es puguin convertir en tasques atòmiques i tests.
+
 ---
 
 # Arxius que necessito
