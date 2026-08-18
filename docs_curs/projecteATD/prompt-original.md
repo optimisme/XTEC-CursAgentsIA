@@ -11,8 +11,6 @@ Per fer-ho necessito **tres prompts**:
    * agents
    * `AGENTS.md`
 
-
-
 2. Un prompt que generi la **llista de tasques** a l'arxiu "prompts/prompt-tasques.md" necessàries per desenvolupar el servidor web en un únic arxiu:
 
    * `tasks/tasks.md`
