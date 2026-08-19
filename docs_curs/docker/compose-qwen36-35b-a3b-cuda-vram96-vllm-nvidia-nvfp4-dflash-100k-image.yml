@@ -1,9 +1,9 @@
-# Stop:    docker compose -f compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image.yml down
-# Restart: docker compose -f compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image.yml up -d
-# Logs:    docker logs -f --tail 80 qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_dflash_64k_image
+# Stop:    docker compose -f compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image.yml down
+# Restart: docker compose -f compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image.yml up -d
+# Logs:    docker logs -f --tail 80 qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_dflash_100k_image
 #
 # Note:    Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 checkpoint with DFlash.
-#          Keeps 64k context and image input.
+#          Keeps 100k context and image input.
 #          Uses FlashInfer B12X MoE kernels for the verifier and
 #          FlashAttention with BF16 KV cache for the DFlash drafter.
 
@@ -11,7 +11,7 @@ services:
   qwen-vllm:
     image: vllm/vllm-openai:nightly
     pull_policy: always
-    container_name: qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_dflash_64k_image
+    container_name: qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_dflash_100k_image
 
     environment:
       - HF_HOME=/root/.cache/huggingface
@@ -79,7 +79,7 @@ services:
           --moe-backend flashinfer_b12x \
           --linear-backend flashinfer_cutlass \
           --gpu-memory-utilization 0.75 \
-          --max-model-len 65536 \
+          --max-model-len 100000 \
           --max-num-seqs 20 \
           --max-num-batched-tokens 65536 \
           --enable-chunked-prefill \

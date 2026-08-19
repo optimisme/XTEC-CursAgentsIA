@@ -19,10 +19,10 @@
       "description": "GGUF/llama.cpp cache for qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image."
     },
     "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-hf-cache": {
-      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image."
+      "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image (shared cache volume retained from the former 64k profile)."
     },
     "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-vllm-cache": {
-      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image."
+      "description": "vLLM runtime cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image (shared cache volume retained from the former 64k profile)."
     },
     "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-64k-image-hf-cache": {
       "description": "Hugging Face cache for the official Qwen3.8 27B FP8 64k image profile."
@@ -57,16 +57,16 @@
       ],
       "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile with image input through the Unsloth Qwen3.6 mmproj."
     },
-    "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image": {
-      "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image.yml",
-      "container": "qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_dflash_64k_image",
+    "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image": {
+      "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image.yml",
+      "container": "qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_dflash_100k_image",
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
         "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-hf-cache",
         "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-vllm-cache"
       ],
-      "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile with 64k context, image input, KV cache FP8, DFlash speculative decoding, FlashInfer B12X MoE, and qwen3_xml tool calling."
+      "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile with 100k context, image input, KV cache FP8, DFlash speculative decoding, FlashInfer B12X MoE, and qwen3_xml tool calling."
     },
     "qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image.yml",
