@@ -44,9 +44,26 @@
     },
     "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-pip-cache": {
       "description": "pip build cache for the vLLM DFlash2 PR 52816 runtime."
+    },
+    "xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-hf-cache": {
+      "description": "Hugging Face cache for the official Ornith-1.5 35B A3B FP8 native-MTP 100k profile."
+    },
+    "xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-vllm-cache": {
+      "description": "vLLM runtime cache for the official Ornith-1.5 35B A3B FP8 native-MTP 100k profile."
     }
   },
   "models": {
+    "ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image": {
+      "compose": "compose-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image.yml",
+      "container": "ornith15_35b_a3b_cuda_vram96_vllm_fp8_mtp_100k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-hf-cache",
+        "xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-vllm-cache"
+      ],
+      "description": "Official Ornith-1.5 35B A3B FP8 vLLM profile with native one-token MTP, 100k context, image input, BF16 recurrent-state cache, qwen3 reasoning, and qwen3_xml tool calling."
+    },
     "qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image": {
       "compose": "compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml",
       "container": "qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp_image",
