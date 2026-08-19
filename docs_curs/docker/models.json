@@ -1,6 +1,6 @@
 {
   "compose_project": "vllm",
-  "default_model": "qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image",
+  "default_model": "qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image",
   "endpoint": "http://127.0.0.1:8000/v1",
   "volumes": {
     "xtec-hf-cache": {
@@ -67,6 +67,17 @@
         "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-vllm-cache"
       ],
       "description": "Qwen3.6 35B A3B NVIDIA ModelOpt NVFP4 cuda-vram96 vLLM profile with 64k context, image input, KV cache FP8, DFlash speculative decoding, FlashInfer B12X MoE, and qwen3_xml tool calling."
+    },
+    "qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image": {
+      "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image.yml",
+      "container": "qwen36_35b_a3b_cuda_vram96_vllm_koopah_nvfp4_dspark_100k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-64k-image-hf-cache",
+        "xtec-qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-64k-image-vllm-cache"
+      ],
+      "description": "Koopah frozen Qwen3.6 35B A3B NVFP4 vLLM profile with the matching DSpark v2 drafter, 100k context, image input, BF16 recurrent-state cache, and qwen3_xml tool calling."
     },
     "qwen38-27b-cuda-vram128-vllm-qwen-fp8-64k-image": {
       "compose": "compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-64k-image.yml",

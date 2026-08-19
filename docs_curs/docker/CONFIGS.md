@@ -6,6 +6,7 @@ Models recomanats per programar segons VRAM.
 
 Qwen3.6 35b a3b (vllm)
 - compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image
+- compose-qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image
 
 ## 128GB/32GB monolloc
 
