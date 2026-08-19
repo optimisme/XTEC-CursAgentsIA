@@ -1,6 +1,6 @@
-# Stop:    docker compose -f compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image.yml down
-# Start:   docker compose -f compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image.yml up -d
-# Logs:    docker logs -f --tail 80 qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_128k_image
+# Stop:    docker compose -f compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-100k-image.yml down
+# Start:   docker compose -f compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-100k-image.yml up -d
+# Logs:    docker logs -f --tail 80 qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_100k_image
 # Note:    vLLM profile for the RadixArk Qwen3.8 NVFP4 + DSpark model.
 #          The Hugging Face weight cache is persisted separately for this profile.
 
@@ -8,7 +8,7 @@ services:
   qwen-vllm:
     image: vllm/vllm-openai:nightly
     pull_policy: missing
-    container_name: qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_128k_image
+    container_name: qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_100k_image
 
     environment:
       - HF_HOME=/root/.cache/huggingface
@@ -71,7 +71,7 @@ services:
           --dtype auto \
           --kv-cache-dtype auto \
           --gpu-memory-utilization 0.85 \
-          --max-model-len 131072 \
+          --max-model-len 100000 \
           --max-num-seqs 35 \
           --max-num-batched-tokens 8192 \
           --enable-chunked-prefill \

@@ -1,12 +1,12 @@
-# Stop:    docker compose -f compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image.yml down
-# Start:   docker compose -f compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image.yml up -d
-# Logs:    docker logs -f --tail 80 qwen38_27b_cuda_vram128_vllm_incoai_dflash2_128k_image
+# Stop:    docker compose -f compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-100k-image.yml down
+# Start:   docker compose -f compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-100k-image.yml up -d
+# Logs:    docker logs -f --tail 80 qwen38_27b_cuda_vram128_vllm_incoai_dflash2_100k_image
 # Note:    Official Qwen FP8 target + IncoAI DFlash2 requires the vLLM PR 52816 code and V2 model runner.
 services:
   qwen-vllm:
     image: vllm/vllm-openai:nightly
     pull_policy: missing
-    container_name: qwen38_27b_cuda_vram128_vllm_incoai_dflash2_128k_image
+    container_name: qwen38_27b_cuda_vram128_vllm_incoai_dflash2_100k_image
     environment:
       - HF_HOME=/root/.cache/huggingface
       - HUGGINGFACE_HUB_CACHE=/root/.cache/huggingface/hub
@@ -81,7 +81,7 @@ services:
           --dtype auto \
           --kv-cache-dtype auto \
           --gpu-memory-utilization 0.85 \
-          --max-model-len 131072 \
+          --max-model-len 100000 \
           --max-num-seqs 32 \
           --max-num-batched-tokens 8192 \
           --enable-chunked-prefill \

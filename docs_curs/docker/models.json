@@ -31,16 +31,16 @@
       "description": "vLLM runtime cache for the official Qwen3.8 27B FP8 64k image profile."
     },
     "xtec-qwen38-27b-cuda-vram128-radixark-nvfp4-dspark-128k-image-hf-cache": {
-      "description": "Hugging Face cache for the RadixArk Qwen3.8 27B NVFP4 plus DSpark vLLM profile."
+      "description": "Hugging Face cache for the RadixArk Qwen3.8 27B NVFP4 plus DSpark 100k profile (volume name retained from the former 128k profile)."
     },
     "xtec-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image-vllm-cache": {
-      "description": "vLLM runtime cache for the RadixArk Qwen3.8 27B NVFP4 plus DSpark profile."
+      "description": "vLLM runtime cache for the RadixArk Qwen3.8 27B NVFP4 plus DSpark 100k profile (volume name retained from the former 128k profile)."
     },
     "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-hf-cache": {
-      "description": "Hugging Face cache for the official Qwen3.8 27B FP8 plus IncoAI DFlash2 vLLM profile."
+      "description": "Hugging Face cache for the official Qwen3.8 27B FP8 plus IncoAI DFlash2 100k profile (volume name retained from the former 128k profile)."
     },
     "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-vllm-cache": {
-      "description": "vLLM runtime cache for the official Qwen3.8 27B FP8 plus IncoAI DFlash2 profile."
+      "description": "vLLM runtime cache for the official Qwen3.8 27B FP8 plus IncoAI DFlash2 100k profile (volume name retained from the former 128k profile)."
     },
     "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-pip-cache": {
       "description": "pip build cache for the vLLM DFlash2 PR 52816 runtime."
@@ -90,20 +90,20 @@
       ],
       "description": "Official Qwen3.8 27B FP8 vLLM profile with 64k context, image input, model-dtype KV cache to avoid uncalibrated FP8 KV scales, 2096-token chunked prefill for GDN stability on Blackwell, official thinking-mode sampling defaults, native one-layer MTP with one speculative token, qwen3 reasoning, qwen3_coder tool calling, and no DFlash."
     },
-    "qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image": {
-      "compose": "compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image.yml",
-      "container": "qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_128k_image",
+    "qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-100k-image": {
+      "compose": "compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-100k-image.yml",
+      "container": "qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_100k_image",
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
         "xtec-qwen38-27b-cuda-vram128-radixark-nvfp4-dspark-128k-image-hf-cache",
         "xtec-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image-vllm-cache"
       ],
-      "description": "RadixArk Qwen3.8 27B NVFP4 vLLM profile with vLLM DSpark speculative decoding, 128k context, image input, and a 0.85 GPU memory target."
+      "description": "RadixArk Qwen3.8 27B NVFP4 vLLM profile with vLLM DSpark speculative decoding, 100k context, image input, and a 0.85 GPU memory target."
     },
-    "qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image": {
-      "compose": "compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image.yml",
-      "container": "qwen38_27b_cuda_vram128_vllm_incoai_dflash2_128k_image",
+    "qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-100k-image": {
+      "compose": "compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-100k-image.yml",
+      "container": "qwen38_27b_cuda_vram128_vllm_incoai_dflash2_100k_image",
       "engine": "vllm",
       "endpoint": "http://127.0.0.1:8000/v1",
       "volumes": [
@@ -111,7 +111,7 @@
         "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-vllm-cache",
         "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-pip-cache"
       ],
-      "description": "Official Qwen3.8 27B FP8 vLLM profile with IncoAI DFlash2, 7 speculative tokens, 128k context, image input, qwen3 reasoning, and qwen3_coder tool calling; applies vLLM PR 52816 Python support at container startup."
+      "description": "Official Qwen3.8 27B FP8 vLLM profile with IncoAI DFlash2, 7 speculative tokens, 100k context, image input, qwen3 reasoning, and qwen3_coder tool calling; applies vLLM PR 52816 Python support at container startup."
     },
     "qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k": {
       "compose": "compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k.yml",

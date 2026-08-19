@@ -11,8 +11,8 @@ Qwen3.6 35b a3b (vllm)
 ## 128GB/32GB monolloc
 
 Qwen3.8 27b (vllm)
-- compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image
-- compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image
+- compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-100k-image
+- compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-100k-image
 
 ## 16GB monolloc
 
