@@ -1,6 +1,6 @@
 {
   "compose_project": "vllm",
-  "default_model": "qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image",
+  "default_model": "qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image",
   "endpoint": "http://127.0.0.1:8000/v1",
   "volumes": {
     "xtec-hf-cache": {
@@ -17,12 +17,6 @@
     },
     "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache": {
       "description": "GGUF/llama.cpp cache for qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image."
-    },
-    "xtec-qwen38-27b-cuda-vram16-llamacpp-unsloth-q3_k_m-dflash-image-hf-cache": {
-      "description": "Hugging Face cache for the Qwen3.8 27B Q3_K_M llama.cpp DFlash profile."
-    },
-    "xtec-qwen38-27b-cuda-vram16-llamacpp-unsloth-q3_k_m-dflash-image-gguf-cache": {
-      "description": "GGUF/llama.cpp cache for the Qwen3.8 27B Q3_K_M llama.cpp DFlash profile."
     },
     "xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image-hf-cache": {
       "description": "Hugging Face cache for qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image."
@@ -41,6 +35,15 @@
     },
     "xtec-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image-vllm-cache": {
       "description": "vLLM runtime cache for the RadixArk Qwen3.8 27B NVFP4 plus DSpark profile."
+    },
+    "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-hf-cache": {
+      "description": "Hugging Face cache for the official Qwen3.8 27B FP8 plus IncoAI DFlash2 vLLM profile."
+    },
+    "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-vllm-cache": {
+      "description": "vLLM runtime cache for the official Qwen3.8 27B FP8 plus IncoAI DFlash2 profile."
+    },
+    "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-pip-cache": {
+      "description": "pip build cache for the vLLM DFlash2 PR 52816 runtime."
     }
   },
   "models": {
@@ -53,17 +56,6 @@
         "xtec-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image-gguf-cache"
       ],
       "description": "Qwen3.6 35B A3B MTP IQ4_XS GGUF local llama.cpp profile with image input through the Unsloth Qwen3.6 mmproj."
-    },
-    "qwen38-27b-cuda-vram16-llamacpp-unsloth-q3_k_m-dflash-image": {
-      "compose": "compose-qwen38-27b-cuda-vram16-llamacpp-unsloth-q3_k_m-dflash-image.yml",
-      "container": "qwen38_27b_cuda_vram16_llamacpp_unsloth_q3_k_m_dflash_image",
-      "engine": "llamacpp",
-      "endpoint": "http://127.0.0.1:8000/v1",
-      "volumes": [
-        "xtec-qwen38-27b-cuda-vram16-llamacpp-unsloth-q3_k_m-dflash-image-hf-cache",
-        "xtec-qwen38-27b-cuda-vram16-llamacpp-unsloth-q3_k_m-dflash-image-gguf-cache"
-      ],
-      "description": "Qwen3.8 27B Q3_K_M GGUF llama.cpp 16GB profile with 8k context, fit-based partial GPU offload, image input, and the experimental Qwen3.6-to-Qwen3.8 DFlash bootstrap drafter kept on CPU."
     },
     "qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image": {
       "compose": "compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-64k-image.yml",
@@ -97,6 +89,18 @@
         "xtec-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image-vllm-cache"
       ],
       "description": "RadixArk Qwen3.8 27B NVFP4 vLLM profile with vLLM DSpark speculative decoding, 128k context, image input, and a 0.85 GPU memory target."
+    },
+    "qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image": {
+      "compose": "compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image.yml",
+      "container": "qwen38_27b_cuda_vram128_vllm_incoai_dflash2_128k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-hf-cache",
+        "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-vllm-cache",
+        "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-pip-cache"
+      ],
+      "description": "Official Qwen3.8 27B FP8 vLLM profile with IncoAI DFlash2, 7 speculative tokens, 128k context, image input, qwen3 reasoning, and qwen3_coder tool calling; applies vLLM PR 52816 Python support at container startup."
     },
     "qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k": {
       "compose": "compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k.yml",
@@ -144,4 +148,3 @@
     }
   }
 }
-

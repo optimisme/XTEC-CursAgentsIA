@@ -10,16 +10,13 @@ Qwen3.6 35b a3b (vllm)
 ## 128GB/32GB monolloc
 
 Qwen3.8 27b (vllm)
+- compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-128k-image
 - compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-128k-image
-- compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-64k-image
 
 ## 16GB monolloc
 
 Qwen3.6 35b a3b (llamacpp)
 - compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image
-
-Qwen3.8 27b Q3_K_M (llamacpp, DFlash bootstrap draft, 8k context)
-- compose-qwen38-27b-cuda-vram16-llamacpp-unsloth-q3_k_m-dflash-image
 
 ## 12GB monolloc
 

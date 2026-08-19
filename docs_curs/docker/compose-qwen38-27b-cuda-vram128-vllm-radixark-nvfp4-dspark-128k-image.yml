@@ -7,7 +7,7 @@
 services:
   qwen-vllm:
     image: vllm/vllm-openai:nightly
-    pull_policy: always
+    pull_policy: missing
     container_name: qwen38_27b_cuda_vram128_vllm_radixark_nvfp4_dspark_128k_image
 
     environment:
