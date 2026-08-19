@@ -8,9 +8,6 @@ Qwen3.6 35b a3b (vllm velocitat)
 - compose-qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image
 - compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image
 
-Ornith1.5 35b a3b (vllm qualitat)
-- compose-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image
-
 ## 128GB/32GB monolloc
 
 Qwen3.8 27b (vllm)
