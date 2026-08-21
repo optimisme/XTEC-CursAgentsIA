@@ -12,9 +12,9 @@ Els prompts han de ser clars, directes i especialment pensats perquè un model p
 
 Genera els següents arxius:
 
-* `prompts/prompt-sudoku-1-arnes.md`
-* `prompts/prompt-sudoku-2-tasques.md`
-* `prompts/prompt-sudoku-3-implementa.md`
+* `prompts/prompt-sudoku-arnes.md`
+* `prompts/prompt-sudoku-tasques.md`
+* `prompts/prompt-sudoku-implementa.md`
 
 No implementis el Sudoku. Genera només aquests tres prompts.
 
@@ -22,7 +22,7 @@ No implementis el Sudoku. Genera només aquests tres prompts.
 
 # 1. Prompt de configuració de l’arnès
 
-`prompt-sudoku-1-arnes.md` ha de preparar l’arnès del projecte abans de començar el desenvolupament.
+`prompt-sudoku-arnes.md` ha de preparar l’arnès del projecte abans de començar el desenvolupament.
 
 Ha de definir els **agents, subagents i skills** necessaris, sense implementar encara funcionalitats ni generar `tasks-sudoku.md`.
 
@@ -114,7 +114,7 @@ Evita una estètica excessivament decorativa.
 
 # 2. Prompt de definició de tasques
 
-`prompt-sudoku-2-tasques.md` ha de generar tota la planificació del desenvolupament en un únic arxiu:
+`prompt-sudoku-tasques.md` ha de generar tota la planificació del desenvolupament en un únic arxiu:
 
 `tasks-sudoku.md`
 
@@ -209,7 +209,7 @@ Agrupa les tasques en fases si això ajuda a mantenir una seqüència clara de d
 
 # 3. Prompt d’implementació
 
-`prompt-sudoku-3-implementa.md` ha de desenvolupar el projecte a partir de `tasks-sudoku.md`.
+`prompt-sudoku-implementa.md` ha de desenvolupar el projecte a partir de `tasks-sudoku.md`.
 
 Ha de seguir un **bucle de desenvolupament simple i repetible**, adequat per a agents petits.
 
