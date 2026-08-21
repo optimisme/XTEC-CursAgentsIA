@@ -158,6 +158,8 @@ PROXY_AGENTS_BASE_URL="$API_BASE_URL"
 export PROXY_AGENTS_BASE_URL PROXY_AGENTS_KEY
 
 CAPABILITIES_TMP="$(mktemp "${TMPDIR:-/tmp}/ieti-capabilities.XXXXXX")"
+AGENTS_SYNC_OK=1
+
 if ! HTTP_STATUS="$(curl --silent --show-error \
   --output "$CAPABILITIES_TMP" \
   --write-out '%{http_code}' \
@@ -166,23 +168,24 @@ if ! HTTP_STATUS="$(curl --silent --show-error \
   --header "Authorization: Bearer $PROXY_AGENTS_KEY" \
   --header 'Accept: application/json' \
   "$API_BASE_URL/model-capabilities")"; then
-  echo "Error: could not connect to the IETI model capabilities endpoint."
-  exit 1
-fi
-
-if [ "$HTTP_STATUS" != "200" ]; then
+  echo "Warning: could not connect to the IETI model capabilities endpoint."
+  echo "Warning: continuing with OpenCode without updating the IETI Agents configuration."
+  AGENTS_SYNC_OK=0
+elif [ "$HTTP_STATUS" != "200" ]; then
   ERROR_MESSAGE="$(node -e '
     try {
       const body = JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8"));
       process.stdout.write(String(body?.error?.message || body?.message || "the server rejected the request"));
     } catch { process.stdout.write("the server rejected the request"); }
   ' "$CAPABILITIES_TMP")"
-  echo "Error: PROXY_AGENTS_KEY is not valid or the model catalog is unavailable (HTTP $HTTP_STATUS): $ERROR_MESSAGE"
-  exit 1
+  echo "Warning: IETI Agents is unavailable (HTTP $HTTP_STATUS): $ERROR_MESSAGE"
+  echo "Warning: continuing with OpenCode without updating the IETI Agents configuration."
+  AGENTS_SYNC_OK=0
 fi
 
-CONFIG_TMP="$(mktemp "$CONFIG_FILE.tmp.XXXXXX")"
-node - "$CONFIG_FILE" "$CAPABILITIES_TMP" "$CONFIG_TMP" "$API_BASE_URL" <<'NODE'
+if [ "$AGENTS_SYNC_OK" -eq 1 ]; then
+  CONFIG_TMP="$(mktemp "$CONFIG_FILE.tmp.XXXXXX")"
+  node - "$CONFIG_FILE" "$CAPABILITIES_TMP" "$CONFIG_TMP" "$API_BASE_URL" <<'NODE'
 const fs = require('node:fs');
 const [configPath, capabilitiesPath, configOutputPath, baseURL] = process.argv.slice(2);
 
@@ -321,8 +324,9 @@ fi
 mv "$CONFIG_TMP" "$CONFIG_FILE"
 CONFIG_TMP=""
 
-MODEL_COUNT="$(node -e 'const c=require(process.argv[1]); process.stdout.write(String(Object.keys(c.provider["ieti-agents"].models).length))' "$CONFIG_FILE")"
-echo "IETI API key validated. Updated only the ieti-agents provider in $CONFIG_FILE with $MODEL_COUNT available model(s)."
+  MODEL_COUNT="$(node -e 'const c=require(process.argv[1]); process.stdout.write(String(Object.keys(c.provider["ieti-agents"].models).length))' "$CONFIG_FILE")"
+  echo "IETI API key validated. Updated only the ieti-agents provider in $CONFIG_FILE with $MODEL_COUNT available model(s)."
+fi
 
 MODE="${1:-desktop}"
 

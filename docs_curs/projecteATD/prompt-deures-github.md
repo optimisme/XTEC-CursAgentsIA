@@ -4,9 +4,9 @@ Vull implementar la pàgina web descrita a continuació fent servir un **agent p
 
 Per facilitar-ne el desenvolupament, necessito dividir el procés en tres fases i generar **tres prompts independents**:
 
-1. un prompt per configurar l’**arnès de desenvolupament**;
-2. un prompt per generar la **planificació de tasques mitjançant GitHub Issues i GitHub Projects**;
-3. un prompt per executar la **implementació completa** seguint aquestes tasques.
+1. un prompt per configurar l’**arnès de desenvolupament**, sense implementar cap funcionalitat;
+2. un prompt per generar la **planificació mitjançant GitHub Issues i etiquetes de les Issues**, sense implementar cap funcionalitat;
+3. un prompt per executar la **implementació completa** seguint aquestes Issues.
 
 Els prompts han de ser clars, directes i especialment pensats perquè un model petit pugui treballar amb poc context.
 
@@ -16,13 +16,15 @@ Genera els següents arxius:
 * `prompts/prompt-deures-tasques.md`
 * `prompts/prompt-deures-implementa.md`
 
-No implementis el servidor. Genera només aquests tres prompts.
+No implementis el servidor durant aquesta execució. Genera només aquests tres prompts.
 
 ---
 
 # 1. Prompt de configuració de l’arnès
 
-`prompt-deures-arnes.md` ha de preparar l’arnès de desenvolupament abans de començar la implementació.
+`prompt-deures-arnes.md` ha de preparar exclusivament l’arnès de desenvolupament abans de començar la implementació.
+
+**Aquest prompt no pot implementar funcionalitats de l’aplicació ni començar cap Issue.**
 
 Ha de definir:
 
@@ -47,23 +49,21 @@ Com a mínim, ha d’existir:
 * un subagent de tests;
 * un subagent de revisió o validació.
 
-L’agent principal ha de:
+L’agent principal ha de saber que, durant la futura fase d’implementació, haurà de:
 
-* consultar mitjançant l’MCP de GitHub les Issues del projecte;
-* consultar els camps del GitHub Project associats a cada Issue;
+* consultar mitjançant l’MCP de GitHub les Issues del repositori;
+* consultar les etiquetes assignades a cada Issue;
 * seleccionar una sola Issue cada vegada;
 * respectar prioritats, fases i dependències;
 * delegar-ne la implementació;
 * delegar-ne els tests i la revisió;
-* actualitzar l’estat de la Issue al GitHub Project;
+* actualitzar les etiquetes d’estat de la Issue;
 * evitar modificacions simultànies incompatibles;
 * avançar només quan la Issue actual estigui validada;
 * tornar a consultar GitHub abans de cada nova iteració;
 * no confiar en l’estat recordat d’execucions anteriors.
 
-GitHub Issues i GitHub Projects han de ser l’**única font de veritat** de l’estat de les tasques.
-
-No s’ha de mantenir cap fitxer local `tasks.md` ni cap altra còpia paral·lela de l’estat de les tasques.
+GitHub Issues i les seves etiquetes han de ser l’**única font de veritat** de l’estat de les tasques.
 
 L’agent que implementa una tasca **no ha de ser l’únic encarregat de validar-la**.
 
@@ -73,16 +73,19 @@ Defineix com a mínim skills per a:
 
 ### Gestió de tasques
 
-Ha de permetre:
+Ha de definir com treballar, durant la fase d’implementació, amb:
 
-* consultar GitHub Issues i GitHub Projects mitjançant l’MCP de GitHub;
-* identificar les Issues executables;
-* seleccionar la següent Issue;
-* respectar prioritats, fases i dependències;
-* actualitzar el camp `Status`;
-* detectar i corregir incoherències entre l’estat de la Issue i el GitHub Project;
-* desbloquejar les Issues que hagin quedat executables;
-* evitar implementar funcionalitats d’Issues futures.
+* GitHub Issues mitjançant l’MCP de GitHub;
+* etiquetes de les Issues;
+* Issues executables;
+* selecció de la següent Issue;
+* prioritats;
+* fases;
+* dependències;
+* actualització de les etiquetes d’estat;
+* detecció i correcció d’incoherències entre l’estat real de la Issue i les seves etiquetes;
+* desbloqueig de les Issues que hagin quedat executables;
+* prevenció de la implementació de funcionalitats d’Issues futures.
 
 No mantinguis l’estat de les tasques en fitxers locals.
 
@@ -110,7 +113,7 @@ Ha de definir que:
 
 Hi ha disponible l’**MCP Playwright**.
 
-S’ha de fer servir per validar les funcionalitats web simulant accions reals d’usuari i comprovant també possibles errors del navegador.
+S’ha de fer servir durant la implementació per validar les funcionalitats web simulant accions reals d’usuari i comprovant també possibles errors del navegador.
 
 ### GitHub
 
@@ -122,11 +125,10 @@ S’ha de fer servir per:
 * consultar Issues;
 * actualitzar Issues;
 * tancar Issues;
-* consultar GitHub Projects;
-* crear o configurar el Project quan sigui necessari;
-* afegir Issues al Project;
-* consultar i actualitzar els camps del Project;
-* gestionar l’estat Kanban;
+* crear etiquetes;
+* consultar etiquetes;
+* assignar i retirar etiquetes de les Issues;
+* gestionar estats, prioritats i fases mitjançant etiquetes;
 * realitzar els commits de fita.
 
 Abans de realitzar qualsevol operació, comprova l’estat real actual de GitHub.
@@ -402,29 +404,18 @@ Mantén una correspondència clara entre pàgines, API i funcionalitats.
 
 # 10. Prompt de definició de tasques
 
-`prompt-deures-tasques.md` ha de generar tota la planificació del desenvolupament mitjançant **GitHub Issues i GitHub Projects**, fent servir l’MCP de GitHub.
+`prompt-deures-tasques.md` ha de generar exclusivament la planificació del desenvolupament mitjançant **GitHub Issues i etiquetes de les Issues**, fent servir l’MCP de GitHub.
 
-És obligatori utilitzar GitHub Projects, no només GitHub Issues.
+**Aquest prompt no pot implementar cap funcionalitat, modificar el codi de l’aplicació ni començar l’execució de cap Issue.**
 
-Abans de crear o modificar Issues, localitza mitjançant l’MCP de GitHub
-el GitHub Project definit per:
+La seva única responsabilitat és:
 
-* `GITHUB_PROJECT_NAME`
-
-A l'arxiu settings.env i a la variable d'entorn.
-
-Si el Project existeix, reutilitza’l.
-
-Si no existeix, crea’l amb aquest nom.
-
-No creïs un Project nou si ja n’existeix un amb el mateix nom dins del mateix owner.
-
-La planificació no es considera creada fins que totes les Issues estiguin
-afegides al GitHub Project i tinguin configurats els camps `Status`,
-`Priority` i `Phase`.
-
-No ha d’implementar encara funcionalitats.
-
+* analitzar el projecte;
+* definir les tasques;
+* crear o actualitzar les GitHub Issues;
+* crear les etiquetes necessàries;
+* assignar a cada Issue les etiquetes corresponents;
+* definir dependències, criteris d’acceptació i tests.
 
 ## GitHub Issues
 
@@ -460,60 +451,62 @@ Depends on:
 
 No dupliquis tota la informació de les Issues relacionades.
 
-## GitHub Project
+## Etiquetes de les Issues
 
-Totes les Issues creades s’han d’afegir al mateix GitHub Project.
+L’estat, la prioritat i la fase de cada tasca s’han de representar exclusivament mitjançant etiquetes de GitHub Issues.
 
-El Project ha de tenir una vista **Board/Kanban** basada en el camp:
+Crea les etiquetes necessàries si encara no existeixen.
+
+### Estat
+
+Cada Issue ha de tenir **exactament una** etiqueta d’estat:
 
 ```text
-Status
+status:backlog
+status:ready
+status:in-progress
+status:in-review
+status:done
 ```
-
-Configura com a mínim els següents camps.
-
-### Status
-
-Valors:
-
-* `Backlog`
-* `Ready`
-* `In progress`
-* `In review`
-* `Done`
 
 Semàntica:
 
-* `Backlog`: la Issue encara no és executable;
-* `Ready`: totes les dependències estan completades i es pot implementar;
-* `In progress`: és la Issue que s’està implementant;
-* `In review`: la implementació ha acabat i està en procés de tests o revisió;
-* `Done`: tots els criteris d’acceptació, tests i revisions han passat.
+* `status:backlog`: la Issue encara no és executable;
+* `status:ready`: totes les dependències estan completades i es pot implementar;
+* `status:in-progress`: és la Issue que s’està implementant;
+* `status:in-review`: la implementació ha acabat i està en procés de tests o revisió;
+* `status:done`: tots els criteris d’acceptació, tests i revisions han passat.
 
-### Priority
+Les etiquetes `status:*` són mútuament excloents.
 
-Valors:
+Quan es canviï l’estat d’una Issue, retira primer l’etiqueta `status:*` anterior i assigna només la nova.
 
-* `P0`
-* `P1`
-* `P2`
-* `P3`
+### Prioritat
+
+Cada Issue ha de tenir **exactament una** etiqueta de prioritat:
+
+```text
+priority:p0
+priority:p1
+priority:p2
+priority:p3
+```
 
 Un número menor significa una prioritat més alta.
 
-`P0` s’ha de reservar per a tasques especialment crítiques o bloquejants.
+`priority:p0` s’ha de reservar per a tasques especialment crítiques o bloquejants.
 
-### Phase
+### Fase
 
-Cada Issue ha d’estar assignada a una fase de desenvolupament.
+Cada Issue ha de tenir **exactament una** etiqueta de fase.
 
-Utilitza valors simples i ordenats, per exemple:
+Utilitza:
 
 ```text
-1
-2
-3
-4
+phase:1
+phase:2
+phase:3
+phase:4
 ...
 ```
 
@@ -523,9 +516,9 @@ La fase representa un punt del desenvolupament en què el conjunt de funcionalit
 
 Quan es generi la planificació:
 
-* les Issues sense dependències pendents han de quedar a `Ready`;
-* les Issues bloquejades per altres Issues han de quedar a `Backlog`;
-* cap Issue ha de començar a `In progress`, `In review` o `Done`.
+* les Issues sense dependències pendents han de tenir `status:ready`;
+* les Issues bloquejades per altres Issues han de tenir `status:backlog`;
+* cap Issue ha de començar amb `status:in-progress`, `status:in-review` o `status:done`.
 
 ## Cobertura
 
@@ -550,11 +543,11 @@ Les Issues han de cobrir progressivament:
 
 ## Fases
 
-Agrupa les Issues per fases mitjançant el camp `Phase` del GitHub Project.
+Agrupa les Issues per fases mitjançant les etiquetes `phase:*`.
 
 Una fase només es considera completada quan:
 
-* totes les Issues de la fase tenen `Status = Done`;
+* totes les Issues de la fase tenen `status:done`;
 * totes les Issues de la fase estan tancades;
 * passen els tests específics;
 * passen tots els tests de regressió acumulats;
@@ -562,7 +555,7 @@ Una fase només es considera completada quan:
 
 No s’ha d’avançar a la fase següent mentre existeixin errors.
 
-Les Issues de la fase següent només poden passar a `Ready` quan les seves dependències estiguin realment completades.
+Les Issues de la fase següent només poden passar a `status:ready` quan les seves dependències estiguin realment completades.
 
 ---
 
@@ -572,9 +565,9 @@ Les Issues de la fase següent només poden passar a `Ready` quan les seves depe
 
 No ha de contenir una còpia de la llista de tasques.
 
-GitHub Issues i GitHub Projects són la font de veritat de la planificació.
+GitHub Issues i les seves etiquetes són la font de veritat de la planificació.
 
-L’agent principal ha de consultar l’estat real del projecte mitjançant l’MCP de GitHub abans de seleccionar una tasca.
+L’agent principal ha de consultar l’estat real de les Issues mitjançant l’MCP de GitHub abans de seleccionar una tasca.
 
 Les Issues s’han d’executar segons:
 
@@ -582,42 +575,45 @@ Les Issues s’han d’executar segons:
 2. fase;
 3. prioritat.
 
-Per cada iteració:
+Per cada futura iteració d’implementació:
 
-1. consultar el GitHub Project;
-2. consultar les Issues relacionades;
+1. consultar les GitHub Issues;
+2. consultar les seves etiquetes;
 3. corregir possibles incoherències d’estat;
-4. detectar Issues amb `Status = Ready`;
+4. detectar Issues amb `status:ready`;
 5. seleccionar la Issue executable de prioritat més alta;
-6. canviar-ne el `Status` a `In progress`;
+6. substituir `status:ready` per `status:in-progress`;
 7. delegar-ne la implementació;
 8. executar els tests específics;
 9. executar els tests de regressió;
-10. canviar-ne el `Status` a `In review`;
+10. substituir `status:in-progress` per `status:in-review`;
 11. fer-la revisar per un agent diferent de l’implementador;
 12. validar els criteris d’acceptació;
 13. corregir qualsevol problema;
 14. repetir els tests;
-15. canviar-ne el `Status` a `Done` només si totes les validacions passen;
+15. substituir `status:in-review` per `status:done` només si totes les validacions passen;
 16. tancar la GitHub Issue;
 17. detectar les Issues que hagin quedat desbloquejades;
-18. canviar-les de `Backlog` a `Ready` quan totes les seves dependències estiguin completades.
+18. substituir `status:backlog` per `status:ready` quan totes les seves dependències estiguin completades.
 
 Treballa en una única Issue principal cada vegada.
 
 No mantinguis una còpia local de l’estat de les tasques.
 
-## Consistència entre Issues i Project
+## Consistència de les Issues
 
-Abans de cada iteració, comprova la coherència entre l’estat de la GitHub Issue i el camp `Status` del Project.
+Abans de cada iteració, comprova la coherència entre l’estat real de la GitHub Issue i les seves etiquetes.
 
 Com a mínim:
 
-* una Issue tancada ha de tenir `Status = Done`;
-* una Issue amb `Status = Done` ha d’estar tancada;
-* una Issue amb dependències pendents no pot tenir `Status = Ready`;
-* una Issue amb `Status = In progress` ha de correspondre a la tasca actual;
-* una Issue que ja no té dependències pendents pot passar de `Backlog` a `Ready`.
+* una Issue tancada ha de tenir `status:done`;
+* una Issue amb `status:done` ha d’estar tancada;
+* una Issue amb dependències pendents no pot tenir `status:ready`;
+* només la tasca actual pot tenir `status:in-progress`;
+* una Issue que ja no té dependències pendents pot passar de `status:backlog` a `status:ready`;
+* una Issue no pot tenir més d’una etiqueta `status:*`;
+* una Issue no pot tenir més d’una etiqueta `priority:*`;
+* una Issue no pot tenir més d’una etiqueta `phase:*`.
 
 Si existeix una incoherència produïda per una execució anterior, corregeix-la mitjançant l’MCP de GitHub abans de continuar.
 
@@ -649,46 +645,47 @@ Els tests han de ser acumulatius:
 
 No eliminis ni relaxis tests previs simplement perquè una nova implementació falli.
 
-Una Issue no pot passar a `Done` mentre existeixi algun error relacionat amb els seus criteris d’acceptació o alguna regressió.
+Una Issue no pot passar a `status:done` mentre existeixi algun error relacionat amb els seus criteris d’acceptació o alguna regressió.
 
 ---
 
 # 13. Prompt d’implementació
 
-`prompt-deures-implementa.md` ha d’executar un bucle agèntic fins que totes les Issues del GitHub Project estiguin completades.
+`prompt-deures-implementa.md` és **l’únic dels tres prompts que pot implementar o modificar funcionalitats de l’aplicació**.
 
-GitHub Issues i GitHub Projects són l’única font de veritat del progrés.
+Ha d’executar un bucle agèntic fins que totes les GitHub Issues de la planificació estiguin completades.
 
-No utilitzis cap `tasks.md` local.
+GitHub Issues i les seves etiquetes són l’única font de veritat del progrés.
+
 
 Per cada iteració:
 
-1. consultar el GitHub Project mitjançant l’MCP de GitHub;
-2. consultar l’estat actual de les Issues;
-3. corregir possibles incoherències entre Issues i Project;
+1. consultar les GitHub Issues mitjançant l’MCP de GitHub;
+2. consultar les etiquetes actuals de les Issues;
+3. corregir possibles incoherències;
 4. comprovar quines Issues han quedat desbloquejades;
-5. passar de `Backlog` a `Ready` les Issues que ja tinguin totes les dependències completades;
-6. identificar les Issues amb `Status = Ready`;
+5. substituir `status:backlog` per `status:ready` quan totes les dependències estiguin completades;
+6. identificar les Issues amb `status:ready`;
 7. seleccionar la Issue executable de prioritat més alta;
 8. comprovar-ne les dependències;
 9. llegir només el context necessari de la Issue;
-10. canviar-ne el `Status` a `In progress`;
+10. substituir `status:ready` per `status:in-progress`;
 11. delegar la implementació a un subagent;
 12. limitar els canvis a la Issue actual;
 13. crear o actualitzar els tests necessaris;
 14. executar els tests específics;
 15. executar tota la regressió acumulada;
-16. canviar el `Status` a `In review`;
+16. substituir `status:in-progress` per `status:in-review`;
 17. delegar la revisió a un agent diferent;
 18. validar els criteris d’acceptació indicats a la Issue;
 19. si afecta la UI, validar-la amb Playwright;
 20. corregir qualsevol error;
 21. tornar a executar els tests específics;
 22. tornar a executar la regressió;
-23. si tot és correcte, canviar el `Status` a `Done`;
+23. si tot és correcte, substituir `status:in-review` per `status:done`;
 24. tancar la GitHub Issue;
 25. comprovar quines Issues han quedat desbloquejades;
-26. passar-les de `Backlog` a `Ready` quan correspongui;
+26. passar-les de `status:backlog` a `status:ready` quan correspongui;
 27. comprovar si s’ha completat una fase;
 28. continuar amb la següent Issue executable.
 
@@ -698,11 +695,11 @@ No facis refactors generals sense necessitat.
 
 Treballa en **una única Issue principal cada vegada**.
 
-Si no existeix cap Issue `Ready` però queden Issues sense completar:
+Si no existeix cap Issue `status:ready` però queden Issues sense completar:
 
 1. revisa les dependències;
-2. comprova si existeix alguna incoherència d’estat;
-3. comprova si alguna Issue hauria d’haver passat de `Backlog` a `Ready`;
+2. comprova si existeix alguna incoherència d’etiquetes;
+3. comprova si alguna Issue hauria d’haver passat de `status:backlog` a `status:ready`;
 4. detecta possibles dependències circulars o bloquejos;
 5. no inventis noves tasques ni modifiquis arbitràriament les dependències.
 
@@ -718,7 +715,7 @@ No facis commits per cada Issue.
 
 Abans del commit de fita comprova que:
 
-* totes les Issues de la fase tenen `Status = Done`;
+* totes les Issues de la fase tenen `status:done`;
 * totes les Issues de la fase estan tancades;
 * passen tots els tests específics;
 * passa tota la regressió acumulada;
@@ -748,17 +745,16 @@ No mostris ni incloguis mai tokens, claus, contrasenyes o altres secrets als com
 
 El procés ha de poder continuar correctament després d’aturar i tornar a executar l’agent.
 
-En començar una nova execució:
+En començar una nova execució del prompt d’implementació:
 
-1. consulta el GitHub Project;
-2. consulta les Issues obertes i tancades;
-3. comprova els camps `Status`, `Priority` i `Phase`;
-4. detecta possibles Issues deixades a `In progress` o `In review`;
-5. comprova l’estat real del codi i dels tests abans de decidir què fer;
-6. corregeix qualsevol incoherència de GitHub;
-7. continua des de l’estat real del projecte.
+1. consulta les GitHub Issues obertes i tancades;
+2. consulta les etiquetes `status:*`, `priority:*` i `phase:*`;
+3. detecta possibles Issues deixades amb `status:in-progress` o `status:in-review`;
+4. comprova l’estat real del codi i dels tests abans de decidir què fer;
+5. corregeix qualsevol incoherència de les Issues o de les seves etiquetes;
+6. continua des de l’estat real del projecte.
 
-No donis per completada una Issue únicament perquè una execució anterior l’havia deixat a `In review`.
+No donis per completada una Issue únicament perquè una execució anterior l’havia deixat amb `status:in-review`.
 
 No reiniciïs la planificació ni creïs Issues duplicades si el projecte ja conté la planificació.
 
@@ -780,7 +776,8 @@ Prioritza:
 * tests freqüents;
 * regressions acumulatives;
 * validació abans d’avançar;
-* GitHub com a font de veritat;
+* GitHub Issues com a font de veritat;
+* etiquetes de GitHub Issues per representar estat, prioritat i fase;
 * recuperació fiable després d’interrupcions.
 
 Evita:
@@ -797,9 +794,65 @@ Evita:
 
 ---
 
+# Separació estricta de fases
+
+Els tres prompts tenen responsabilitats diferents i no s’han de barrejar.
+
+## `prompt-deures-arnes.md`
+
+Només pot:
+
+* crear/configurar skills;
+* crear `PLAN.md`;
+* crear/configurar agents i subagents;
+* crear `AGENTS.md`;
+* definir les regles de treball amb GitHub Issues i etiquetes.
+
+**No pot implementar funcionalitats de l’aplicació.**
+
+**No pot començar a executar Issues.**
+
+## `prompt-deures-tasques.md`
+
+Només pot:
+
+* analitzar els requisits;
+* crear la planificació;
+* crear o actualitzar GitHub Issues;
+* crear i assignar etiquetes;
+* definir dependències;
+* definir criteris d’acceptació;
+* definir tests;
+* assignar estat inicial, prioritat i fase.
+
+**No pot implementar funcionalitats de l’aplicació.**
+
+**No pot modificar el codi de l’aplicació.**
+
+**No pot començar a executar les Issues creades.**
+
+Quan hagi acabat de generar tota la planificació, s’ha d’aturar.
+
+## `prompt-deures-implementa.md`
+
+És l’únic prompt autoritzat a:
+
+* seleccionar Issues executables;
+* modificar el codi;
+* implementar funcionalitats;
+* crear o modificar tests;
+* executar tests;
+* validar amb Playwright;
+* revisar implementacions;
+* actualitzar les etiquetes d’estat durant l’execució;
+* tancar Issues;
+* fer commits de fita.
+
+---
+
 # Arxius que necessito
 
-No implementis el servidor.
+No implementis el servidor durant aquesta execució.
 
 Genera exclusivament:
 
@@ -810,23 +863,24 @@ Genera exclusivament:
    * agents i subagents;
    * `AGENTS.md`;
    * integració amb l’MCP de GitHub;
-   * gestió de GitHub Issues i GitHub Projects.
+   * gestió de GitHub Issues i etiquetes;
+   * **cap implementació de l’aplicació**.
 
 2. `prompts/prompt-deures-tasques.md`
 
    * ha de crear la planificació mitjançant GitHub Issues;
-   * ha d’afegir les Issues a un GitHub Project;
-   * ha de configurar la vista Board/Kanban;
-   * ha de definir `Status`, `Priority` i `Phase`;
+   * ha de crear i utilitzar etiquetes `status:*`;
+   * ha de crear i utilitzar etiquetes `priority:*`;
+   * ha de crear i utilitzar etiquetes `phase:*`;
    * ha de definir prioritats i dependències;
    * ha d’incloure criteris d’acceptació i tests a cada Issue;
-   * no ha de crear cap `tasks.md`.
+   * **no ha d’implementar cap funcionalitat**.
 
 3. `prompts/prompt-deures-implementa.md`
 
-   * implementació dirigida pel GitHub Project;
+   * implementació dirigida per GitHub Issues;
    * selecció de la següent Issue mitjançant l’MCP de GitHub;
-   * actualització de l’estat de les Issues;
+   * actualització de les etiquetes d’estat;
    * gestió de dependències;
    * agents i subagents;
    * tests específics;
