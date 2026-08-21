@@ -4,7 +4,7 @@ Models recomanats per programar segons VRAM.
 
 ## 128GB/96GB servidor multiusuari
 
-Ornith1.5 35b a3b (qualitat sense visió)
+Ornith1.5 35b a3b
 - compose-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-image.yml
 
 Qwen3.6 35b a3b (vllm velocitat)
@@ -13,7 +13,7 @@ Qwen3.6 35b a3b (vllm velocitat)
 
 ## 128GB/32GB monolloc
 
-Deepseek v4 (frontera)
+Deepseek v4 (qualitat sense visió)
 - compose-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-100k-image
 
 Qwen3.8 27b (vllm)
