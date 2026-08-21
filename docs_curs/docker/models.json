@@ -56,6 +56,15 @@
     },
     "xtec-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-dflash2-100k-pip-cache": {
       "description": "pip cache for the experimental vLLM GGUF and DFlash2 runtime."
+    },
+    "xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-data": {
+      "description": "Persistent model data volume for DeepSeek V4 Flash SparkInfer."
+    },
+    "xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-cache": {
+      "description": "Persistent runtime cache volume for DeepSeek V4 Flash SparkInfer."
+    },
+    "xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-hf-cache": {
+      "description": "Persistent Hugging Face cache volume for DeepSeek V4 Flash SparkInfer."
     }
   },
   "models": {
@@ -180,6 +189,18 @@
         "xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-vllm-cache"
       ],
       "description": "Official Ornith-1.5 35B A3B NVFP4 vLLM profile with 100k context, 16 concurrent sequences, image input, qwen3 reasoning, and qwen3_xml tool calling; no speculative draft enabled."
+    },
+    "deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-100k-image": {
+      "compose": "compose-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-100k-image.yml",
+      "container": "deepseek_v4_flash_cuda_vram128_sparkinfer_exl3_dspark_384k_image",
+      "engine": "sparkinfer",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-data",
+        "xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-cache",
+        "xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-hf-cache"
+      ],
+      "description": "DeepSeek V4 Flash 0731 EXL3 3.0 bpw SparkInfer profile with native NVFP4 KV records, DSpark K5 speculative decoding, 100k context, and two concurrent sequences."
     },
     "qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m": {
       "compose": "compose-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m.yml",

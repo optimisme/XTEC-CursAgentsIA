@@ -1,0 +1,169 @@
+# Stop:    docker compose -f compose-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-100k-image.yml down
+# Start:   docker compose -f compose-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-100k-image.yml up -d
+# Logs:    docker logs -f --tail 80 deepseek_v4_flash_cuda_vram128_sparkinfer_exl3_dspark_384k_image
+#
+# Based on:
+# https://github.com/MiaAI-Lab/DeepSeek-v4-Flash-One-DGX-Spark
+#
+# DeepSeek V4 Flash 0731 EXL3 3.0 bpw
+# Single NVIDIA DGX Spark / GB10 / 128 GiB UMA
+# SparkInfer + DSpark K5 speculative decoding
+# Native NVFP4 432-byte KV records
+#
+# IMPORTANT:
+# The image-patch/ directory from the MiaAI-Lab repository must exist
+# next to this compose file.
+
+name: deepseek-v4-flash-spark
+
+services:
+  deepseek-v4-flash:
+    image: ghcr.io/0xsero/deepseek-v4-flash-0731-spark-sparkinfer@sha256:2e077489a83a0360952828051fe7f7a32c1801e5ce8436d85f7267583d614ff4
+    pull_policy: always
+
+    container_name: deepseek_v4_flash_cuda_vram128_sparkinfer_exl3_dspark_384k_image
+
+    restart: on-failure:1
+
+    network_mode: host
+    ipc: host
+    shm_size: 16gb
+
+    entrypoint:
+      - /bin/bash
+      - -lc
+      - bash /patch-run-entrypoint.sh && exec /opt/recipe/scripts/entrypoint.sh
+
+    healthcheck:
+      test:
+        - CMD
+        - curl
+        - -fsS
+        - --max-time
+        - "5"
+        - http://127.0.0.1:8000/health
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20m
+
+    environment:
+      HF_HOME: /hf-cache
+
+      HOST: "0.0.0.0"
+      PORT: "8000"
+
+      SERVED_MODEL_NAME: active-model
+
+      MODEL_REPO: 0xSero/deepseek-v4-flash-0731-spark
+      MODEL_REVISION: 22f28d32b9b29b4352eaa380ff8c2c170b2847ab
+
+      MODEL_SOURCE_DIR: /hf-cache/hub/models--0xSero--deepseek-v4-flash-0731-spark/snapshots/22f28d32b9b29b4352eaa380ff8c2c170b2847ab
+
+      MAX_MODEL_LEN: "100000"
+      MAX_NUM_SEQS: "2"
+      MAX_NUM_BATCHED_TOKENS: "8224"
+
+      GPU_MEMORY_UTILIZATION: "0.94"
+
+      # Native 432-byte NVFP4 KV records
+      VLLM_DSV4_PADDED_NVFP4: "0"
+      KV_FP8_ROPE: "0"
+
+      # DSpark K5
+      MODE: dspark
+      DSPARK_TOKENS: "5"
+      DSPARK_CAPACITY: "0"
+      DSPARK_DYNAMIC_DRAFT_DEPTH: "0"
+      DSPARK_DYNAMIC_DRAFT_DEPTH_WINDOW: "8"
+      DSPARK_DRAFT_EXPERTS: "64"
+      DSPARK_STRUCTURED_EXPERTS_PER_CATEGORY: "32"
+
+      VLLM_USE_B12X_WO_PROJECTION: "1"
+
+      VERIFY_MODEL_CHECKSUMS: "1"
+
+      # CUDA graphs
+      MAX_CUDAGRAPH_CAPTURE_SIZE: "24"
+      CUDAGRAPH_CAPTURE_SIZES: "6,12,24"
+
+      # Reclaim profiler over-reservation for KV
+      VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS: "0"
+
+      # Long-prefill fairness
+      EXTRA_VLLM_ARGS: >-
+        --long-prefill-token-threshold 1024
+
+      # Default reasoning behaviour
+      DEFAULT_CHAT_TEMPLATE_KWARGS_THINKING: "true"
+      DEFAULT_CHAT_TEMPLATE_KWARGS_EFFORT: "max"
+
+      # Disabled: incompatible with expandable_segments in this image
+      KV_OFFLOAD_GB: "0"
+      VLLM_USE_SIMPLE_KV_OFFLOAD: "0"
+
+    volumes:
+      - deepseek-v4-flash-data:/models
+      - deepseek-v4-flash-cache:/cache
+      - deepseek-v4-flash-hf-cache:/hf-cache
+
+      - type: bind
+        source: ./image-patch/coalesce_rank_sliced_exl3.py
+        target: /opt/recipe/scripts/coalesce_rank_sliced_exl3.py
+        read_only: true
+
+      - type: bind
+        source: ./image-patch/sparkinfer/moe/fused_moe/_impl.py
+        target: /opt/sparkinfer/sparkinfer/moe/fused_moe/_impl.py
+        read_only: true
+
+      - type: bind
+        source: ./image-patch/sparkinfer/moe/_shared/kernels/tiny_decode.py
+        target: /opt/sparkinfer/sparkinfer/moe/_shared/kernels/tiny_decode.py
+        read_only: true
+
+      - type: bind
+        source: ./image-patch/entrypoint-toolfix.sh
+        target: /patch-run-entrypoint.sh
+        read_only: true
+
+      - type: bind
+        source: ./image-patch/serve-ds4-flash.sh
+        target: /opt/vllm/serve-ds4-flash.sh
+        read_only: true
+
+      - type: bind
+        source: ./image-patch/vllm/models/deepseek_v4/nvidia/dspark.py
+        target: /opt/vllm/vllm/models/deepseek_v4/nvidia/dspark.py
+        read_only: true
+
+      - type: bind
+        source: ./image-patch/sparkinfer/attention/_shared/mla/prefill.py
+        target: /opt/sparkinfer/sparkinfer/attention/_shared/mla/prefill.py
+        read_only: true
+
+      - type: bind
+        source: ./image-patch/sparkinfer/attention/_shared/mla/prefill_mg.py
+        target: /opt/sparkinfer/sparkinfer/attention/_shared/mla/prefill_mg.py
+        read_only: true
+
+      - type: bind
+        source: ./image-patch/entrypoint-256k.sh
+        target: /opt/recipe/scripts/entrypoint.sh
+        read_only: true
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+volumes:
+  deepseek-v4-flash-data:
+    name: xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-data
+  deepseek-v4-flash-cache:
+    name: xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-cache
+  deepseek-v4-flash-hf-cache:
+    name: xtec-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-384k-hf-cache
