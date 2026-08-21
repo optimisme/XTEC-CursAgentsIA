@@ -1,16 +1,14 @@
-# Stop:    docker compose -f compose-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image.yml down
-# Start:   docker compose -f compose-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image.yml up -d
-# Logs:    docker logs -f --tail 80 ornith15_35b_a3b_cuda_vram96_vllm_fp8_mtp_100k_image
-# Note:    Ornith-1.5 includes its own native MTP head. No validated Ornith-1.5
-#          DSpark/DFlash or vLLM NVFP4 checkpoint is currently used here, so
-#          this profile runs the official FP8 target with native MTP; the
-#          recurrent state and MTP head remain BF16 where required.
+# Stop:    docker compose -f compose-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-image.yml down
+# Start:   docker compose -f compose-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-image.yml up -d
+# Logs:    docker logs -f --tail 80 ornith15_35b_a3b_cuda_vram128_vllm_nvfp4_100k_image
+# Note:    Official Ornith-1.5 NVFP4 target using the model-card vLLM recipe.
+#          No unvalidated DFlash/MTP draft is enabled.
 
 services:
   ornith-vllm:
     image: vllm/vllm-openai:nightly
     pull_policy: missing
-    container_name: ornith15_35b_a3b_cuda_vram96_vllm_fp8_mtp_100k_image
+    container_name: ornith15_35b_a3b_cuda_vram128_vllm_nvfp4_100k_image
 
     environment:
       - HF_HOME=/root/.cache/huggingface
@@ -27,8 +25,8 @@ services:
 
     volumes:
       - ./tokens.env:/run/secrets/tokens.env:ro
-      - xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-hf-cache:/root/.cache/huggingface
-      - xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-vllm-cache:/root/.cache/vllm
+      - xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-hf-cache:/root/.cache/huggingface
+      - xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-vllm-cache:/root/.cache/vllm
 
     ports:
       - "8000:8000"
@@ -67,29 +65,30 @@ services:
           export HUGGING_FACE_HUB_TOKEN="$${HUGGINGFACE_ACCESS_TOKENS}"
         fi
 
-        exec vllm serve ornith-ai/Ornith-1.5-35B-A3B-FP8 \
+        exec vllm serve ornith-ai/Ornith-1.5-35B-A3B-NVFP4 \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
           --tensor-parallel-size 1 \
           --trust-remote-code \
           --dtype auto \
-          --gpu-memory-utilization 0.90 \
+          --kv-cache-dtype auto \
+          --gpu-memory-utilization 0.85 \
           --max-model-len 100000 \
-          --max-num-seqs 32 \
-          --max-num-batched-tokens 16384 \
+          --max-num-seqs 16 \
+          --max-num-batched-tokens 8192 \
           --enable-chunked-prefill \
           --enable-prefix-caching \
           --limit-mm-per-prompt '{"image":4,"video":0}' \
-          --mamba-ssm-cache-dtype bfloat16 \
-          --speculative-config '{"method":"mtp","num_speculative_tokens":1}' \
           --reasoning-parser qwen3 \
           --tool-call-parser qwen3_xml \
           --enable-auto-tool-choice
 
 volumes:
-  xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-hf-cache:
-    name: xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-hf-cache
+  xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-hf-cache:
+    name: xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-hf-cache
+    external: true
 
-  xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-vllm-cache:
-    name: xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-vllm-cache
+  xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-vllm-cache:
+    name: xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-vllm-cache
+    external: true

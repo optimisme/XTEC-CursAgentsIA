@@ -4,6 +4,9 @@ Models recomanats per programar segons VRAM.
 
 ## 128GB/96GB servidor multiusuari
 
+Ornith1.5 35b a3b
+- compose-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-image.yml
+
 Qwen3.6 35b a3b (vllm velocitat)
 - compose-qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image
 - compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image

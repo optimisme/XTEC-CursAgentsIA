@@ -45,25 +45,20 @@
     "xtec-qwen38-27b-cuda-vram128-vllm-qwen-fp8-dflash2-128k-image-pip-cache": {
       "description": "pip build cache for the vLLM DFlash2 PR 52816 runtime."
     },
-    "xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-hf-cache": {
-      "description": "Hugging Face cache for the official Ornith-1.5 35B A3B FP8 native-MTP 100k profile."
+    "xtec-qwen38-27b-cuda-vram128-llamacpp-unsloth-ud-q6-k-xl-dflash2-100k-hf-cache": {
+      "description": "Hugging Face cache for the Unsloth Qwen3.8 27B UD-Q6_K_XL llama.cpp plus IncoAI DFlash2 100k profile."
     },
-    "xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-vllm-cache": {
-      "description": "vLLM runtime cache for the official Ornith-1.5 35B A3B FP8 native-MTP 100k profile."
+    "xtec-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-dflash2-100k-hf-cache": {
+      "description": "Hugging Face cache for the experimental Unsloth Qwen3.8 27B UD-Q6_K_XL vLLM plus IncoAI DFlash2 100k profile."
+    },
+    "xtec-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-dflash2-100k-vllm-cache": {
+      "description": "vLLM runtime cache for the experimental Unsloth Qwen3.8 27B UD-Q6_K_XL plus IncoAI DFlash2 100k profile."
+    },
+    "xtec-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-dflash2-100k-pip-cache": {
+      "description": "pip cache for the experimental vLLM GGUF and DFlash2 runtime."
     }
   },
   "models": {
-    "ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image": {
-      "compose": "compose-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image.yml",
-      "container": "ornith15_35b_a3b_cuda_vram96_vllm_fp8_mtp_100k_image",
-      "engine": "vllm",
-      "endpoint": "http://127.0.0.1:8000/v1",
-      "volumes": [
-        "xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-hf-cache",
-        "xtec-ornith15-35b-a3b-cuda-vram96-vllm-fp8-mtp-100k-image-vllm-cache"
-      ],
-      "description": "Official Ornith-1.5 35B A3B FP8 vLLM profile with native one-token MTP, 100k context, image input, BF16 recurrent-state cache, qwen3 reasoning, and qwen3_xml tool calling."
-    },
     "qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image": {
       "compose": "compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml",
       "container": "qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp_image",
@@ -130,6 +125,18 @@
       ],
       "description": "Official Qwen3.8 27B FP8 vLLM profile with IncoAI DFlash2, 7 speculative tokens, 100k context, image input, qwen3 reasoning, and qwen3_coder tool calling; applies vLLM PR 52816 Python support at container startup."
     },
+    "qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-incoai-dflash2-100k-image": {
+      "compose": "compose-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-incoai-dflash2-100k-image.yml",
+      "container": "qwen38_27b_cuda_vram128_vllm_unsloth_ud_q6_k_xl_incoai_dflash2_100k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-dflash2-100k-hf-cache",
+        "xtec-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-dflash2-100k-vllm-cache",
+        "xtec-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-dflash2-100k-pip-cache"
+      ],
+      "description": "Experimental vLLM GGUF profile for Unsloth Qwen3.8 27B UD-Q6_K_XL with IncoAI DFlash2, 100k context, image input, and qwen3_coder tool calling."
+    },
     "qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k": {
       "compose": "compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k.yml",
       "container": "qwen35_9b_cuda_vram12_llamacpp_unsloth_q6_k",
@@ -162,6 +169,17 @@
         "xtec-qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m-gguf-cache"
       ],
       "description": "Qwen3.5 4B Q4_K_M GGUF llama.cpp profile with 16k context."
+    },
+    "ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-image": {
+      "compose": "compose-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-image.yml",
+      "container": "ornith15_35b_a3b_cuda_vram128_vllm_nvfp4_100k_image",
+      "engine": "vllm",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-hf-cache",
+        "xtec-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-vllm-cache"
+      ],
+      "description": "Official Ornith-1.5 35B A3B NVFP4 vLLM profile with 100k context, 16 concurrent sequences, image input, qwen3 reasoning, and qwen3_xml tool calling; no speculative draft enabled."
     },
     "qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m": {
       "compose": "compose-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m.yml",
