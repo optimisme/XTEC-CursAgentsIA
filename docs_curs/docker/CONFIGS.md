@@ -17,6 +17,7 @@ Deepseek v4 (qualitat sense visió)
 - compose-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-100k-image
 
 Qwen3.8 27b (vllm)
+- compose-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-incoai-dflash2-100k-image.yml
 - compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-100k-image
 - compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-100k-image
 

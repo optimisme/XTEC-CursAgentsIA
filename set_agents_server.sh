@@ -169,7 +169,7 @@ if ! HTTP_STATUS="$(curl --silent --show-error \
   --header 'Accept: application/json' \
   "$API_BASE_URL/model-capabilities")"; then
   echo "Warning: could not connect to the IETI model capabilities endpoint."
-  echo "Warning: continuing with OpenCode without updating the IETI Agents configuration."
+  echo "Warning: opencode.json was not modified."
   AGENTS_SYNC_OK=0
 elif [ "$HTTP_STATUS" != "200" ]; then
   ERROR_MESSAGE="$(node -e '
@@ -179,7 +179,7 @@ elif [ "$HTTP_STATUS" != "200" ]; then
     } catch { process.stdout.write("the server rejected the request"); }
   ' "$CAPABILITIES_TMP")"
   echo "Warning: IETI Agents is unavailable (HTTP $HTTP_STATUS): $ERROR_MESSAGE"
-  echo "Warning: continuing with OpenCode without updating the IETI Agents configuration."
+  echo "Warning: opencode.json was not modified."
   AGENTS_SYNC_OK=0
 fi
 
@@ -325,98 +325,5 @@ mv "$CONFIG_TMP" "$CONFIG_FILE"
 CONFIG_TMP=""
 
   MODEL_COUNT="$(node -e 'const c=require(process.argv[1]); process.stdout.write(String(Object.keys(c.provider["ieti-agents"].models).length))' "$CONFIG_FILE")"
-  echo "IETI API key validated. Updated only the ieti-agents provider in $CONFIG_FILE with $MODEL_COUNT available model(s)."
+  echo "IETI API key validated. Updated the ieti-agents provider in $CONFIG_FILE with $MODEL_COUNT available model(s)."
 fi
-
-MODE="${1:-desktop}"
-
-if [ "$MODE" = "--sync-only" ]; then
-  exit 0
-fi
-
-if [ "$MODE" = "cmd" ]; then
-  shift
-  if ! command -v opencode >/dev/null 2>&1; then
-    echo "Error: opencode executable was not found."
-    exit 1
-  fi
-  exec opencode "$@"
-fi
-
-if [ "$MODE" != "desktop" ]; then
-  echo "Error: unknown mode '$MODE'. Use 'desktop', 'cmd', or '--sync-only'."
-  exit 1
-fi
-if [ "$#" -gt 0 ]; then
-  shift
-fi
-
-PROJECT_DEEP_LINK="$(node -e '
-  const url = new URL("opencode://open-project");
-  url.searchParams.set("directory", process.argv[1]);
-  process.stdout.write(url.toString());
-' "$SCRIPT_DIR")"
-
-launch_desktop() {
-  local desktop_bin="$1"
-  local desktop_pid=""
-  shift
-
-  echo "Opening OpenCode Desktop project: $SCRIPT_DIR"
-  "$desktop_bin" "$@" &
-  desktop_pid=$!
-
-  # Desktop restores its last workspace and intentionally does not use the
-  # launching shell's current directory. A second-instance deep link selects
-  # this script's project after the main process has registered its handler.
-  sleep 1
-  if ! "$desktop_bin" "$PROJECT_DEEP_LINK" >/dev/null 2>&1; then
-    echo "Error: OpenCode Desktop started, but the project directory could not be sent to it."
-    return 1
-  fi
-
-  wait "$desktop_pid"
-}
-
-if [ -n "${OPENCODE_DESKTOP_BIN:-}" ]; then
-  launch_desktop "$OPENCODE_DESKTOP_BIN" "$@"
-  exit $?
-fi
-
-OS="$(uname -s)"
-if [ "$OS" = "Darwin" ]; then
-  APP="/Applications/OpenCode.app"
-  if [ ! -d "$APP" ]; then
-    echo "Error: OpenCode.app was not found in /Applications"
-    exit 1
-  fi
-  BIN=""
-  for candidate in "$APP/Contents/MacOS/"*; do
-    if [ -f "$candidate" ]; then
-      BIN="$candidate"
-      break
-    fi
-  done
-  if [ -z "$BIN" ]; then
-    echo "Error: OpenCode desktop binary was not found."
-    exit 1
-  fi
-  launch_desktop "$BIN" "$@"
-  exit $?
-fi
-
-if [ "$OS" = "Linux" ]; then
-  if command -v opencode-desktop >/dev/null 2>&1; then
-    launch_desktop "$(command -v opencode-desktop)" "$@"
-    exit $?
-  fi
-  if command -v OpenCode >/dev/null 2>&1; then
-    launch_desktop "$(command -v OpenCode)" "$@"
-    exit $?
-  fi
-  echo "Error: OpenCode Desktop was not found. Use '$0 cmd' for the command-line client."
-  exit 1
-fi
-
-echo "Error: unsupported OS: $OS"
-exit 1
