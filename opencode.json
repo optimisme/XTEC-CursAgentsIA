@@ -1,39 +1,64 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "permission": {
-    "read": {
-      "docs_curs/**": "deny"
-    },
-    "edit": {
-      "docs_curs/**": "deny"
-    },
-    "glob": {
-      "docs_curs/**": "deny"
-    },
-    "grep": {
-      "docs_curs/**": "deny"
-    },
-    "list": {
-      "docs_curs/**": "deny"
-    }
-  },
   "provider": {
     "ieti-agents": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "IETI Agents",
       "options": {
         "baseURL": "https://agents.ieti.site/v1",
-        "apiKey": "{env:PROXY_AGENTS_KEY}",
+        "apiKey": "{file:.secrets/agents_server_key}",
         "timeout": 900000,
         "chunkTimeout": 600000
       },
       "models": {
+        "deepseek-model": {
+          "name": "deepseek-model",
+          "attachment": false,
+          "temperature": true,
+          "limit": {
+            "context": 65536,
+            "output": 8192
+          },
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "none": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "low": {
+              "disabled": true
+            },
+            "medium": {
+              "disabled": true
+            },
+            "high": {
+              "disabled": true
+            },
+            "xhigh": {
+              "disabled": true
+            },
+            "max": {
+              "disabled": true
+            }
+          }
+        },
         "active-model": {
           "name": "active-model",
           "attachment": true,
           "temperature": true,
           "limit": {
-            "context": 65536,
+            "context": 100000,
             "output": 8192
           },
           "tool_call": true,
@@ -77,27 +102,45 @@
       }
     }
   },
-  "model": "ieti-agents/active-model",
+  "model": "ieti-agents/deepseek-model",
   "mcp": {
-    "playwright": {
+    "google-sheets": {
       "type": "local",
       "command": [
-        "npx",
-        "-y",
-        "@playwright/mcp"
-      ],
-      "enabled": true
-    },
-    "github": {
-      "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-github"
+        "uvx",
+        "--with",
+        "mcp<2",
+        "mcp-google-sheets@latest"
       ],
       "enabled": true,
       "environment": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "{env:GITHUB_PERSONAL_ACCESS_TOKEN}"
+        "SERVICE_ACCOUNT_PATH": "{file:.secrets/my-project-1539978691845-3da2dfd4581b.json}",
+        "DRIVE_FOLDER_ID": "13sQk-Q67v9JUVfwy9tyGOJRZ3zdCnpwC"
+      }
+    },
+    "graphrepo": {
+      "type": "local",
+      "command": [
+        "node",
+        "/Users/albertpalaciosjimenez/.opencode/graphrepo/dist/mcp-server.cjs",
+        "serve"
+      ],
+      "enabled": true,
+      "environment": {
+        "GRAPHREPO_DATA_FILE": "/Users/albertpalaciosjimenez/Documents/GitHub/XTEC-CursAgentsIA/.graphrepo/graph.json",
+        "GRAPHREPO_REPO_PATH": "/Users/albertpalaciosjimenez/Documents/GitHub/XTEC-CursAgentsIA"
+      }
+    },
+    "gmail": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@klodr/gmail-mcp"
+      ],
+      "enabled": true,
+      "environment": {
+        "GMAIL_OAUTH_PATH": "/Users/albertpalaciosjimenez/Documents/GitHub/XTEC-CursAgentsIA/.secrets/gcp-oauth.keys.json"
       }
     }
   }

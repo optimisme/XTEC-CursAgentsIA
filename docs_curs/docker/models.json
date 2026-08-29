@@ -212,6 +212,17 @@
         "xtec-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m-gguf-cache"
       ],
       "description": "Qwen3.5 9B Q4_K_M GGUF llama.cpp profile with 8k context for an 8GB monolloc target."
+    },
+    "qwen38-flash-next-cuda-vram128-llamacpp-unsloth-ud-iq2-m-8k": {
+      "compose": "compose-qwen38-flash-next-cuda-vram128-llamacpp-unsloth-ud-iq2-m-8k.yml",
+      "container": "qwen38_flash_next_cuda_vram128_llamacpp_unsloth_ud_iq2_m_8k",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-qwen38-flash-next-cuda-vram128-llamacpp-unsloth-ud-iq2-m-8k-hf-cache",
+        "xtec-qwen38-flash-next-cuda-vram128-llamacpp-unsloth-ud-iq2-m-8k-gguf-cache"
+      ],
+      "description": "Qwen3.8-Flash-Next UD-IQ2_M GGUF llama.cpp profile for a single 128GB-class GB10 host; text-only, 8k context, and full GPU offload."
     }
   }
 }

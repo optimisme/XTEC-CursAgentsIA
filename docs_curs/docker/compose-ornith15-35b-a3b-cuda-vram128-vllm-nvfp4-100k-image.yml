@@ -6,7 +6,7 @@
 
 services:
   ornith-vllm:
-    image: vllm/vllm-openai:nightly
+    image: vllm/vllm-openai:v0.28.0
     pull_policy: missing
     container_name: ornith15_35b_a3b_cuda_vram128_vllm_nvfp4_100k_image
 
@@ -66,6 +66,7 @@ services:
         fi
 
         exec vllm serve ornith-ai/Ornith-1.5-35B-A3B-NVFP4 \
+          --revision 94e431d9cc47fa1986a7a1a4e9a80f7f118b03aa \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
