@@ -29,8 +29,3 @@ Qwen3.5 9B Q6_K (llama.cpp, 32k context)
 
 Qwen3.5 9B Q4_K_M (llama.cpp, 8k context)
 - `compose-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m.yml`
-
-## 4GB monolloc
-
-Qwen3.5 4B Q4_K_M (llama.cpp)
-- `compose-qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m.yml`
