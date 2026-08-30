@@ -12,11 +12,8 @@
       },
       "models": {
         "deepseek-model": {
-          "name": "deepseek-model",
-          "attachment": false,
-          "temperature": true,
           "limit": {
-            "context": 65536,
+            "context": 131072,
             "output": 8192
           },
           "tool_call": true,
@@ -54,9 +51,6 @@
           }
         },
         "active-model": {
-          "name": "active-model",
-          "attachment": true,
-          "temperature": true,
           "limit": {
             "context": 100000,
             "output": 8192
