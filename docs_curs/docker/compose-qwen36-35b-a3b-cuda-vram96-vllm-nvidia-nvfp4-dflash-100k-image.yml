@@ -9,8 +9,8 @@
 
 services:
   qwen-vllm:
-    image: vllm/vllm-openai:nightly
-    pull_policy: always
+    image: vllm/vllm-openai:v0.28.0
+    pull_policy: missing
     container_name: qwen36_35b_a3b_cuda_vram96_vllm_nvidia_nvfp4_dflash_100k_image
 
     environment:
@@ -67,6 +67,7 @@ services:
         fi
 
         exec vllm serve nvidia/Qwen3.6-35B-A3B-NVFP4 \
+          --revision 1355db6a052410cfd62085d94b58866fd0f2c3c5 \
           --served-model-name active-model \
           --host 0.0.0.0 \
           --port 8000 \
@@ -76,16 +77,17 @@ services:
           --quantization modelopt \
           --kv-cache-dtype fp8 \
           --attention-backend flashinfer \
-          --moe-backend flashinfer_b12x \
-          --linear-backend flashinfer_cutlass \
-          --gpu-memory-utilization 0.75 \
+          --moe-backend marlin \
+          --gpu-memory-utilization 0.4 \
           --max-model-len 100000 \
-          --max-num-seqs 20 \
-          --max-num-batched-tokens 65536 \
+          --max-num-seqs 4 \
+          --max-num-batched-tokens 8192 \
           --enable-chunked-prefill \
+          --async-scheduling \
           --enable-prefix-caching \
           --limit-mm-per-prompt '{"image":4,"video":0}' \
-          --speculative-config '{"method":"dflash","model":"z-lab/Qwen3.6-35B-A3B-DFlash","num_speculative_tokens":8,"attention_backend":"flash_attn","kv_cache_dtype":"auto"}' \
+          --speculative-config '{"method":"mtp","num_speculative_tokens":3,"moe_backend":"triton"}' \
+          --load-format fastsafetensors \
           --reasoning-parser qwen3 \
           --tool-call-parser qwen3_xml \
           --enable-auto-tool-choice
