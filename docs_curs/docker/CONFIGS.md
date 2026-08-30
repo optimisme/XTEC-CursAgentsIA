@@ -4,13 +4,11 @@ Models recomanats per programar segons VRAM.
 
 ## 128GB servidor multiusuari
 
-Qwen3.8 27B NVFP4 (vLLM, MTP=3, 100k context, image input)
-- `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image`
-
-És el perfil multiusuari actiu recomanat per al servidor de 128 GB. La configuració actual usa `--max-num-seqs 20`, `--max-num-batched-tokens 8192` i `num_speculative_tokens=3`.
-
 Qwen3.6 35B A3B NVFP4 (vLLM, DFlash, 100k context, image input)
 - `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image.yml`
+
+Qwen3.8 27B NVFP4 (vLLM, MTP=3, 100k context, image input)
+- `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image`
 
 ## 128GB monolloc
 
