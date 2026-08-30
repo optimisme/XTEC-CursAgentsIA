@@ -2,42 +2,37 @@
 
 Models recomanats per programar segons VRAM.
 
-## 128GB/96GB servidor multiusuari
+## 128GB servidor multiusuari
 
-Ornith1.5 35b a3b
-- compose-ornith15-35b-a3b-cuda-vram128-vllm-nvfp4-100k-image.yml
+Qwen3.8 27B NVFP4 (vLLM, MTP=3, 100k context, image input)
+- `compose-qwen38-27b-cuda-vram128-vllm-unsloth-nvfp4-mtu-100k-image.yml`
 
-Qwen3.6 35b a3b (vllm velocitat)
-- compose-qwen36-35b-a3b-cuda-vram96-vllm-koopah-nvfp4-dspark-100k-image
-- compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image
+És el perfil multiusuari actiu recomanat per al servidor de 128 GB. La configuració actual usa `--max-num-seqs 20`, `--max-num-batched-tokens 8192` i `num_speculative_tokens=3`.
 
-## 128GB/32GB monolloc
+Qwen3.6 35B A3B NVFP4 (vLLM, DFlash, 100k context, image input)
+- `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image.yml`
 
-Deepseek v4 (qualitat sense visió)
-- compose-deepseek-v4-flash-cuda-vram128-sparkinfer-exl3-dspark-100k-image
+## 128GB monolloc
 
-Qwen3.8 27b (vllm)
-- compose-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-incoai-dflash2-100k-image.yml
-- compose-qwen38-27b-cuda-vram128-vllm-qwen-fp8-incoai-dflash2-100k-image
-- compose-qwen38-27b-cuda-vram128-vllm-radixark-nvfp4-dspark-100k-image
+Qwen3.8 27B UD-Q6_K_XL (vLLM, DFlash2, 100k context, image input)
+- `compose-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-incoai-dflash2-100k-image.yml`
 
 ## 16GB monolloc
 
-Qwen3.6 35b a3b (llamacpp)
-- compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image
+Qwen3.6 35B A3B (llama.cpp, MTP, image input)
+- `compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml`
 
 ## 12GB monolloc
 
-Qwen3.5 9B Q6_K / Q8_0 (llama.cpp)
-- compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k
-- compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q8_0
+Qwen3.5 9B Q6_K (llama.cpp, 32k context)
+- `compose-qwen35-9b-cuda-vram12-llamacpp-unsloth-q6_k.yml`
 
 ## 8GB monolloc
 
 Qwen3.5 9B Q4_K_M (llama.cpp, 8k context)
-- compose-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m
+- `compose-qwen35-9b-cuda-vram8-llamacpp-unsloth-q4_k_m.yml`
 
 ## 4GB monolloc
 
 Qwen3.5 4B Q4_K_M (llama.cpp)
-- compose-qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m
+- `compose-qwen35-4b-cuda-vram4-llamacpp-unsloth-q4_k_m.yml`
