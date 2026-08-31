@@ -1,4 +1,4 @@
-at webs folder create a new website using babylon.js showing a japanese pagoda made of cubes with a style similar to minecraft. user must be able to rotate the camera arround the pagoda with the mouse and zoom in/out with the scroll wheel. Add a simple ground area around it, such as grass, stone paths, or a small courtyard. create three files at ./webs folder named pagoda.html, pagoda.css and pagoda.js. use babylon from a reliable cdn and ensure the url works.
+at webs folder create a new website using babylon.js showing a a cute 3D voxel art model of a traditional Chinese pagoda on a tiny green island with a small pink cherry blossom tree, clean isometric view, bright and colorful pastel voxels, clean white background, game asset style.
 
 Create a single-file HTML at webs folder named solar.html using babylon.js with a simulation of the solar system. Simulate the movement arround the sun and add a label with the name of the object/planet when mouse is close to it. use babylon from a reliable cdn and ensure the url works.
 
