@@ -1,3 +1,7 @@
+at webs folder create a new website using babylon.js showing a japanese pagoda made of cubes with a style similar to minecraft. user must be able to rotate the camera arround the pagoda with the mouse and zoom in/out with the scroll wheel. Add a simple ground area around it, such as grass, stone paths, or a small courtyard. create three files at ./webs folder named pagoda.html, pagoda.css and pagoda.js. use babylon from a reliable cdn and ensure the url works.
+
+Create a single-file HTML at webs folder named solar.html using babylon.js with a simulation of the solar system. Simulate the movement arround the sun and add a label with the name of the object/planet when mouse is close to it. use babylon from a reliable cdn and ensure the url works.
+
 > Create a new file named clock.html at webs folder that shows an analog circular watch updated every second and drawn on a canvas, make it look like a swiss trains watch, search on the internet the look of swiss train station clocks.
 
 - modify @webs/clock.html in a way that continuously updates seconds hand at 30fps showing a smooth movement instead of jumping every second
@@ -36,4 +40,3 @@ Create a new website at webs folder (galaxy.html, galaxy.css, galaxy.js) with a 
 
 Create a new website in the webs folder named asteroid.html, asteroid.css, and asteroid.js. Build a polished 1980s arcade-style Asteroids-like canvas game with vector graphics. The game must start only after the first key press. Controls: ArrowLeft and ArrowRight rotate the ship, ArrowUp thrusts, Space shoots. Include screen wrapping, drifting asteroids that split into smaller asteroids, enemy saucers that occasionally appear and shoot, player lives, score, localStorage high score, pause with P, restart after game over with Enter, and a clear HUD. Use only canvas and plain JavaScript. Verify the files. This is a 2d plain game, don't make 3d calculations in it.
 
-Create a single-file HTML at webs folder named solar.html using three.js with a simulation of the solar system. Simulate the movement arround the sun and add a label with the name of the object/planet when mouse is close to it
