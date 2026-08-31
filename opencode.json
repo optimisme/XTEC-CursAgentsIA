@@ -1,0 +1,100 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ieti-agents": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "IETI Agents",
+      "options": {
+        "baseURL": "https://agents.ieti.site/v1",
+        "apiKey": "{file:.secrets/agents_server_key}",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "deepseek-model": {
+          "limit": {
+            "context": 131072,
+            "output": 8192
+          },
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "none": {
+              "disabled": true
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "low": {
+              "disabled": true
+            },
+            "medium": {
+              "disabled": true
+            },
+            "high": {
+              "disabled": true
+            },
+            "xhigh": {
+              "disabled": true
+            },
+            "max": {
+              "disabled": true
+            }
+          }
+        },
+        "active-model": {
+          "limit": {
+            "context": 100000,
+            "output": 8192
+          },
+          "tool_call": true,
+          "reasoning": true,
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "disabled": true
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            },
+            "max": {
+              "disabled": true
+            }
+          },
+          "options": {
+            "reasoningEffort": "none"
+          }
+        }
+      }
+    }
+  },
+  "model": "ieti-agents/deepseek-model"
+}

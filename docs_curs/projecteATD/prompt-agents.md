@@ -19,7 +19,6 @@ Després **crea o actualitza `AGENTS.md`** perquè descrigui de manera breu i cl
 * ús de `tasks-*.md` com a font de veritat de l’estat del desenvolupament;
 * selecció d’una sola tasca executable cada vegada;
 * respecte de prioritats, dependències i criteris d’acceptació;
-* flux `orquestrador → implementador → tester → revisor`;
 * obligació d’executar els tests específics i tots els tests de regressió abans de completar una tasca;
 * validació amb navegador quan la tasca afecti la UI;
 * prohibició d’implementar funcionalitats futures o fer refactors aliens a la tasca actual.
