@@ -19,6 +19,7 @@ vids
 explain-docker.md
 
 # OpenCode development (separate from runtime)
+opencode.json
 .opencode
 .opencode/node_modules
 .opencode/agents
