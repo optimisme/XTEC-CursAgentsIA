@@ -20,6 +20,27 @@ explain-docker.md
 
 # OpenCode development (separate from runtime)
 opencode.json
+.opencode
+.opencode/node_modules
+.opencode/agents
+.opencode/agents/*
+.opencode/skills
+.opencode/skills/*
+.opencode/mcp
+.opencode/mcp/*
+.opencode/tools
+.opencode/tools/*
+.agents
+.agents/node_modules
+.agents/agents
+.agents/agents/*
+.agents/skills
+.agents/skills/*
+.agents/mcp
+.agents/mcp/*
+.agents/tools
+.agents/tools/*
+AGENTS.md
 
 .secrets/*
 !.secrets/.gitkeep
