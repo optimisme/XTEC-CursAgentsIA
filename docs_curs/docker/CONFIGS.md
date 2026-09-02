@@ -4,8 +4,8 @@ Models recomanats per programar segons VRAM.
 
 ## 128GB servidor multiusuari
 
-Qwen3.6 35B A3B NVFP4 (vLLM, MTP=3, 100k context, image input)
-- `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-mtp-100k-image.yml`
+Qwen3.6 35B A3B NVFP4 (vLLM, MTP=3, 75k context, image input)
+- `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-mtp-75k-image.yml`
 
 ## 128GB monolloc
 
