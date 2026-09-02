@@ -1,6 +1,3 @@
-at webs folder create a new website using babylon.js showing a a cute 3D voxel art model of a traditional Chinese pagoda on a tiny green island with a small pink cherry blossom tree, clean isometric view, bright and colorful pastel voxels, clean white background, game asset style.
-
-Create a single-file HTML at webs folder named solar.html using babylon.js with a simulation of the solar system. Simulate the movement arround the sun and add a label with the name of the object/planet when mouse is close to it. use babylon from a reliable cdn and ensure the url works.
 
 > Create a new file named clock.html at webs folder that shows an analog circular watch updated every second and drawn on a canvas, make it look like a swiss trains watch, search on the internet the look of swiss train station clocks.
 

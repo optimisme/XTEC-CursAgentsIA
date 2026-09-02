@@ -32,8 +32,8 @@ Com a mínim, ha d’existir:
 
 * un agent principal/orquestrador;
 * un subagent d’implementació;
-* un subagent de tests;
-* un subagent de revisió o validació.
+* un subagent de revisió;
+* un subagent de tests o validació.
 
 L’agent principal ha de:
 
@@ -158,10 +158,10 @@ Cada tasca ha d’indicar com a mínim:
 
 Utilitza aquests estats:
 
-* `[backlog]:N`
-* `[ready]:N`
-* `[in progress]:N`
-* `[in review]:N`
+* `N:[backlog]`
+* `N:[ready]`
+* `N:[in progress]`
+* `N:[in review]`
 * `[done]`
 
 On `N` és la prioritat i els números més petits indiquen tasques que s’han de desenvolupar abans.

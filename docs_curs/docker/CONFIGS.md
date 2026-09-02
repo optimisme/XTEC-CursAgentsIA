@@ -4,18 +4,21 @@ Models recomanats per programar segons VRAM.
 
 ## 128GB servidor multiusuari
 
-Qwen3.6 35B A3B NVFP4 (vLLM, DFlash, 100k context, image input)
-- `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image.yml`
-
-Qwen3.8 27B NVFP4 (vLLM, MTP=3, 100k context, image input)
-- `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-dflash-100k-image`
+Qwen3.6 35B A3B NVFP4 (vLLM, MTP=3, 100k context, image input)
+- `compose-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-mtp-100k-image.yml`
 
 ## 128GB monolloc
 
 Qwen3.8 27B UD-Q6_K_XL (vLLM, DFlash2, 100k context, image input)
 - `compose-qwen38-27b-cuda-vram128-vllm-unsloth-ud-q6-k-xl-incoai-dflash2-100k-image.yml`
 
+Qwen3.8 27B UD-Q2_K_XL (llama.cpp, native MTP, 64k context)
+- `compose-qwen38-27b-cuda-vram16-llamacpp-unsloth-ud-q2-k-xl-64k-image.yml`
+
 ## 16GB monolloc
+
+Qwen3.8 27B (llama.cpp, MTP, q2, image input)
+- `compose-qwen38-27b-cuda-vram16-llamacpp-unsloth-ud-q2-k-xl-100k-image`
 
 Qwen3.6 35B A3B (llama.cpp, MTP, image input)
 - `compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml`

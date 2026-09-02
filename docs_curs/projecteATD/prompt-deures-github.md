@@ -46,8 +46,8 @@ Com a mínim, ha d’existir:
 
 * un agent principal/orquestrador;
 * un subagent d’implementació;
-* un subagent de tests;
-* un subagent de revisió o validació.
+* un subagent de revisió;
+* un subagent de tests o validació.
 
 L’agent principal ha de saber que, durant la futura fase d’implementació, haurà de:
 

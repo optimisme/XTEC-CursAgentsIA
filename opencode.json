@@ -1,6 +1,63 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "provider": {
+    "vram16-vllm": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "16vram vLLM",
+      "options": {
+        "baseURL": "http://127.0.0.1:8002/v1",
+        "apiKey": "local",
+        "timeout": 900000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "active-model": {
+          "name": "Qwen3.8",
+          "limit": {
+            "context": 100000,
+            "output": 8192
+          },
+          "modalities": {
+            "input": [
+              "text",
+              "image"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "variants": {
+            "none": {
+              "reasoningEffort": "none"
+            },
+            "minimal": {
+              "disabled": true
+            },
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "disabled": true
+            },
+            "xhigh": {
+              "reasoningEffort": "xhigh"
+            },
+            "max": {
+              "disabled": true
+            }
+          },
+          "options": {
+            "reasoningEffort": "low"
+          },
+          "max_tokens": 8192,
+          "tool_call": true,
+          "reasoning": true
+        }
+      }
+    },
     "ieti-agents": {
       "npm": "@ai-sdk/openai-compatible",
       "name": "IETI Agents",
@@ -28,31 +85,34 @@
           },
           "variants": {
             "none": {
-              "disabled": true
+              "reasoningEffort": "none"
             },
             "minimal": {
               "disabled": true
             },
             "low": {
-              "disabled": true
+              "reasoningEffort": "low"
             },
             "medium": {
               "disabled": true
             },
             "high": {
-              "disabled": true
+              "reasoningEffort": "high"
             },
             "xhigh": {
               "disabled": true
             },
             "max": {
-              "disabled": true
+              "reasoningEffort": "max"
             }
+          },
+          "options": {
+            "reasoningEffort": "low"
           }
         },
         "active-model": {
           "limit": {
-            "context": 100000,
+            "context": 90000,
             "output": 8192
           },
           "tool_call": true,
@@ -90,11 +150,12 @@
             }
           },
           "options": {
-            "reasoningEffort": "none"
+            "reasoningEffort": "low"
           }
         }
       }
     }
   },
-  "model": "ieti-agents/deepseek-model"
+  "model": "ieti-agents/deepseek-model",
+  "default_agent": "build_lite"
 }
