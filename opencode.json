@@ -3,7 +3,7 @@
   "provider": {
     "vram16-vllm": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "16vram vLLM",
+      "name": "Local 16vram vLLM",
       "options": {
         "baseURL": "http://127.0.0.1:8002/v1",
         "apiKey": "local",
