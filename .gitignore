@@ -30,6 +30,17 @@ opencode.json
 .opencode/mcp/*
 .opencode/tools
 .opencode/tools/*
+.agents
+.agents/node_modules
+.agents/agents
+.agents/agents/*
+.agents/skills
+.agents/skills/*
+.agents/mcp
+.agents/mcp/*
+.agents/tools
+.agents/tools/*
+AGENTS.md
 
 .secrets/*
 !.secrets/.gitkeep
