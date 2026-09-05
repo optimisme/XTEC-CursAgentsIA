@@ -89,8 +89,6 @@ services:
           --reasoning-parser qwen3 \
           --tool-call-parser qwen3_xml \
           --enable-auto-tool-choice
-          --spec-type draft-mtp
-          --spec-draft-n-max 2
 
 volumes:
   xtec-qwen36-35b-a3b-cuda-vram96-vllm-nvidia-nvfp4-mtp-75k-image-hf-cache:

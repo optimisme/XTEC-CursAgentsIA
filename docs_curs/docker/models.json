@@ -3,6 +3,12 @@
   "default_model": "qwen38-27b-cuda-vram128-vllm-unsloth-nvfp4-mtu-100k-image",
   "endpoint": "http://127.0.0.1:8000/v1",
   "volumes": {
+    "xtec-gemma4-12b-cuda-vram16-llamacpp-qat-ud-q4-k-xl-mtp-131k-image-hf-cache": {
+      "description": "Hugging Face cache for the Gemma 4 12B QAT llama.cpp 131k MTP profile."
+    },
+    "xtec-gemma4-12b-cuda-vram16-llamacpp-qat-ud-q4-k-xl-mtp-131k-image-gguf-cache": {
+      "description": "GGUF/llama.cpp cache for the Gemma 4 12B QAT llama.cpp 131k MTP profile."
+    },
     "xtec-hf-cache": {
       "description": "Legacy shared Hugging Face cache kept for cleanup after per-compose cache migration."
     },
@@ -47,6 +53,17 @@
     }
   },
   "models": {
+    "gemma4-12b-cuda-vram16-llamacpp-qat-ud-q4-k-xl-mtp-131k-image": {
+      "compose": "compose-gemma4-12b-cuda-vram16-llamacpp-qat-ud-q4-k-xl-mtp-131k-image.yml",
+      "container": "gemma4_12b_cuda_vram16_llamacpp_qat_ud_q4_k_xl_mtp_131k_image",
+      "engine": "llamacpp",
+      "endpoint": "http://127.0.0.1:8000/v1",
+      "volumes": [
+        "xtec-gemma4-12b-cuda-vram16-llamacpp-qat-ud-q4-k-xl-mtp-131k-image-hf-cache",
+        "xtec-gemma4-12b-cuda-vram16-llamacpp-qat-ud-q4-k-xl-mtp-131k-image-gguf-cache"
+      ],
+      "description": "Gemma 4 12B QAT UD-Q4_K_XL llama.cpp profile with BF16 multimodal projector, Q4_0 MTP draft, 131k context, and active-model alias."
+    },
     "qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image": {
       "compose": "compose-qwen36-35b-a3b-base-cuda-vram16-llamacpp-localweights-iq4-mtp-image.yml",
       "container": "qwen36_35b_a3b_base_cuda_vram16_llamacpp_localweights_iq4_mtp_image",
