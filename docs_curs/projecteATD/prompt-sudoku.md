@@ -26,16 +26,16 @@ No implementis el Sudoku. Genera només aquests tres prompts.
 
 Ha de definir els **agents, subagents i skills** necessaris, sense implementar encara funcionalitats ni generar `tasks-sudoku.md`.
 
-L’arnès ha d’estar especialment pensat perquè l’agent principal treballi amb poc context i delegui tasques simples a subagents especialitzats.
+L’arnès ha d’estar especialment pensat perquè l’agent orquestrador treballi amb poc context i delegui tasques simples a subagents especialitzats.
 
 Com a mínim, ha d’existir:
 
-* un agent principal/orquestrador;
+* un agent orquestrador;
 * un subagent d’implementació;
 * un subagent de revisió;
 * un subagent de tests o validació.
 
-L’agent principal ha de:
+L’agent orquestrador ha de:
 
 * consultar l’estat del projecte;
 * seleccionar una sola tasca cada vegada;

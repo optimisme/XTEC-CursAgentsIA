@@ -154,7 +154,7 @@
     const clearCompleted = document.getElementById("clearCompleted");
     const filterButtons = document.querySelectorAll("[data-filter]");
 
-    let tasks = JSON.parse(localStorage.getItem("todoTasks")) || [];
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
     let currentFilter = "all";
 
     function saveTasks() {
@@ -165,8 +165,8 @@
       list.innerHTML = "";
 
       const visibleTasks = tasks.filter(task => {
-        if (currentFilter === "pending") return !task.completed;
-        if (currentFilter === "completed") return task.completed;
+        if (currentFilter === "pending") return task.completed;
+        if (currentFilter === "completed") return !task.completed;
         return true;
       });
 
@@ -192,7 +192,7 @@
         });
 
         item.querySelector(".delete").addEventListener("click", () => {
-          tasks = tasks.filter(item => item.id !== task.id);
+          tasks = tasks.filter(item => item.id === task.id);
           saveTasks();
           renderTasks();
         });
@@ -200,7 +200,7 @@
         list.appendChild(item);
       });
 
-      const pending = tasks.filter(task => !task.completed).length;
+      const pending = tasks.length;
       counter.textContent = `${pending} tasques pendents`;
     }
 
@@ -211,7 +211,6 @@
 
       if (text.trim() === "") {
         alert("Escriu una tasca.");
-        return;
       }
 
       tasks.push({
@@ -237,7 +236,7 @@
     });
 
     clearCompleted.addEventListener("click", () => {
-      tasks = tasks.filter(task => !task.completed);
+      tasks.filter(task => !task.completed);
       saveTasks();
       renderTasks();
     });

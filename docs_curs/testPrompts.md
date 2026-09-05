@@ -37,3 +37,24 @@ Create a new website at webs folder (galaxy.html, galaxy.css, galaxy.js) with a 
 
 Create a new website in the webs folder named asteroid.html, asteroid.css, and asteroid.js. Build a polished 1980s arcade-style Asteroids-like canvas game with vector graphics. The game must start only after the first key press. Controls: ArrowLeft and ArrowRight rotate the ship, ArrowUp thrusts, Space shoots. Include screen wrapping, drifting asteroids that split into smaller asteroids, enemy saucers that occasionally appear and shoot, player lives, score, localStorage high score, pause with P, restart after game over with Enter, and a clear HUD. Use only canvas and plain JavaScript. Verify the files. This is a 2d plain game, don't make 3d calculations in it.
 
+# Pagoda 3D
+
+Act as an expert WebGL engineer specializing in Three.js and procedural generation.
+
+Create a complete, playable 3D voxel island explorer as one self-contained index.html file.
+
+Requirements:
+
+- Load Three.js from a CDN. Do not use external textures, models, images or audio files.
+- Procedurally generate a Minecraft-inspired island using Simplex/Perlin noise, a custom heightmap and radial island falloff.
+- Include visually distinct grass, dirt, stone and sand blocks, plus an animated water surface.
+- Use InstancedMesh or chunk-based rendering for good performance.
+- Add a first-person camera with Pointer Lock controls: WASD movement, mouse look and Space to jump or swim.
+- Use raycasting so left click breaks blocks and right click places the selected block.
+- Implement gravity and reliable voxel collision detection.
+- Add procedural Web Audio effects: footsteps based on terrain, block-breaking and placement sounds, and gentle ambient music.
+- Include a crosshair, numbered hotbar, inventory counter and day/night toggle.
+- Make the interface responsive and display the controls before starting.
+- Test that grass and dirt remain distinguishable from every camera angle.
+
+Return only the complete, working HTML code in a single code block.
