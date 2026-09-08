@@ -1,0 +1,1515 @@
+{
+  "id": "b1298bef-5b29-53f0-be54-ee564daf8e82",
+  "revision": 1,
+  "last_node_id": 26,
+  "last_link_id": 42,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "ClassroomText",
+      "title": "Reviewed narration and image prompts (editable) (Text)",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        647,
+        530
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            1,
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomText"
+      },
+      "widgets_values": [
+        "{\n  \"scenes\": [\n    {\n      \"narration\": \"When you open a website, your browser needs to find its server. If it does not already know the address, it uses DNS to look up an IP address for the website's name.\",\n      \"image_prompt\": \"Clean educational flat illustration of a laptop beside an address book and a server rack, visual metaphor for looking up a website address, navy and turquoise palette, white background, generous empty space, no text, no letters, no logos\"\n    },\n    {\n      \"narration\": \"The browser connects to the server and sends an HTTP request for a resource, such as a page. With HTTPS, the connection is encrypted to help protect information while it travels.\",\n      \"image_prompt\": \"Clean educational flat illustration of a laptop sending a small envelope towards a server rack, a padlock representing an encrypted connection, navy and turquoise palette, white background, generous empty space, no text, no letters, no logos\"\n    },\n    {\n      \"narration\": \"The server sends a response. The browser processes the page and may request more resources, such as images, style sheets and scripts. Together, these resources help build the page you see.\",\n      \"image_prompt\": \"Clean educational flat illustration of a laptop showing a simple web page assembled from a picture tile, coloured layout blocks and a document, server rack in the background, navy and turquoise palette, white background, generous empty space, no text, no letters, no logos\"\n    }\n  ]\n}\n"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "ClassroomShowText",
+      "title": "Review and save the three-scene plan (ShowText)",
+      "pos": [
+        747,
+        0
+      ],
+      "size": [
+        584,
+        400
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomShowText"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 3,
+      "type": "ClassroomScenes",
+      "title": "Split the plan into three scenes (Scenes)",
+      "pos": [
+        1647,
+        0
+      ],
+      "size": [
+        530,
+        220
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "plan",
+          "type": "STRING",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "narration_1",
+          "type": "STRING",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "image_prompt_1",
+          "type": "STRING",
+          "links": [
+            7
+          ]
+        },
+        {
+          "name": "narration_2",
+          "type": "STRING",
+          "links": [
+            17
+          ]
+        },
+        {
+          "name": "image_prompt_2",
+          "type": "STRING",
+          "links": [
+            20
+          ]
+        },
+        {
+          "name": "narration_3",
+          "type": "STRING",
+          "links": [
+            30
+          ]
+        },
+        {
+          "name": "image_prompt_3",
+          "type": "STRING",
+          "links": [
+            33
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomScenes"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "title": "Load image model + text encoder + VAE (CheckpointLoaderSimple)",
+      "pos": [
+        1647,
+        350
+      ],
+      "size": [
+        638,
+        180
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            8,
+            21,
+            34
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            3,
+            6,
+            19,
+            32
+          ]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            13,
+            26,
+            39
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "v1-5-pruned-emaonly-fp16.safetensors"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "CLIPTextEncode",
+      "title": "Shared visual exclusions (CLIPTextEncode)",
+      "pos": [
+        1647,
+        620
+      ],
+      "size": [
+        449,
+        180
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            10,
+            23,
+            36
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        "text, letters, watermark, logo, blurry, photorealistic"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "EmptyLatentImage",
+      "title": "Shared 16:9 canvas (EmptyLatentImage)",
+      "pos": [
+        1647,
+        880
+      ],
+      "size": [
+        413,
+        180
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            11,
+            24,
+            37
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        768,
+        432,
+        1
+      ]
+    },
+    {
+      "id": 7,
+      "type": "ClassroomComposeVideo",
+      "title": "6. Compose narration + still images (ComposeVideo)",
+      "pos": [
+        4934,
+        200
+      ],
+      "size": [
+        611,
+        480
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image_1",
+          "type": "IMAGE",
+          "link": 15
+        },
+        {
+          "name": "audio_1",
+          "type": "AUDIO",
+          "link": 16
+        },
+        {
+          "name": "image_2",
+          "type": "IMAGE",
+          "link": 28
+        },
+        {
+          "name": "audio_2",
+          "type": "AUDIO",
+          "link": 29
+        },
+        {
+          "name": "image_3",
+          "type": "IMAGE",
+          "link": 41
+        },
+        {
+          "name": "audio_3",
+          "type": "AUDIO",
+          "link": 42
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video_path",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomComposeVideo"
+      },
+      "widgets_values": [
+        24
+      ]
+    },
+    {
+      "id": 8,
+      "type": "ClassroomPiper",
+      "title": "4.1 Speak scene 1 (Piper)",
+      "pos": [
+        2385,
+        0
+      ],
+      "size": [
+        386,
+        260
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 4,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            5,
+            16
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomPiper"
+      },
+      "widgets_values": [
+        "",
+        "en_US-lessac-medium",
+        1.0
+      ]
+    },
+    {
+      "id": 9,
+      "type": "ClassroomSaveWav",
+      "title": "Listen to scene 1 (SaveWav)",
+      "pos": [
+        2871,
+        0
+      ],
+      "size": [
+        404,
+        260
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomSaveWav"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 10,
+      "type": "CLIPTextEncode",
+      "title": "5.1 Describe image 1 (CLIPTextEncode)",
+      "pos": [
+        2385,
+        360
+      ],
+      "size": [
+        413,
+        240
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 6
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 7,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 11,
+      "type": "KSampler",
+      "title": "Generate the image (KSampler)",
+      "pos": [
+        3251,
+        350
+      ],
+      "size": [
+        341,
+        300
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 8
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 9
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 10
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 11
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        42,
+        "fixed",
+        24,
+        7.0,
+        "euler",
+        "normal",
+        1.0
+      ]
+    },
+    {
+      "id": 12,
+      "type": "VAEDecode",
+      "title": "Convert latent into pixels (VAEDecode)",
+      "pos": [
+        3692,
+        350
+      ],
+      "size": [
+        422,
+        120
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 12
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 13
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            14,
+            15
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 13,
+      "type": "SaveImage",
+      "title": "Save result (SaveImage)",
+      "pos": [
+        4214,
+        350
+      ],
+      "size": [
+        320,
+        350
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 14
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "Classroom/scene-1"
+      ]
+    },
+    {
+      "id": 14,
+      "type": "ClassroomPiper",
+      "title": "4.2 Speak scene 2 (Piper)",
+      "pos": [
+        2385,
+        810
+      ],
+      "size": [
+        386,
+        260
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 17,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            18,
+            29
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomPiper"
+      },
+      "widgets_values": [
+        "",
+        "en_US-lessac-medium",
+        1.0
+      ]
+    },
+    {
+      "id": 15,
+      "type": "ClassroomSaveWav",
+      "title": "Listen to scene 2 (SaveWav)",
+      "pos": [
+        2871,
+        810
+      ],
+      "size": [
+        404,
+        260
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomSaveWav"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 16,
+      "type": "CLIPTextEncode",
+      "title": "5.2 Describe image 2 (CLIPTextEncode)",
+      "pos": [
+        2385,
+        1170
+      ],
+      "size": [
+        413,
+        240
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 19
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 20,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            22
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 17,
+      "type": "KSampler",
+      "title": "Generate the image (KSampler)",
+      "pos": [
+        3251,
+        1160
+      ],
+      "size": [
+        341,
+        300
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 21
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 22
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 23
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 24
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            25
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        43,
+        "fixed",
+        24,
+        7.0,
+        "euler",
+        "normal",
+        1.0
+      ]
+    },
+    {
+      "id": 18,
+      "type": "VAEDecode",
+      "title": "Convert latent into pixels (VAEDecode)",
+      "pos": [
+        3692,
+        1160
+      ],
+      "size": [
+        422,
+        120
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 25
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 26
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            27,
+            28
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 19,
+      "type": "SaveImage",
+      "title": "Save result (SaveImage)",
+      "pos": [
+        4214,
+        1160
+      ],
+      "size": [
+        320,
+        350
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 27
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "Classroom/scene-2"
+      ]
+    },
+    {
+      "id": 20,
+      "type": "ClassroomPiper",
+      "title": "4.3 Speak scene 3 (Piper)",
+      "pos": [
+        2385,
+        1620
+      ],
+      "size": [
+        386,
+        260
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 30,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": [
+            31,
+            42
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomPiper"
+      },
+      "widgets_values": [
+        "",
+        "en_US-lessac-medium",
+        1.0
+      ]
+    },
+    {
+      "id": 21,
+      "type": "ClassroomSaveWav",
+      "title": "Listen to scene 3 (SaveWav)",
+      "pos": [
+        2871,
+        1620
+      ],
+      "size": [
+        404,
+        260
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 31
+        }
+      ],
+      "outputs": [
+        {
+          "name": "AUDIO",
+          "type": "AUDIO",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ClassroomSaveWav"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 22,
+      "type": "CLIPTextEncode",
+      "title": "5.3 Describe image 3 (CLIPTextEncode)",
+      "pos": [
+        2385,
+        1980
+      ],
+      "size": [
+        413,
+        240
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 32
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 33,
+          "widget": {
+            "name": "text"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            35
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 23,
+      "type": "KSampler",
+      "title": "Generate the image (KSampler)",
+      "pos": [
+        3251,
+        1970
+      ],
+      "size": [
+        341,
+        300
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 34
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 35
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 36
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 37
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            38
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        44,
+        "fixed",
+        24,
+        7.0,
+        "euler",
+        "normal",
+        1.0
+      ]
+    },
+    {
+      "id": 24,
+      "type": "VAEDecode",
+      "title": "Convert latent into pixels (VAEDecode)",
+      "pos": [
+        3692,
+        1970
+      ],
+      "size": [
+        422,
+        120
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 38
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 39
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            40,
+            41
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 25,
+      "type": "SaveImage",
+      "title": "Save result (SaveImage)",
+      "pos": [
+        4214,
+        1970
+      ],
+      "size": [
+        320,
+        350
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 40
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": [
+        "Classroom/scene-3"
+      ]
+    },
+    {
+      "id": 26,
+      "type": "Note",
+      "title": "Read first (Note)",
+      "pos": [
+        0,
+        -220
+      ],
+      "size": [
+        1380,
+        170
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "Note"
+      },
+      "widgets_values": [
+        "FULL DEMONSTRATION: this version runs through automatically; it does not pause for human approval. Use 10a-Prepare-Script.json first, then 10b-Production-Reviewed.json for a reviewed production. Each still image lasts as long as its own narration. Output is a slideshow MP4, not AI-generated motion. Qwen text generation runs on CPU and may take several minutes."
+      ],
+      "color": "#433",
+      "bgcolor": "#654"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "STRING"
+    ],
+    [
+      2,
+      1,
+      0,
+      3,
+      0,
+      "STRING"
+    ],
+    [
+      3,
+      4,
+      1,
+      5,
+      0,
+      "CLIP"
+    ],
+    [
+      4,
+      3,
+      0,
+      8,
+      0,
+      "STRING"
+    ],
+    [
+      5,
+      8,
+      0,
+      9,
+      0,
+      "AUDIO"
+    ],
+    [
+      6,
+      4,
+      1,
+      10,
+      0,
+      "CLIP"
+    ],
+    [
+      7,
+      3,
+      1,
+      10,
+      1,
+      "STRING"
+    ],
+    [
+      8,
+      4,
+      0,
+      11,
+      0,
+      "MODEL"
+    ],
+    [
+      9,
+      10,
+      0,
+      11,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      10,
+      5,
+      0,
+      11,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      11,
+      6,
+      0,
+      11,
+      3,
+      "LATENT"
+    ],
+    [
+      12,
+      11,
+      0,
+      12,
+      0,
+      "LATENT"
+    ],
+    [
+      13,
+      4,
+      2,
+      12,
+      1,
+      "VAE"
+    ],
+    [
+      14,
+      12,
+      0,
+      13,
+      0,
+      "IMAGE"
+    ],
+    [
+      15,
+      12,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      16,
+      8,
+      0,
+      7,
+      1,
+      "AUDIO"
+    ],
+    [
+      17,
+      3,
+      2,
+      14,
+      0,
+      "STRING"
+    ],
+    [
+      18,
+      14,
+      0,
+      15,
+      0,
+      "AUDIO"
+    ],
+    [
+      19,
+      4,
+      1,
+      16,
+      0,
+      "CLIP"
+    ],
+    [
+      20,
+      3,
+      3,
+      16,
+      1,
+      "STRING"
+    ],
+    [
+      21,
+      4,
+      0,
+      17,
+      0,
+      "MODEL"
+    ],
+    [
+      22,
+      16,
+      0,
+      17,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      23,
+      5,
+      0,
+      17,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      24,
+      6,
+      0,
+      17,
+      3,
+      "LATENT"
+    ],
+    [
+      25,
+      17,
+      0,
+      18,
+      0,
+      "LATENT"
+    ],
+    [
+      26,
+      4,
+      2,
+      18,
+      1,
+      "VAE"
+    ],
+    [
+      27,
+      18,
+      0,
+      19,
+      0,
+      "IMAGE"
+    ],
+    [
+      28,
+      18,
+      0,
+      7,
+      2,
+      "IMAGE"
+    ],
+    [
+      29,
+      14,
+      0,
+      7,
+      3,
+      "AUDIO"
+    ],
+    [
+      30,
+      3,
+      4,
+      20,
+      0,
+      "STRING"
+    ],
+    [
+      31,
+      20,
+      0,
+      21,
+      0,
+      "AUDIO"
+    ],
+    [
+      32,
+      4,
+      1,
+      22,
+      0,
+      "CLIP"
+    ],
+    [
+      33,
+      3,
+      5,
+      22,
+      1,
+      "STRING"
+    ],
+    [
+      34,
+      4,
+      0,
+      23,
+      0,
+      "MODEL"
+    ],
+    [
+      35,
+      22,
+      0,
+      23,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      36,
+      5,
+      0,
+      23,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      37,
+      6,
+      0,
+      23,
+      3,
+      "LATENT"
+    ],
+    [
+      38,
+      23,
+      0,
+      24,
+      0,
+      "LATENT"
+    ],
+    [
+      39,
+      4,
+      2,
+      24,
+      1,
+      "VAE"
+    ],
+    [
+      40,
+      24,
+      0,
+      25,
+      0,
+      "IMAGE"
+    ],
+    [
+      41,
+      24,
+      0,
+      7,
+      4,
+      "IMAGE"
+    ],
+    [
+      42,
+      20,
+      0,
+      7,
+      5,
+      "AUDIO"
+    ]
+  ],
+  "groups": [
+    {
+      "title": "Scene 1: narration + illustration",
+      "bounding": [
+        2345,
+        -45,
+        2229,
+        785
+      ],
+      "color": "#296b80",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "title": "Scene 2: narration + illustration",
+      "bounding": [
+        2345,
+        765,
+        2229,
+        785
+      ],
+      "color": "#296b80",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "title": "Scene 3: narration + illustration",
+      "bounding": [
+        2345,
+        1575,
+        2229,
+        785
+      ],
+      "color": "#296b80",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        60,
+        240
+      ]
+    },
+    "classroom_auto_spacing": true
+  },
+  "version": 0.4
+}
