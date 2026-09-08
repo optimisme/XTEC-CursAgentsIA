@@ -26,67 +26,47 @@ No implementis el servidor durant aquesta execució. Genera només aquests tres 
 
 # 1. Prompt de configuració de l’arnès
 
-`prompt-deures-arnes.md` ha de preparar exclusivament l’arnès de desenvolupament abans de començar la implementació.
+`prompt-sudoku-arnes.md` ha de preparar l’arnès del projecte abans de començar el desenvolupament.
 
-**Aquest prompt no pot implementar funcionalitats de l’aplicació ni començar cap Issue.**
+Abans de crear o modificar res, comprova si el projecte ja disposa d’un arnès de desenvolupament.
 
-Ha de definir:
+Si ja existeix un arnès, revisa si compleix els requisits principals descrits a continuació.
 
-* skills;
+Si els compleix de manera suficient, **no el modifiquis** i conserva’l tal com està.
 
-* `PLAN.md`;
+Només crea o modifica l’arnès si falta algun element essencial o si algun dels requisits principals no es compleix.
 
-* agents i subagents;
+No facis canvis només per:
+- reorganitzar fitxers;
+- canviar noms;
+- reformatejar contingut;
+- simplificar o ampliar instruccions;
+- aplicar preferències d’estil;
+- substituir una solució correcta per una alternativa diferent.
 
-* `AGENTS.md`.
+L’arnès ha de definir els **agents, subagents i skills** necessaris, sense implementar encara funcionalitats ni generar `tasks-sudoku.md`.
 
-Els fitxers de skills i agents han de tenir les capçaleres correctes.
-
-En el cas dels agents, la capçalera ha d’indicar si són:
-
-* `primary`;
-
-* `subagent`.
-
-L’arnès ha d’estar especialment preparat perquè un agent petit treballi amb poc context i delegui tasques simples.
+L’arnès ha d’estar especialment pensat perquè l’agent orquestrador treballi amb poc context i delegui tasques simples a subagents especialitzats.
 
 Com a mínim, ha d’existir:
 
-* un agent orquestrador;
+- un agent orquestrador;
+- un subagent d’implementació;
+- un subagent de revisió;
+- un subagent de tests o validació.
 
-* un subagent d’implementació;
+L’agent orquestrador ha de:
 
-* un subagent de revisió;
-
-* un subagent de tests o validació.
-
-L’agent orquestrador ha de saber que, durant la futura fase d’implementació, haurà de:
-
-* consultar mitjançant l’MCP de GitHub el Project del repositori;
-
-* consultar els camps Status, Priority i Phase de cada item;
-
-* seleccionar una sola Issue cada vegada;
-
-* respectar els camps de prioritat i fase, i les dependències;
-
-* delegar-ne la implementació;
-
-* delegar-ne els tests i la revisió;
-
-* moure la tasca entre Backlog, In development i Done actualitzant el camp Status;
-
-* evitar modificacions simultànies incompatibles;
-
-* avançar només quan la Issue actual estigui validada;
-
-* tornar a consultar GitHub abans de cada nova iteració;
-
-* no confiar en l’estat recordat d’execucions anteriors.
-
-GitHub Project i els seus camps han de ser l’**única font de veritat** de l’estat de les tasques.
+- consultar l’estat del projecte;
+- seleccionar una sola tasca cada vegada;
+- delegar-ne la implementació;
+- delegar-ne la validació;
+- evitar que diferents agents modifiquin simultàniament els mateixos fitxers;
+- avançar només quan la tasca actual estigui completament validada.
 
 L’agent que implementa una tasca **no ha de ser l’únic encarregat de validar-la**.
+
+Si l’arnès existent compleix aquests punts principals, considera’l vàlid encara que la seva estructura, noms o implementació siguin diferents dels que hauries generat tu.
 
 ## Skills
 

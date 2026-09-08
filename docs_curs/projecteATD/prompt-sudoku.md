@@ -24,27 +24,45 @@ No implementis el Sudoku. Genera només aquests tres prompts.
 
 `prompt-sudoku-arnes.md` ha de preparar l’arnès del projecte abans de començar el desenvolupament.
 
-Ha de definir els **agents, subagents i skills** necessaris, sense implementar encara funcionalitats ni generar `tasks-sudoku.md`.
+Abans de crear o modificar res, comprova si el projecte ja disposa d’un arnès de desenvolupament.
+
+Si ja existeix un arnès, revisa si compleix els requisits principals descrits a continuació.
+
+Si els compleix de manera suficient, **no el modifiquis** i conserva’l tal com està.
+
+Només crea o modifica l’arnès si falta algun element essencial o si algun dels requisits principals no es compleix.
+
+No facis canvis només per:
+- reorganitzar fitxers;
+- canviar noms;
+- reformatejar contingut;
+- simplificar o ampliar instruccions;
+- aplicar preferències d’estil;
+- substituir una solució correcta per una alternativa diferent.
+
+L’arnès ha de definir els **agents, subagents i skills** necessaris, sense implementar encara funcionalitats ni generar `tasks-sudoku.md`.
 
 L’arnès ha d’estar especialment pensat perquè l’agent orquestrador treballi amb poc context i delegui tasques simples a subagents especialitzats.
 
 Com a mínim, ha d’existir:
 
-* un agent orquestrador;
-* un subagent d’implementació;
-* un subagent de revisió;
-* un subagent de tests o validació.
+- un agent orquestrador;
+- un subagent d’implementació;
+- un subagent de revisió;
+- un subagent de tests o validació.
 
 L’agent orquestrador ha de:
 
-* consultar l’estat del projecte;
-* seleccionar una sola tasca cada vegada;
-* delegar-ne la implementació;
-* delegar-ne la validació;
-* evitar que diferents agents modifiquin simultàniament els mateixos fitxers;
-* avançar només quan la tasca actual estigui completament validada.
+- consultar l’estat del projecte;
+- seleccionar una sola tasca cada vegada;
+- delegar-ne la implementació;
+- delegar-ne la validació;
+- evitar que diferents agents modifiquin simultàniament els mateixos fitxers;
+- avançar només quan la tasca actual estigui completament validada.
 
 L’agent que implementa una tasca **no ha de ser l’únic encarregat de validar-la**.
+
+Si l’arnès existent compleix aquests punts principals, considera’l vàlid encara que la seva estructura, noms o implementació siguin diferents dels que hauries generat tu.
 
 ## Skills
 

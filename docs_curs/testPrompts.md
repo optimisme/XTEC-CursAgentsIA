@@ -57,4 +57,4 @@ Requirements:
 - Make the interface responsive and display the controls before starting.
 - Test that grass and dirt remain distinguishable from every camera angle.
 
-Return only the complete, working HTML code in a single code block.
+Return a working HTML+CSS+JS files code. Write empty files and then add code in small chunks, don't write big monolite code blocks.
