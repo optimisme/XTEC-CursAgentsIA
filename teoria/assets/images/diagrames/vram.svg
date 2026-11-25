@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 260" width="700" height="260"><style>text{font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#1f2937}.t{font-size:15px;font-weight:600}.s{font-size:12px;fill:#4b5563}.h{font-size:17px;font-weight:700}.box{fill:#f8fafc;stroke:#64748b;stroke-width:1.5}.blue{fill:#e0ecff;stroke:#3b6fd8;stroke-width:1.5}.green{fill:#e3f5e8;stroke:#2f9e57;stroke-width:1.5}.amber{fill:#fff4dc;stroke:#d89a1f;stroke-width:1.5}.rose{fill:#fde8ea;stroke:#d0455a;stroke-width:1.5}.ln{stroke:#7c8594;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke:#7c8594;stroke-width:1.3;stroke-dasharray:5 4;fill:none}.mk{fill:#7c8594}.badge{fill:#f8fafc;fill-opacity:.8}</style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="mk"/></marker></defs>
+<rect x="204.4" y="13.2" width="291.1" height="26" class="badge"/><text x="350" y="30" text-anchor="middle" class="h">Què ocupa la VRAM d'un servidor</text>
+<rect x="40" y="60" width="620" height="70" rx="8" fill="none" stroke="#7c8594" stroke-width="2"/>
+<rect x="42" y="62" width="300" height="66" class="green"/><text x="192" y="92" text-anchor="middle" class="t">Pesos del model</text><text x="192" y="112" text-anchor="middle" class="s">paràmetres × bytes/paràmetre</text>
+<rect x="342" y="62" width="250" height="66" class="amber"/><text x="467" y="92" text-anchor="middle" class="t">KV cache</text><text x="467" y="112" text-anchor="middle" class="s">context × usuaris concurrents</text>
+<rect x="592" y="62" width="66" height="66" class="rose"/><text x="625" y="92" text-anchor="middle" class="t">Extra</text><text x="625" y="112" text-anchor="middle" class="s">servidor</text>
+<rect x="30" y="142" width="640" height="102" class="badge"/><text x="40" y="160" class="t">Exemple: GPU de 128 GB, --gpu-memory-utilization 0.80 → ~102 GB per al servidor</text>
+<text x="40" y="186" class="s">· Model 35B en NVFP4 ≈ 35 × 0,5 ≈ 18–20 GB de pesos</text>
+<text x="40" y="206" class="s">· La resta queda per a la KV cache: 32 peticions concurrents de fins a 64k tokens</text>
+<text x="40" y="232" class="s">Més context o més usuaris ⇒ més KV cache ⇒ cal un model més petit o més quantitzat.</text>
+</svg>

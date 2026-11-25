@@ -1,0 +1,115 @@
+# One-shot prompts
+
+Prompts per provar què fa un agent amb **una sola petició**. Cada prompt crea una web petita a la carpeta `webs/`. Els que tenen línies `modify` a sota són exemples de **correccions**: el que va caldre demanar després perquè el resultat fos l'esperat.
+
+Fes servir cada prompt en una sessió nova (`/new`), amb l'agent `build`. No corregeixis el codi a mà: si alguna cosa no va bé, demana-ho a l'agent.
+
+> Els prompts són en anglès tal com es van provar. Pots fer-los en català, però llavors anota-ho a l'informe.
+
+## Amb correccions d'exemple
+
+### Rellotge (canvas + cerca web)
+
+```text
+Create a new file named clock.html at webs folder that shows an analog circular watch updated every second and drawn on a canvas, make it look like a swiss trains watch, search on the internet the look of swiss train station clocks.
+```
+
+Correccions:
+
+```text
+modify @webs/clock.html in a way that continuously updates seconds hand at 30fps showing a smooth movement instead of jumping every second
+```
+
+```text
+modify @webs/clock.html so it shows the seconds hand in green instead of blue
+```
+
+### Snake (joc amb teclat)
+
+```text
+Create a new file named snake.html at webs folder with a playable Snake game using only HTML, CSS, and JavaScript. Use canvas, keyboard arrows to control direction, the game doesn't start until user presses a direction key, the game has a score display, pause/restart buttons.
+```
+
+Correcció:
+
+```text
+modify @webs/snake.html to ensure the food is drawn like a red circle, don't allow drawing the food like a square or a different color than red
+```
+
+### Trencaclosques lliscant (DOM, sense canvas)
+
+```text
+Create a new file named slider.html at webs folder with a slider puzzle 3x3 that moves the clicked piece to the empty space, make the pieces with big numbers from 1 to 8 and making it solved when all numbers are properly sorted and the empty space is at bottom right corner. Don't use canvas, each piece must be a `<div>`.
+```
+
+Correcció:
+
+```text
+modify @webs/slider.html pieces animate smoothly, don't make them jump from begin position to end one.
+```
+
+## Sense correccions d'exemple
+
+Aquí les correccions les has de trobar tu.
+
+### Llista de tasques (diversos arxius + localStorage)
+
+```text
+Create a new todo website at webs folder (todo.html, todo.css and todo.js) with a polished todo app using localStorage. Include add, edit, complete, delete, filters, clear completed, keyboard support, responsive layout.
+```
+
+### El temps (cerca web + cites)
+
+```text
+Create a new weather-card website at webs folder (weather.html, weather.css, weather.js) with a polished weather card UI. Search the web for the current weather in Barcelona, then build a static HTML page showing the city, temperature, condition, humidity, wind, and update time. Use only HTML, CSS, and JavaScript, cite the source visibly in the page
+```
+
+### Guia de viatge (cerca web + filtres)
+
+```text
+Create a new travel-guide website at webs folder (travel.html, travel.css, travel.js) with a mini travel guide for Girona. Search the web for 5 recommended places to visit, opening hours when available, short descriptions, and official links. Build a responsive card-based page with search/filter by category. Use only HTML, CSS, and JavaScript, cite sources
+```
+
+### Guia de museus (cerca web + filtres)
+
+```text
+Create a new museum-guide website at webs folder (museum.html, museum.css, museum.js). Search the web for 5 museums in Barcelona, including official websites, opening hours when available, location, and short descriptions. Build a responsive card-based guide with category filters and visible citations. Use only HTML, CSS, and JavaScript
+```
+
+### Editor de dibuix (canvas + ratolí)
+
+```text
+Create a new paint-like editor website at webs folder (paint.html, paint.css, paint.js). Build a canvas editor using only HTML, CSS, and JavaScript. Include color picker, eraser, line size, clear button. User must draw "free hand" when mouse is pressed and moved on the canvas, capturing movement points and joining those points with lines.
+```
+
+### Calculadora (amb imatge de referència)
+
+Posa una imatge `calculator.png` a l'arrel del projecte abans de fer el prompt.
+
+```text
+Create a new website at webs folder (calculator.html, calculator.css, calculator.js) with a polished calculator app using only HTML, CSS, and JavaScript. Include basic operations, decimal numbers, keyboard support, clear/delete buttons, error handling for invalid operations, responsive layout. Make it look like the calculator from image @calculator.png with the light red display and rounded keys.
+```
+
+### Kanban (arrossegar i deixar anar)
+
+```text
+Create a new website at webs folder (kanban.html, kanban.css, kanban.js) with a simple Kanban board using only HTML, CSS, and JavaScript. Include three columns: Todo, Doing, Done. Allow adding cards, editing text, deleting cards, dragging cards between columns, saving state with localStorage, responsive layout. Ensure cards can be moved from one status to another, for example from Todo to Doing, or from Doing back to Todo.
+```
+
+### Pescamines (cerca web + joc)
+
+```text
+Create a new website at webs folder (mines.html, mines.css, mines.js) with a minesweeper like windows 95 game. search on the internet the mechanics and look and feel of the game, then reproduce it on a web.
+```
+
+### Marcianets (canvas + joc arcade)
+
+```text
+Create a new website at webs folder (galaxy.html, galaxy.css, galaxy.js) with a galaxian like retro game from the 80s. search on the internet the mechanics and look and feel of the game, then reproduce it on a canvas. user will control the game with the keys "space, arrow left, arrow right". at the begining the game won't start until user presses one key. Player must be able to shot with space and aliens must atack the player.
+```
+
+### Asteroides (prompt llarg i detallat)
+
+```text
+Create a new website in the webs folder named asteroid.html, asteroid.css, and asteroid.js. Build a polished 1980s arcade-style Asteroids-like canvas game with vector graphics. The game must start only after the first key press. Controls: ArrowLeft and ArrowRight rotate the ship, ArrowUp thrusts, Space shoots. Include screen wrapping, drifting asteroids that split into smaller asteroids, enemy saucers that occasionally appear and shoot, player lives, score, localStorage high score, pause with P, restart after game over with Enter, and a clear HUD. Use only canvas and plain JavaScript. Verify the files. This is a 2d plain game, don't make 3d calculations in it.
+```

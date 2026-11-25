@@ -53,3 +53,12 @@ node_modules/
 
 # GraphRepo graph + embedding model cache (generated at runtime)
 .graphrepo/
+
+# Example harness of the course notes (tema 02): tracked
+!teoria/.agents
+
+# Study project of the course notes (tema 02): tracked
+!teoria/assets/projecteTeach/.agents
+!teoria/assets/projecteTeach/.opencode
+!teoria/assets/projecteTeach/opencode.json
+!teoria/assets/projecteTeach/AGENTS.md

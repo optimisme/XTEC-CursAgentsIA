@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 340" width="720" height="340"><style>text{font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#1f2937}.t{font-size:15px;font-weight:600}.s{font-size:12px;fill:#4b5563}.h{font-size:17px;font-weight:700}.box{fill:#f8fafc;stroke:#64748b;stroke-width:1.5}.blue{fill:#e0ecff;stroke:#3b6fd8;stroke-width:1.5}.green{fill:#e3f5e8;stroke:#2f9e57;stroke-width:1.5}.amber{fill:#fff4dc;stroke:#d89a1f;stroke-width:1.5}.rose{fill:#fde8ea;stroke:#d0455a;stroke-width:1.5}.ln{stroke:#7c8594;stroke-width:2;fill:none;marker-end:url(#a)}.dash{stroke:#7c8594;stroke-width:1.3;stroke-dasharray:5 4;fill:none}.mk{fill:#7c8594}.badge{fill:#f8fafc;fill-opacity:.8}</style><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" class="mk"/></marker></defs>
+<rect x="260.0" y="13.2" width="199.9" height="26" class="badge"/><text x="360" y="30" text-anchor="middle" class="h">Arquitectura de l'arnès</text>
+<rect x="10" y="140" width="100" height="60" rx="10" class="box"/><text x="60" y="175" text-anchor="middle" class="t">Usuari</text>
+<rect x="190" y="60" width="330" height="240" rx="14" class="blue"/><text x="355" y="84" text-anchor="middle" class="t">Arnès (harness)</text>
+<rect x="215" y="100" width="135" height="44" rx="8" class="box"/><text x="282" y="127" text-anchor="middle" class="t">Context</text>
+<rect x="365" y="100" width="135" height="44" rx="8" class="box"/><text x="432" y="127" text-anchor="middle" class="t">Memòria</text>
+<rect x="215" y="156" width="135" height="44" rx="8" class="box"/><text x="282" y="183" text-anchor="middle" class="t">Eines</text>
+<rect x="365" y="156" width="135" height="44" rx="8" class="box"/><text x="432" y="183" text-anchor="middle" class="t">Verificació</text>
+<rect x="215" y="222" width="285" height="56" rx="8" class="amber"/><text x="357" y="246" text-anchor="middle" class="t">Agent</text><text x="357" y="264" text-anchor="middle" class="s">actua: executa eines, aplica permisos</text>
+<rect x="580" y="140" width="120" height="60" rx="10" class="green"/><text x="640" y="166" text-anchor="middle" class="t">LLM</text><text x="640" y="184" text-anchor="middle" class="s">pensa i parla</text>
+<path d="M110 160 L186 160" class="ln"/><rect x="122.4" y="135.1" width="51.2" height="19" class="badge"/><text x="148" y="147" text-anchor="middle" class="s">petició</text>
+<path d="M186 190 L114 190" class="ln"/><rect x="115.9" y="200.1" width="64.3" height="19" class="badge"/><text x="148" y="212" text-anchor="middle" class="s">resposta</text>
+<path d="M520 160 L576 160" class="ln"/><path d="M576 185 L524 185" class="ln"/>
+<rect x="179.7" y="313.1" width="360.7" height="19" class="badge"/><text x="360" y="325" text-anchor="middle" class="s">Amb un arnès ben definit es pot canviar de model fàcilment.</text>
+</svg>
