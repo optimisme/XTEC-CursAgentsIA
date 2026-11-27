@@ -1,5 +1,6 @@
 {
-    "workbench.colorTheme": "Dark+",
+    "workbench.colorTheme": "One Dark Modern Classic",
+    "workbench.secondarySideBar.defaultVisibility": "hidden",
     "notebook.lineNumbers": "on",
     "files.encoding": "utf8",
     "markdown.preview.openMarkdownLinks": "inPreview",
