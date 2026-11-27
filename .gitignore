@@ -41,6 +41,8 @@ opencode.json
 .agents/tools
 .agents/tools/*
 AGENTS.md
+!/AGENTS.md
+CLAUDE.md
 
 .secrets/*
 !.secrets/.gitkeep
