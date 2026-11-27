@@ -323,6 +323,35 @@ L'script escriu la ruta de la clau **absoluta**, amb la teva carpeta d'usuari: `
 
 > Per a OpenAI-compatible no hi ha cap manera estàndard de descobrir automàticament aquests paràmetres: cal escriure'ls a mà i han de coincidir amb el servidor. A la sessió 08 veurem com es corresponen amb els paràmetres de vLLM.
 
+**Paràmetres habituals.** A més del model i dels proveïdors, a `opencode.json` s'hi configura com es comporta l'agent en aquell projecte. L'arxiu també es pot dir `opencode.jsonc`: és el mateix JSON, però accepta comentaris.
+
+```jsonc
+// opencode.jsonc: és JSON, però accepta comentaris
+{
+  "model": "ieti-agents/active-model",          // model per defecte
+  "default_agent": "build",                     // agent inicial
+  "instructions": ["AGENTS.md"],                // sempre al context
+  "permissions": [                              // demana abans del push
+    { "action": "shell",                        // eina: terminal
+      "resource": "git push *",                 // quina ordre
+      "effect": "ask" }                         // allow · ask · deny
+  ],
+  "watcher": { "ignore": ["node_modules/**"] }, // carpetes ignorades
+  "formatter": true,                            // format automàtic
+  "snapshots": true                             // permet desfer canvis
+}
+```
+
+| Clau | Per a què serveix |
+|---|---|
+| `model` | Model per defecte del projecte (`proveïdor/model`) |
+| `default_agent` | Agent amb què s'inicia la sessió: `build` o `plan` (apartat 13) |
+| `instructions` | Arxius que l'agent llegeix sempre, normalment `AGENTS.md` (sessió 02) |
+| `permissions` | Regles que permeten (`allow`), prohibeixen (`deny`) o fan demanar confirmació (`ask`) abans que l'agent faci servir una eina. A l'exemple, OpenCode pregunta abans de qualsevol `git push` |
+| `watcher.ignore` | Carpetes i arxius que OpenCode no vigila |
+| `formatter` | Amb `true`, formata els arxius que l'agent escriu o edita |
+| `snapshots` | Activa o desactiva les còpies que permeten desfer els canvis de l'agent |
+
 On és la configuració global a cada sistema:
 
 | Sistema | Configuració | Credencials |
@@ -400,7 +429,7 @@ keys.env
 | `build` | Agent per defecte, treballa sobre el projecte |
 | `plan` | Planifica sense modificar res |
 
-Per a tasques complexes: explica què vols amb `plan`, revisa la planificació i després canvia a `build` perquè la implementi. Es canvia d'agent amb **TAB** o `/agents`.
+Per a tasques complexes: explica què vols amb `plan`, revisa la planificació i després canvia a `build` perquè la implementi. Es canvia d'agent amb **MAJ + TAB** (només a l'OpenCode de terminal) o `/agents`.
 
 ### 14. Comandes i dreceres
 
@@ -560,28 +589,7 @@ Les pràctiques continuen en repositoris `ia-<sessió>-<tema>` a part, excepte l
 
 ## Tasca de la sessió · Projecte «Lliuraments» (T1)
 
-Al llarg del curs construirem, sessió a sessió, un mateix projecte: **Lliuraments**, una web estàtica i una eina de línia de comandes per fer el seguiment de les pràctiques que han lliurat els alumnes. Sense login ni backend: les dades són en un JSON. Cada sessió hi afegeix una tasca petita; el [projecte final](Projecte%20final.md) és un PDF que les recull totes, amb la teva valoració del curs.
-
-**Objectiu:** repositori preparat i projecte planificat.
-
-> 📋 Els prompts de la T1 són a [prompts-01-agents-opencode.md](assets/prompts-01-agents-opencode.md), en ordre i preparats per copiar i enganxar.
-
-1. Crea a GitHub un repositori nou i buit `lliuraments`, clona'l i obre-hi OpenCode (apartat 17).
-2. Crea l'`opencode.json` del projecte (model, `default_agent`, `instructions`) i, si cal alguna clau, guarda-la a `.secrets/`. Comprova que `.secrets/` i `keys.env` són al `.gitignore`. Si encara no tens el servidor IETI configurat, executa'n l'script (és global, només cal fer-ho un cop).
-3. Amb l'agent **`plan`**, executa aquest prompt a OpenCode dins del projecte (`lliuraments`):
-   ```text
-   Vull fer "Lliuraments": una web estàtica (HTML, CSS i JavaScript, sense backend ni login) que mostra les pràctiques d'un grup i quins alumnes les han lliurat, si ho han fet tard i quines falten. Les dades són a data/lliuraments.json.
-   Escriu PLAN.md amb: objectiu, estructura de carpetes, model de dades i una llista de funcionalitats petites ordenades. No implementis res.
-   ```
-
-4. Revisa `PLAN.md` i corregeix el que no t'agradi. Després, amb l'agent **`build`**, executa aquest prompt a OpenCode dins del projecte:
-   ```text
-   Crea data/lliuraments.json amb dades inventades: 3 pràctiques (id, title, dueDate), 5 alumnes (id, name, group) i una llista de lliuraments (studentId, practicaId, date). Els id són números enters (1, 2, 3…) i les dates tenen el format AAAA-MM-DD. Inclou algun lliurament fora de termini i alguna pràctica no lliurada.
-   ```
-
-5. Demana a l'agent el commit, l'etiqueta `t1` i el push (apartat 17).
-
-**Lliurable:** enllaç a l'etiqueta `t1` del repositori `lliuraments`, amb `opencode.json`, `.gitignore`, `PLAN.md` i `data/lliuraments.json`.
+L'enunciat de la T1 és a [enunciats/01 - Tasca T1.md](../enunciats/01%20-%20Tasca%20T1.md).
 
 ## Resum
 

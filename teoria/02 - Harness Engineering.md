@@ -206,7 +206,7 @@ Tots acaben amb un **format de resposta fix** (`status: …` i una línia per tr
 | `lesson-reviewer` | Revisa que les lliçons siguin assequibles |
 | `lesson-selector` | Escull una lliçó a partir d'un prompt |
 
-Cada lliçó té tres arxius: la teoria de la lliçó, `exercises` (activitats pràctiques) i `assessment` (criteris per valorar si s'han assolit els resultats d'aprenentatge). Com la resta d'arnesos del curs, els agents són a `.agents/agents/` i `.opencode` és un enllaç a `.agents`. Si en copiar la carpeta l'enllaç no es conserva (passa a Windows sense el mode de desenvolupador), torna'l a crear com a la secció 9. Per fer-ho servir: copia la carpeta `assets/projecteTeach/` fora del repositori de teoria, obre-hi OpenCode (`cd projecteTeach` i `opencode`), escull `guided-teacher` amb TAB i demana «Anem a estudiar css-flexbox». Amb `"default_agent": "guided-teacher"` a `opencode.json` ja s'inicia amb aquest agent.
+Cada lliçó té tres arxius: la teoria de la lliçó, `exercises` (activitats pràctiques) i `assessment` (criteris per valorar si s'han assolit els resultats d'aprenentatge). Com la resta d'arnesos del curs, els agents són a `.agents/agents/` i `.opencode` és un enllaç a `.agents`. Si en copiar la carpeta l'enllaç no es conserva (passa a Windows sense el mode de desenvolupador), torna'l a crear com a la secció 9. Per fer-ho servir: copia la carpeta `assets/projecteTeach/` fora del repositori de teoria, obre-hi OpenCode (`cd projecteTeach` i `opencode`), escull `guided-teacher` amb MAJ + TAB i demana «Anem a estudiar css-flexbox». Amb `"default_agent": "guided-teacher"` a `opencode.json` ja s'inicia amb aquest agent.
 
 **Altres idees d'agents de desenvolupament**
 
@@ -372,7 +372,7 @@ Per a eines més complexes o que s'han de poder fer servir des d'altres agents, 
 | Peça | Qui la fa servir | Quan |
 |---|---|---|
 | `AGENTS.md` | Tots els agents | Sempre (és al context) |
-| agent | L'usuari (TAB) o un altre agent | Quan cal un rol concret |
+| agent | L'usuari (MAJ + TAB) o un altre agent | Quan cal un rol concret |
 | skill | Un agent | Quan la tasca toca aquell camp |
 | command | L'usuari (`/nom`) | Procediments repetits |
 | tool / MCP | Un agent | Accions concretes i verificables |
@@ -481,7 +481,7 @@ ln -s .agents .opencode
 
 A PowerShell: `Copy-Item -Recurse <material-del-curs>\.agents .` i `cmd /c mklink /D .opencode .agents`.
 
-Surt d'OpenCode i torna-hi a entrar perquè carregui l'arnès. Amb TAB hauria d'aparèixer l'agent `coordinator`; escrivint `/` hi ha d'haver `/implement`, `/review`, `/explain` i `/commit`.
+Surt d'OpenCode i torna-hi a entrar perquè carregui l'arnès. Amb MAJ + TAB hauria d'aparèixer l'agent `coordinator`; escrivint `/` hi ha d'haver `/implement`, `/review`, `/explain` i `/commit`.
 
 ### Pas 3 · Demana una implementació
 
@@ -741,33 +741,7 @@ Obre `docs/tasks.json` i comprova que hi ha les cinc tasques `pending`, cadascun
 
 ## Tasca de la sessió · Projecte «Lliuraments» (T2)
 
-**Objectiu:** arnès SDD al projecte i la primera funcionalitat implementada i validada.
-
-> 📋 Els prompts de la T2, en ordre i ja adaptats, són a [prompts-02-harness.md](assets/prompts-02-harness.md).
-
-**Repositori:** `lliuraments`, el mateix de la T1. Obre-hi OpenCode (`cd lliuraments` i `opencode`), no al de la pràctica: tot el que demana la tasca es crea allà.
-
-1. Crea la carpeta de l'arnès i l'enllaç (secció 9): `mkdir -p .agents && ln -s .agents .opencode`. A PowerShell: `New-Item -ItemType Directory -Force .agents; cmd /c mklink /D .opencode .agents`.
-2. Crea-hi l'arnès de la pràctica (orchestrator, programmer, reviewer, `/next-task`, skills `code-review` i `project-design`, `AGENTS.md`) amb els prompts dels passos 1–6. Els passos 1–5 es fan servir sense canvis; el pas 6, ja adaptat a «Lliuraments» (`webs/lliuraments.js` i `tests/lliuraments.test.mjs`), és a [prompts-02-harness.md](assets/prompts-02-harness.md), apartat T2.6.
-3. Crea les tasques amb un prompt a partir de `PLAN.md`, el pla que vas escriure a la T1.
-
-   Executa aquest prompt a OpenCode dins del projecte (`lliuraments`):
-   ```text
-   Llegeix PLAN.md i crea docs/tasks.json amb el mateix format que la pràctica (id, title, status, acceptance). Crea només aquestes tres tasques, totes amb status "pending":
-   T01 Mostra la llista de pràctiques ordenada per data límit. Funció sortByDueDate(practices).
-   T02 Per a cada pràctica, una taula d'alumnes amb l'estat: delivered, late o pending. Funció isLate(date, dueDate).
-   T03 Un resum per alumne: quantes pràctiques té lliurades, tard i pendents. Funció summary(student, deliveries).
-   La lògica va a webs/lliuraments.js com a funcions pures, amb tests a tests/lliuraments.test.mjs. Cada tasca ha d'incloure el criteri "npm test passes and includes a test for <its function>".
-   Escriu els títols i els criteris en anglès.
-   Ara no implementis l'app.
-   ```
-
-4. Surt d'OpenCode, torna-hi a entrar i executa `/next-task` **una vegada**: implementa i valida la T01. Si falla, llegeix l'informe del reviewer i decideix si cal corregir la tasca o l'arnès. Per veure la web, executa `npx serve .` en un altre terminal, des de `lliuraments`, i obre `http://localhost:3000/webs/…`: la pàgina llegeix `data/lliuraments.json`, i això no funciona obrint l'HTML amb doble clic (`file://`).
-5. Demana a l'agent el commit, l'etiqueta `t2` i el push (sessió 01, apartat 17).
-
-**Lliurable:** enllaç a l'etiqueta `t2` de `lliuraments`, amb l'arnès a `.agents/`, `AGENTS.md`, `docs/tasks.json` amb la T01 `done` i `npm test` en verd.
-
-**Ampliació (opcional):** executa `/next-task` dues vegades més per fer la T02 i la T03.
+L'enunciat de la T2 és a [enunciats/02 - Tasca T2.md](../enunciats/02%20-%20Tasca%20T2.md).
 
 ## Resum
 

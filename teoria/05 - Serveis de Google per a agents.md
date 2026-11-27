@@ -190,20 +190,7 @@ Reinicia OpenCode i executa `/gmail-important`.
 
 ## Tasca de la sessió · Projecte «Lliuraments» (T5)
 
-**Objectiu:** que l'agent publiqui el resum per alumne en un full de càlcul.
-
-La T5 **és el resultat de la pràctica** de Google Sheets (seccions 1 i 2): com que l'has fet al repositori `lliuraments`, no hi ha feina a part.
-
-1. Comprova que el full «Lliuraments» té una fila per alumne i que els números són correctes.
-2. Comparteix el full amb el professor (només lectura).
-3. Demana a l'agent el commit, l'etiqueta `t5` i el push (sessió 01, apartat 17). Comprova abans amb `git status` que `.secrets/` no hi apareix.
-
-**Lliurable:** enllaç al full i enllaç a l'etiqueta `t5` de `lliuraments`, amb l'MCP de Google Sheets a `opencode.json` i la seva línia a la secció `# MCPs` d'`AGENTS.md`.
-
-**Ampliació (opcional):**
-
-- Crea un segon full, «Notes», i demana a l'agent dades d'exemple per a 5 alumnes amb les notes «Ex, Pr1, Pr2, Obs», els pesos a la fila 2 (40%, 20%, 20%, 20%) i una columna «Total» amb la mitjana ponderada calculada amb una **fórmula** del full.
-- Fes tu la part de Gmail (seccions 3–5).
+L'enunciat de la T5 és a [enunciats/05 - Tasca T5.md](../enunciats/05%20-%20Tasca%20T5.md).
 
 ## Resum
 

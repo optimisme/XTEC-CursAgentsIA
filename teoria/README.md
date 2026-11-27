@@ -34,21 +34,21 @@ Vuit temes en **set sessions de 3 h** (de 9 a 12 h). Cada sessió té com a màx
 
 ## Projecte «Lliuraments»
 
-Cada tema acaba amb una **tasca** petita (T1–T8) sobre un mateix projecte: una web estàtica i una CLI per fer el seguiment de les pràctiques lliurades, sense login ni backend.
+Cada tema acaba amb una **tasca** petita (T1–T8) sobre un mateix projecte, amb l'enunciat a la carpeta [`enunciats/`](../enunciats/): una web estàtica i una CLI per fer el seguiment de les pràctiques lliurades, sense login ni backend.
 
 - **Un sol repositori**, `lliuraments`, creat a la T1. En acabar cada tasca s'hi posa una **etiqueta** de git (`t1`…`t8`), que és el que es lliura (tema 01, apartat 17).
 - Les pràctiques de cada tema es fan en repositoris a part (`ia-01-one-shot`, `ia-02-harness-sdd`…), excepte les dels temes 05 i 06, que es fan directament a `lliuraments` i ja són la tasca.
 
 | Tasca | Què es fa a classe | Ampliació opcional |
 |---|---|---|
-| T1 | Repositori, `opencode.json`, `PLAN.md` i dades | — |
-| T2 | Arnès SDD i una tasca amb `/next-task` | Les altres dues tasques |
-| T3 | Una funció del projecte a la CLI de la pràctica | Més funcions, tests i Ollama |
-| T4 | Una issue i una captura amb Playwright | Més issues, `reviewer` amb Playwright i `task-contract` |
-| T5 | Resum per alumne a Google Sheets (és la pràctica) | Notes ponderades i Gmail |
-| T6 | `docs/normativa.md` amb la font citada (final de la pràctica) | Penalitzacions amb `/next-task` |
-| T7 | Una tasca en Markdown amb `/next-md-task` | `/run-tasks`, tasca programada, `DECISIONS.md` i `HANDOFF.md` |
-| T8 | Comparativa de dos models a `docs/models.md` | KV cache, TensorFold o Strata |
+| [T1](../enunciats/01%20-%20Tasca%20T1.md) | Repositori, `opencode.json`, `PLAN.md` i dades | — |
+| [T2](../enunciats/02%20-%20Tasca%20T2.md) | Arnès SDD i una tasca amb `/next-task` | Les altres dues tasques |
+| [T3](../enunciats/03%20-%20Tasca%20T3.md) | Una funció del projecte a la CLI de la pràctica | Més funcions, tests i Ollama |
+| [T4](../enunciats/04%20-%20Tasca%20T4.md) | Una issue i una captura amb Playwright | Més issues, `reviewer` amb Playwright i `task-contract` |
+| [T5](../enunciats/05%20-%20Tasca%20T5.md) | Resum per alumne a Google Sheets (és la pràctica) | Notes ponderades i Gmail |
+| [T6](../enunciats/06%20-%20Tasca%20T6.md) | `docs/normativa.md` amb la font citada (final de la pràctica) | Penalitzacions amb `/next-task` |
+| [T7](../enunciats/07%20-%20Tasca%20T7.md) | Una tasca en Markdown amb `/next-md-task` | `/run-tasks`, tasca programada, `DECISIONS.md` i `HANDOFF.md` |
+| [T8](../enunciats/08%20-%20Tasca%20T8.md) | Comparativa de dos models a `docs/models.md` | KV cache, TensorFold o Strata |
 
 El [projecte final](Projecte%20final.md) és un PDF que recull les tasques i la valoració de l'alumne; l'avaluació es fa a partir d'aquest document.
 
